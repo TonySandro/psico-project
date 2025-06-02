@@ -2,7 +2,6 @@ import AllTests from '../../components/initialPage/allTests/allTests';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { useNavigate } from 'react-router';
 import { useEffect } from 'react';
-import InitialBar from '../../components/initialBar/initialBar';
 import NavBar from '../../components/navigation/navBar';
 
 function Catalog() {
@@ -19,7 +18,6 @@ function Catalog() {
     return (
         <div>
             <NavBar />
-            <InitialBar />
             <AllTests tests={tests} />
         </div>
     );
