@@ -1,14 +1,13 @@
-import AllCourses from '../../components/initialPage/allCourses/allCourses';
+import AllTests from '../../components/initialPage/allTests/allTests';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { useNavigate } from 'react-router';
 import { useEffect } from 'react';
-import LogoutButton from '../../components/logout/logoutButton';
 import InitialBar from '../../components/initialBar/initialBar';
 import NavBar from '../../components/navigation/navBar';
 
 function Catalog() {
     const isLogged = useAppSelector(state => state.user.isAuthenticated);
-    const courses = useAppSelector(state => state.course.list);
+    const tests = useAppSelector(state => state.test.list);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -21,7 +20,7 @@ function Catalog() {
         <div>
             <NavBar />
             <InitialBar />
-            <AllCourses courses={courses} />
+            <AllTests tests={tests} />
         </div>
     );
 }

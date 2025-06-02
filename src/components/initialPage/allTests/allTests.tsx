@@ -1,13 +1,13 @@
 import React, { useRef } from 'react';
-import styles from './allCourses.module.scss';
+import styles from './allTests.module.scss';
 import { useTranslation } from 'react-i18next';
-import { Course } from '../../../interfaces/course';
+import { Test } from '../../../interfaces/test';
 
-interface AllCoursesProps {
-  courses?: Course[];
+interface AllTestsProps {
+  tests?: Test[];
 }
 
-const AllCourses: React.FC<AllCoursesProps> = ({ courses = [] }) => {
+const AllTests: React.FC<AllTestsProps> = ({ tests = [] }) => {
   const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -19,12 +19,12 @@ const AllCourses: React.FC<AllCoursesProps> = ({ courses = [] }) => {
   };
 
   return (
-    <section className={styles.allCoursesSec}>
-      <div className={styles.allCoursesContainer}>
-        <h2 className={styles.coursesTitle}>{t('common:availableCourses')}</h2>
+    <section className={styles.allTestsSec}>
+      <div className={styles.allTestsContainer}>
+        <h2 className={styles.testsTitle}>{t('common:availableTests')}</h2>
 
-        {courses.length === 0 ? (
-          <p className={styles.noCoursesMessage}>{t('addCourse:noCourses')}</p>
+        {tests.length === 0 ? (
+          <p className={styles.noTestsMessage}>{t('addTest:noTests')}</p>
         ) : (
           <div className={styles.carouselControls}>
             <button
@@ -35,17 +35,17 @@ const AllCourses: React.FC<AllCoursesProps> = ({ courses = [] }) => {
               &#8249;
             </button>
 
-            <div className={styles.coursesRow} ref={scrollRef}>
-              {courses.map((course) => (
-                <div key={course.id} className={styles.courseCard}>
+            <div className={styles.testsRow} ref={scrollRef}>
+              {tests.map((test) => (
+                <div key={test.id} className={styles.testCard}>
                   <img
-                    className={styles.courseImage}
-                    src={course.imageUrl}
-                    alt={course.title}
+                    className={styles.testImage}
+                    src={test.imageUrl}
+                    alt={test.title}
                   />
                   <div className={styles.cardBody}>
-                    <h3 className={styles.courseTitle}>{course.title}</h3>
-                    <p className={styles.courseDescription}>{course.description}</p>
+                    <h3 className={styles.testTitle}>{test.title}</h3>
+                    <p className={styles.testDescription}>{test.description}</p>
                   </div>
                 </div>
               ))}
@@ -65,4 +65,4 @@ const AllCourses: React.FC<AllCoursesProps> = ({ courses = [] }) => {
   );
 };
 
-export default AllCourses;
+export default AllTests;

@@ -18,7 +18,7 @@ const InitialBar: React.FC = () => {
                                 {t('common:welcomeBack')} {user?.name}
                             </h1><p className={styles.roleText}>{t('common:goodStudies')}</p></>
                             :
-                            <><h1 className={styles.welcomeText}>{t('adminPage:welcome')}</h1><p className={styles.roleText}>{t('adminPage:manageCourses')}</p></>
+                            <><h1 className={styles.welcomeText}>{t('adminPage:welcome')}</h1><p className={styles.roleText}>{t('adminPage:manageTests')}</p></>
                         }
                     </h1>
                 </div>

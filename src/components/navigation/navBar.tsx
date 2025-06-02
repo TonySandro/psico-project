@@ -21,7 +21,7 @@ const NavBar: React.FC = () => {
         <div className={styles.actions}>
         <ul className={styles.navLinks}>
           <li><Link to="/">{t('common:home')}</Link></li>
-          <li><Link to="/courses">{t('common:courses')}</Link></li>
+          <li><Link to="/tests">{t('common:tests')}</Link></li>
           {user?.role === 'admin' && <li><Link to="/admin">{t('common:dashboard')}</Link></li>}
           <li><Link to="/profile">{t('common:profile')}</Link></li>
         </ul>

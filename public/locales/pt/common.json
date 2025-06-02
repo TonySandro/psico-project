@@ -5,13 +5,13 @@
   "no": "Não",
   "cancel": "Cancelar",
   "confirm": "Confirmar",
-  "availableCourses": "Cursos disponíveis",
+  "availableTests": "Cursos disponíveis",
   "currency": "R$",
   "logout": "Sair",
   "welcomeBack": "Bem-vindo de volta,",
   "goodStudies": "Bons estudos!",
   "home": "Início",
-  "courses": "Cursos",
+  "tests": "Cursos",
   "dashboard": "Painel",
   "profile": "Perfil"
 }

@@ -7,9 +7,9 @@
   "modulePlaceholder": "Module {{index}}",
   "addModule": "Add Module",
   "remove": "Remove",
-  "submit": "Save Course",
-  "noCourses": "No courses registered.",
-  "editTitle": "Edit Course",
+  "submit": "Save Test",
+  "noTests": "No tests registered.",
+  "editTitle": "Edit Test",
   "saveChanges": "Save Changes",
   "cancel": "Cancel",
   "errors": {

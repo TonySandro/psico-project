@@ -1,8 +1,8 @@
 {
   "welcome": "Admin area",
-  "manageCourses": "Manage courses",
+  "manageTests": "Manage tests",
   "tabs": {
-    "addCourse": "Add Course",
-    "allCourses": "All Courses"
+    "addTest": "Add Test",
+    "allTests": "All Tests"
   }
 }

@@ -1,8 +1,8 @@
 {
   "welcome": "Área de admin",
-  "manageCourses": "Gerencie os cursos",
+  "manageTests": "Gerencie os cursos",
   "tabs": {
-    "addCourse": "Adicionar Curso",
-    "allCourses": "Todos os Cursos"
+    "addTest": "Adicionar Curso",
+    "allTests": "Todos os Cursos"
   }
 }
