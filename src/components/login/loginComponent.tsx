@@ -56,11 +56,7 @@ const LoginComponent: React.FC = () => {
       })
     );
 
-    if (matchedUser.role === 'admin') {
-      navigate('/admin');
-    } else {
-      navigate('/catalog');
-    }
+    navigate('/catalog');
   };
 
   return (
