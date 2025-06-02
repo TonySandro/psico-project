@@ -1,0 +1,17 @@
+{
+  "appName": "Plataforma de Cursos",
+  "loading": "Carregando...",
+  "yes": "Sim",
+  "no": "Não",
+  "cancel": "Cancelar",
+  "confirm": "Confirmar",
+  "availableCourses": "Cursos disponíveis",
+  "currency": "R$",
+  "logout": "Sair",
+  "welcomeBack": "Bem-vindo de volta,",
+  "goodStudies": "Bons estudos!",
+  "home": "Início",
+  "courses": "Cursos",
+  "dashboard": "Painel",
+  "profile": "Perfil"
+}

@@ -1,0 +1,129 @@
+.allCoursesSec {
+  background-color: #fff;
+  padding: 2rem 0;
+}
+
+.allCoursesContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1250px;
+  margin: 0 auto;
+  padding: 0 1rem;
+
+  @media (max-width: 768px) {
+    padding: 0 1rem;
+  }
+}
+
+.coursesTitle {
+  font-size: 1.5rem;
+  color: #212529;
+  margin-bottom: 1.5rem;
+
+  @media (max-width: 768px) {
+    font-size: 1.3rem;
+    text-align: center;
+  }
+}
+
+.coursesRow {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 0.5rem;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    padding-left: 0.25rem;
+  }
+}
+
+.courseCard {
+  flex: 0 0 auto;
+  width: 220px;
+  min-height: 280px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  @media (max-width: 768px) {
+    width: 180px;
+    min-height: 250px;
+  }
+}
+
+.courseImage {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+
+  @media (max-width: 768px) {
+    height: 100px;
+  }
+}
+
+.cardBody {
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.courseTitle {
+  font-size: 1rem;
+  margin: 0.5rem 0 0.25rem 0;
+  color: #333;
+  line-height: 1.2;
+
+  @media (max-width: 768px) {
+    font-size: 0.95rem;
+  }
+}
+
+.courseDescription {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+
+  @media (max-width: 768px) {
+    font-size: 0.85rem;
+  }
+}
+
+.carouselControls {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.carouselButton {
+  background-color: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #6c757d;
+  padding: 0.25rem;
+
+  &:hover {
+    color: #343a40;
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}

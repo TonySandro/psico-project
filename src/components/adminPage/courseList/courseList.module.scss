@@ -1,0 +1,20 @@
+.courseListSection {
+  padding: 2rem 1rem;
+}
+
+.emptyMessage {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #6c757d;
+}
+
+.courseGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  justify-content: center;
+
+  @media (max-width: 768px) {
+    gap: 1rem;
+  }
+}

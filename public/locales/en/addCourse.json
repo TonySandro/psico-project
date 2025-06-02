@@ -1,0 +1,25 @@
+{
+  "title": "Title",
+  "description": "Description",
+  "price": "Price",
+  "imageUrl": "Image URL",
+  "modulesLabel": "Modules",
+  "modulePlaceholder": "Module {{index}}",
+  "addModule": "Add Module",
+  "remove": "Remove",
+  "submit": "Save Course",
+  "noCourses": "No courses registered.",
+  "editTitle": "Edit Course",
+  "saveChanges": "Save Changes",
+  "cancel": "Cancel",
+  "errors": {
+    "title": "Title is required",
+    "description": "Description is required",
+    "price_type": "Price must be a number",
+    "price_positive": "Price must be positive",
+    "price_required": "Price is required",
+    "image_url": "Invalid URL",
+    "image_required": "Image is required",
+    "module_required": "Module name is required"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "appName": "Course Platform",
+  "loading": "Loading...",
+  "yes": "Yes",
+  "no": "No",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "availableCourses": "Available Courses",
+  "currency": "$",
+  "welcomeBack": "Welcome back,",
+  "logout": "Logout",
+  "goodStudies": "Enjoy your learning!",
+  "home": "Home",
+  "courses": "Courses",
+  "dashboard": "Dashboard",
+  "profile": "Profile"
+}

@@ -1,0 +1,100 @@
+.courseCard {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  margin: 0 auto;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.01);
+  }
+}
+
+.courseImage {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.courseContent {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.courseTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.courseDescription {
+  font-size: 0.95rem;
+  color: #495057;
+}
+
+.coursePrice {
+  font-weight: 500;
+  color: #20c997;
+  font-size: 1rem;
+}
+
+.moduleList {
+  list-style: none;
+  padding-left: 1rem;
+  margin: 0;
+}
+
+.moduleItem {
+  font-size: 0.9rem;
+  color: #343a40;
+
+  &::before {
+    content: '• ';
+    color: #6c63ff;
+  }
+}
+
+.actionButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.editButton {
+  background: #ffc107;
+  border: none;
+  color: #212529;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.deleteButton {
+  background: #e03131;
+  border: none;
+  color: #fff;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.courseCard {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease;
+  width: 100%;
+
+  &:hover {
+    transform: scale(1.01);
+  }
+}

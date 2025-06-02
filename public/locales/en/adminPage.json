@@ -1,0 +1,8 @@
+{
+  "welcome": "Admin area",
+  "manageCourses": "Manage courses",
+  "tabs": {
+    "addCourse": "Add Course",
+    "allCourses": "All Courses"
+  }
+}
