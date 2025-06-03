@@ -3,6 +3,6 @@
   "manageTests": "Gerencie os cursos",
   "tabs": {
     "addTest": "Adicionar Curso",
-    "allTests": "Todos os Cursos"
+    "allTests": "Todos os Testes"
   }
 }

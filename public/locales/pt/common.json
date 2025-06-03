@@ -1,17 +1,17 @@
 {
-  "appName": "Plataforma de Cursos",
+  "appName": "Plataforma de Testes",
   "loading": "Carregando...",
   "yes": "Sim",
   "no": "Não",
   "cancel": "Cancelar",
   "confirm": "Confirmar",
-  "availableTests": "Cursos disponíveis",
+  "availableTests": "Testes disponíveis",
   "currency": "R$",
   "logout": "Sair",
   "welcomeBack": "Bem-vindo de volta,",
   "goodStudies": "Bons estudos!",
   "home": "Início",
-  "tests": "Cursos",
+  "tests": "Testes",
   "dashboard": "Painel",
   "profile": "Perfil"
 }
