@@ -56,7 +56,7 @@ const LoginComponent: React.FC = () => {
       })
     );
 
-    navigate('/catalog');
+    navigate('/dashboard');
   };
 
   return (
