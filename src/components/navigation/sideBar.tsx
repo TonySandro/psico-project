@@ -1,9 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useAppSelector } from '../../hooks/useAppSelector';
 import styles from './sideBar.module.scss';
 
-const NavBar: React.FC = () => {
+const SideBar: React.FC = () => {
   const location = useLocation();
   // const user = useAppSelector((state) => state.user.user);
 
@@ -43,4 +42,4 @@ const NavBar: React.FC = () => {
   );
 };
 
-export default NavBar;
+export default SideBar;
