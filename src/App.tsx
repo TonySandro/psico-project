@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/login';
-import Catalog from './pages/catalog';
+import Dashboard from './pages/dashboard';
 import MainLayout from './layouts/mainLayout';
 
 const App: React.FC = () => {
@@ -9,9 +9,8 @@ const App: React.FC = () => {
     <Routes>
       <Route path="/" element={<LoginPage />} />
 
-      <Route element={<MainLayout />}>
-        <Route path="/catalog" element={<Catalog />} />
-        <Route path="/dashboard" />
+      <Route element={<MainLayout />}> 
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/tests" />
         <Route path="/patients" />
         <Route path="/results" />
