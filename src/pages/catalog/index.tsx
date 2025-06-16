@@ -17,7 +17,6 @@ function Catalog() {
 
     return (
         <div>
-            <SideBar />
             <AllTests tests={tests} />
         </div>
     );

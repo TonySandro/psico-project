@@ -1,16 +1,24 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/login';
 import Catalog from './pages/catalog';
+import MainLayout from './layouts/mainLayout';
 
 const App: React.FC = () => {
   return (
-    <Router>
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/catalog" element={<Catalog />} />
-        </Routes>
-    </Router>
+    <Routes>
+      <Route path="/" element={<LoginPage />} />
+
+      <Route element={<MainLayout />}>
+        <Route path="/catalog" element={<Catalog />} />
+        <Route path="/dashboard" />
+        <Route path="/tests" />
+        <Route path="/patients" />
+        <Route path="/results" />
+        <Route path="/subscription" />
+        <Route path="/settings" />
+      </Route>
+    </Routes>
   );
 };
 
