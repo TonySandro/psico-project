@@ -37,25 +37,90 @@ const PatientCard: React.FC<Props> = ({
       className={`${styles.card} ${isListView ? styles.listView : styles.gridView} ${isExpanded ? styles.expanded : ''}`}
       onClick={onSelect}
     >
-      <div className={styles.basicInfo}>
-        <h2>{patient.name}</h2>
-        <p>{patient.age} anos | {patient.schoolYear}</p>
-      </div>
 
-      {isExpanded && (
-        <div className={styles.details}>
-          <p>Gênero: {patient.gender}</p>
-          {patient.address && <p>Endereço: {patient.address}</p>}
-          {patient.phoneNumber && <p>Telefone: {patient.phoneNumber}</p>}
-          {patient.motherName && <p>Mãe: {patient.motherName}</p>}
-          {patient.fatherName && <p>Pai: {patient.fatherName}</p>}
+      {isListView ? (
+        <>
+          <div>
+            <h2>{patient.name}</h2>
+            <p>{patient.age} anos | {patient.schoolYear}</p>
+          </div>
 
           <div className={styles.actions}>
-            <button className={styles.editButton} onClick={(e) => { e.stopPropagation(); onEdit(); }}>Editar</button>
-            <button className={styles.anamnesisButton} onClick={(e) => { e.stopPropagation(); onAddAnamnesis(); }}>Adicionar Anamnese</button>
-            <button className={styles.deleteButton} onClick={(e) => { e.stopPropagation(); onDelete(); }}>Excluir</button>
+            <button
+              className={styles.editButton}
+              onClick={(e) => { e.stopPropagation(); onEdit(); }}
+            >
+              Editar
+            </button>
+
+            <button
+              className={styles.deleteButton}
+              onClick={(e) => { e.stopPropagation(); onDelete(); }}
+            >
+              Excluir
+            </button>
+
+            <button
+              className={styles.anamnesisButton}
+              onClick={(e) => { e.stopPropagation(); onAddAnamnesis(); }}
+            >
+              Visualizar
+            </button>
+
+            <button
+              className={styles.moreButton}
+              onClick={(e) => { e.stopPropagation(); alert('Mais ações futuras...'); }}
+            >
+              Mais
+            </button>
           </div>
-        </div>
+        </>
+      ) : (
+        <>
+          <div className={styles.basicInfo}>
+            <h2>{patient.name}</h2>
+            <p>{patient.age} anos | {patient.schoolYear}</p>
+          </div>
+
+          {isExpanded && (
+            <div className={styles.details}>
+              <p>Gênero: {patient.gender}</p>
+              {patient.address && <p>Endereço: {patient.address}</p>}
+              {patient.phoneNumber && <p>Telefone: {patient.phoneNumber}</p>}
+              {patient.motherName && <p>Mãe: {patient.motherName}</p>}
+              {patient.fatherName && <p>Pai: {patient.fatherName}</p>}
+
+              <div className={styles.actions}>
+                <button
+                  className={styles.editButton}
+                  onClick={(e) => { e.stopPropagation(); onEdit(); }}
+                >
+                  Editar
+                </button>
+
+                <button
+                  className={styles.anamnesisButton}
+                  onClick={(e) => { e.stopPropagation(); onAddAnamnesis(); }}
+                >
+                  Adicionar Anamnese
+                </button>
+
+                <button
+                  className={styles.deleteButton}
+                  onClick={(e) => { e.stopPropagation(); onDelete(); }}
+                >
+                  Excluir
+                </button>
+                <button
+                  className={styles.moreButton}
+                  onClick={(e) => { e.stopPropagation(); alert('Mais ações futuras...'); }}
+                >
+                  Mais
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
