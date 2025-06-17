@@ -1,8 +1,0 @@
-{
-  "welcome": "Admin area",
-  "manageTests": "Manage tests",
-  "tabs": {
-    "addTest": "Add Test",
-    "allTests": "All Tests"
-  }
-}
