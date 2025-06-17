@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import styles from './PatientsPage.module.scss';
-import PatientCard from '../../components/patient/PatientCard/PatientCard';
+import { deletePatient, getPatients } from '../../services/patientService';
 import AddPatientButton from '../../components/patient/PatientButton/AddPatientButton';
-import ConfirmDeleteModal from '../../components/patient/ConfirmDeleteModal/ConfirmDeleteModal';
-import { getPatients, deletePatient } from '../../services/patientService';
+import PatientCard from '../../components/patient/PatientCard/PatientCard';
 import PatientForm from '../../components/patient/PatientForm/PatientForm';
-import AnamnesisForm from '../../components/patient/AnamnesisForm/AnamnesisForm';
 import PatientEditForm from '../../components/patient/PatientEditForm/PatientEditForm';
+import AnamnesisForm from '../../components/patient/AnamnesisForm/AnamnesisForm';
+import ConfirmDeleteModal from '../../components/patient/ConfirmDeleteModal/ConfirmDeleteModal';
 
 interface Patient {
   id: string;
@@ -30,10 +30,24 @@ const PatientsPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [isListView, setIsListView] = useState(true);
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const loadPatients = async () => {
-    const response = await getPatients();
-    setPatients(response.data);
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await getPatients();
+      setPatients(response.data);
+    } catch (err) {
+      if (patients.length === 0) {
+        setError('Nenhum paciente encontrado.');
+      }
+      
+      setError('Erro ao carregar pacientes. Tente novamente mais tarde.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -86,27 +100,36 @@ const PatientsPage: React.FC = () => {
             </div>
           </div>
 
-          <div className={styles.cardGrid}>
-            {patients.map((patient) => (
-              <PatientCard
-                key={patient.id}
-                patient={patient}
-                isExpanded={selectedPatientId === patient.id}
-                isListView={isListView}
-                onSelect={() => setSelectedPatientId(patient.id === selectedPatientId ? null : patient.id)}
-                onEdit={() => handleEditPatient(patient)}
-                onAddAnamnesis={() => handleAddAnamnesis(patient)}
-                onDelete={() => setDeleteTargetId(patient.id)}
-              />
-            ))}
-          </div>
+          {loading && <p>Carregando pacientes...</p>}
+
+          {error && <p className={styles.error}>{error}</p>}
+
+          {!loading && !error && patients.length === 0 && (
+            <p className={styles.empty}>Nenhum paciente encontrado.</p>
+          )}
+
+          {!loading && !error && patients.length > 0 && (
+            <div className={styles.cardGrid}>
+              {patients.map((patient) => (
+                <PatientCard
+                  key={patient.id}
+                  patient={patient}
+                  isExpanded={selectedPatientId === patient.id}
+                  isListView={isListView}
+                  onSelect={() => setSelectedPatientId(patient.id === selectedPatientId ? null : patient.id)}
+                  onEdit={() => handleEditPatient(patient)}
+                  onAddAnamnesis={() => handleAddAnamnesis(patient)}
+                  onDelete={() => setDeleteTargetId(patient.id)}
+                />
+              ))}
+            </div>
+          )}
         </>
       )}
 
       {viewMode === 'create' && (
         <PatientForm onSuccess={handleBackToList} onCancel={handleBackToList} />
       )}
-
 
       {viewMode === 'edit' && editingPatient && (
         <PatientEditForm
@@ -115,7 +138,6 @@ const PatientsPage: React.FC = () => {
           onCancel={handleBackToList}
         />
       )}
-
 
       {viewMode === 'anamnesis' && editingPatient && (
         <AnamnesisForm
@@ -127,7 +149,6 @@ const PatientsPage: React.FC = () => {
           onCancel={handleBackToList}
         />
       )}
-
 
       <ConfirmDeleteModal
         isOpen={deleteTargetId !== null}

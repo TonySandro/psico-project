@@ -14,3 +14,15 @@
   flex-wrap: wrap;
   gap: 20px;
 }
+
+.error {
+  color: red;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.empty {
+  color: #555;
+  font-style: italic;
+  margin: 10px 0;
+}
