@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/login';
 import Dashboard from './pages/dashboard';
 import MainLayout from './layouts/mainLayout';
-import PatientsPage from './pages/patients';
+import PatientsPage from './pages/patients/PatientsPage';
 
 const App: React.FC = () => {
   return (
