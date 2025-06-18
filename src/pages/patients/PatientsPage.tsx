@@ -10,12 +10,18 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { Patient } from '../../types/patient';
-import { getPatients, deletePatient } from '../../services/patientService';
+import {
+  getPatients,
+  deletePatient,
+  createPatient,
+  updatePatient,
+  addAnamnesis,
+} from '../../services/patientService'; 
 import ConfirmDeleteModal from '../../components/ui/ConfirmDeleteModal';
-import PatientCard from '../../components/ui/PatientCard';
-import PatientForm from '../../components/ui/PatientForm';
-import PatientEditForm from '../../components/ui/PatientEditForm';
 import AnamnesisForm from '../../components/ui/AnamnesisForm';
+import PatientEditForm from '../../components/ui/PatientEditForm';
+import PatientForm from '../../components/ui/PatientForm';
+import PatientCard from '../../components/ui/PatientCard';
 
 type ViewMode = 'list' | 'create' | 'edit' | 'anamnesis';
 
@@ -45,11 +51,42 @@ export default function PatientsPage() {
     loadPatients();
   }, []);
 
+  const handleCreatePatient = async (data: Omit<Patient, 'id'>) => {
+    try {
+      await createPatient(data);
+      handleBackToList();
+    } catch {
+      setError('Erro ao adicionar paciente.');
+    }
+  };
+
+  const handleUpdatePatient = async (id: string, data: Partial<Patient>) => {
+    try {
+      await updatePatient(id, data);
+      handleBackToList();
+    } catch {
+      setError('Erro ao editar paciente.');
+    }
+  };
+
+  const handleAddAnamnesis = async (patientId: string, anamnesisData: any) => {
+    try {
+      await addAnamnesis(patientId, anamnesisData);
+      handleBackToList();
+    } catch {
+      setError('Erro ao adicionar anamnese.');
+    }
+  };
+
   const handleDeleteConfirm = async () => {
     if (deleteTargetId) {
-      await deletePatient(deleteTargetId);
-      setDeleteTargetId(null);
-      loadPatients();
+      try {
+        await deletePatient(deleteTargetId);
+        setDeleteTargetId(null);
+        loadPatients();
+      } catch {
+        setError('Erro ao excluir paciente.');
+      }
     }
   };
 
@@ -111,13 +148,16 @@ export default function PatientsPage() {
       )}
 
       {viewMode === 'create' && (
-        <PatientForm onSuccess={handleBackToList} onCancel={handleBackToList} />
+        <PatientForm
+          onSuccess={handleCreatePatient}
+          onCancel={handleBackToList}
+        />
       )}
 
       {viewMode === 'edit' && editingPatient && (
         <PatientEditForm
           patient={editingPatient}
-          onSuccess={handleBackToList}
+          onSuccess={handleUpdatePatient}
           onCancel={handleBackToList}
         />
       )}
@@ -125,10 +165,7 @@ export default function PatientsPage() {
       {viewMode === 'anamnesis' && editingPatient && (
         <AnamnesisForm
           patientId={editingPatient.id}
-          patientName={editingPatient.name}
-          age={editingPatient.age}
-          schoolYear={editingPatient.schoolYear}
-          onSuccess={handleBackToList}
+          onSuccess={handleAddAnamnesis}
           onCancel={handleBackToList}
         />
       )}

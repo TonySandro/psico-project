@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Patient } from "../types/patient";
 
 const API_URL = "http://localhost:3301/api";
 
@@ -46,8 +47,16 @@ export const getAvailableTests = () => {
 
 export const getPatients = () => axios.get(`${API_URL}/all-patients`);
 
-export const createPatient = (data: PatientPayload) =>
+export const createPatient = (data: Omit<Patient, "id">) =>
   axios.post(`${API_URL}/patients`, data);
 
 export const deletePatient = (id: string) =>
   axios.delete(`${API_URL}/patients/${id}`);
+
+export const updatePatient = (id: string, data: Partial<Patient>) => {
+  return axios.put(`${API_URL}/${id}`, data);
+};
+
+export const addAnamnesis = (patientId: string, anamnesisData: any) => {
+  return axios.post(`${API_URL}/${patientId}/anamnesis`, anamnesisData);
+};
