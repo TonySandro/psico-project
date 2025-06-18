@@ -1,4 +1,5 @@
-import * as React from 'react'
+import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   List,
   ListItem,
@@ -6,27 +7,29 @@ import {
   ListItemIcon,
   ListItemText,
   Stack,
-} from '@mui/material'
+} from '@mui/material';
 import {
   HomeRounded as HomeRoundedIcon,
   AnalyticsRounded as AnalyticsRoundedIcon,
-  PeopleRounded as PeopleRoundedIcon, 
+  PeopleRounded as PeopleRoundedIcon,
   HelpRounded as HelpRoundedIcon,
-} from '@mui/icons-material'
+} from '@mui/icons-material';
 
 const mainListItems = [
-  { text: 'Home', icon: <HomeRoundedIcon /> },
-  { text: 'Pacientes', icon: <PeopleRoundedIcon /> },
-  { text: 'Testes', icon: <AnalyticsRoundedIcon /> },
-  { text: 'Feedback', icon: <HelpRoundedIcon /> },
-]
+  { text: 'Home', icon: <HomeRoundedIcon />, path: '/home' },
+  { text: 'Pacientes', icon: <PeopleRoundedIcon />, path: '/patients' },
+  { text: 'Testes', icon: <AnalyticsRoundedIcon />, path: '/tests' },
+  { text: 'Feedback', icon: <HelpRoundedIcon />, path: '/feedback' },
+];
+
 export default function MenuContent() {
-  const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null)
+  const [selectedIndex, setSelectedIndex] = React.useState<number | null>(null);
+  const navigate = useNavigate();
 
-  const handleListItemClick = (index: number) => {
-    setSelectedIndex(index)
-  }
-
+  const handleListItemClick = (index: number, path: string) => {
+    setSelectedIndex(index);
+    navigate(path);
+  };
 
   return (
     <Stack sx={{ height: '100%', p: 1, justifyContent: 'space-between' }}>
@@ -35,7 +38,7 @@ export default function MenuContent() {
           <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
             <ListItemButton
               selected={selectedIndex === index}
-              onClick={() => handleListItemClick(index)}
+              onClick={() => handleListItemClick(index, item.path)}
               sx={{
                 borderRadius: 1,
                 my: 0.5,
@@ -62,5 +65,5 @@ export default function MenuContent() {
         ))}
       </List>
     </Stack>
-  )
+  );
 }

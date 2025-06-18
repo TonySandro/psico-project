@@ -44,6 +44,7 @@ export default function SideMenu() {
         <SelectContent />
       </Box>
       <Divider />
+      
       <Box
         sx={{
           overflow: 'auto',
@@ -54,6 +55,7 @@ export default function SideMenu() {
       >
         <MenuContent />
       </Box>
+
       <Stack
         direction="row"
         sx={{
