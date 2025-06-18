@@ -52,7 +52,7 @@ const LoginComponent: React.FC = () => {
       })
     );
 
-    navigate('/dashboard');
+    navigate('/home');
   };
 
   return (

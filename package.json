@@ -4,7 +4,7 @@
   "author": "Tony S.",
   "private": true,
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts start --max_old_space_size=4096",
     "build": "react-scripts --max_old_space_size=4096 build",
     "test": "react-scripts test",
     "test:watch": "react-scripts test --watch"
