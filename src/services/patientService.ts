@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Patient } from "../types/patient";
+import { PatientRequestDto } from "../types/patient-request-dto";
 
 const API_URL = "http://localhost:3301/api";
 
@@ -47,8 +48,16 @@ export const getAvailableTests = () => {
 
 export const getPatients = () => axios.get(`${API_URL}/all-patients`);
 
-export const createPatient = (data: Omit<Patient, "id">) =>
-  axios.post(`${API_URL}/patients`, data);
+export const createPatient = async (data: PatientRequestDto): Promise<void> => {
+  console.log("OBJETO NO FRONT", data);
+  try {
+    await axios.post(`${API_URL}/patients`, data, {
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    console.error("Erro ao criar paciente:", error);
+  }
+};
 
 export const deletePatient = (id: string) =>
   axios.delete(`${API_URL}/patients/${id}`);

@@ -16,12 +16,13 @@ import {
   createPatient,
   updatePatient,
   addAnamnesis,
-} from '../../services/patientService'; 
+} from '../../services/patientService';
 import ConfirmDeleteModal from '../../components/ui/ConfirmDeleteModal';
 import AnamnesisForm from '../../components/ui/AnamnesisForm';
 import PatientEditForm from '../../components/ui/PatientEditForm';
 import PatientForm from '../../components/ui/PatientForm';
 import PatientCard from '../../components/ui/PatientCard';
+import { PatientRequestDto } from '../../types/patient-request-dto';
 
 type ViewMode = 'list' | 'create' | 'edit' | 'anamnesis';
 
@@ -51,7 +52,7 @@ export default function PatientsPage() {
     loadPatients();
   }, []);
 
-  const handleCreatePatient = async (data: Omit<Patient, 'id'>) => {
+  const handleCreatePatient = async (data: PatientRequestDto) => {
     try {
       await createPatient(data);
       handleBackToList();
