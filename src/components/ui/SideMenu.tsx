@@ -1,38 +1,42 @@
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import Avatar from '@mui/material/Avatar';
+import { styled, useTheme } from '@mui/material/styles';
 import MuiDrawer, { drawerClasses } from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import Avatar from '@mui/material/Avatar';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import SelectContent from './SelectContent';
 import MenuContent from './MenuContent';
 import OptionsMenu from './OptionsMenu';
 
-const drawerWidth = 240;
+interface SideMenuProps {
+  mobileOpen: boolean;
+  onClose: () => void;
+}
 
-const Drawer = styled(MuiDrawer)({
+const drawerWidth = 300;
+
+const Drawer = styled(MuiDrawer)(() => ({
   width: drawerWidth,
   flexShrink: 0,
   boxSizing: 'border-box',
-  mt: 10,
   [`& .${drawerClasses.paper}`]: {
     width: drawerWidth,
     boxSizing: 'border-box',
   },
-});
+}));
 
-export default function SideMenu() {
+export default function SideMenu({ mobileOpen, onClose }: SideMenuProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   return (
     <Drawer
-      variant="permanent"
-      sx={{
-        display: { xs: 'none', md: 'block' },
-        [`& .${drawerClasses.paper}`]: {
-          backgroundColor: '#F3F4F6',
-        },
-      }}
+      variant={isMobile ? 'temporary' : 'permanent'}
+      open={isMobile ? mobileOpen : true}
+      onClose={onClose}
     >
       <Box
         sx={{
@@ -44,7 +48,7 @@ export default function SideMenu() {
         <SelectContent />
       </Box>
       <Divider />
-      
+
       <Box
         sx={{
           overflow: 'auto',

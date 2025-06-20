@@ -13,12 +13,14 @@ import {
   AnalyticsRounded as AnalyticsRoundedIcon,
   PeopleRounded as PeopleRoundedIcon,
   HelpRounded as HelpRoundedIcon,
+  Description as DescriptionIcon 
 } from '@mui/icons-material';
 
 const mainListItems = [
   { text: 'Home', icon: <HomeRoundedIcon />, path: '/home' },
   { text: 'Pacientes', icon: <PeopleRoundedIcon />, path: '/patients' },
   { text: 'Testes', icon: <AnalyticsRoundedIcon />, path: '/tests' },
+  { text: 'Modelos de documentos', icon: <DescriptionIcon />, path: '/docs' },
   { text: 'Feedback', icon: <HelpRoundedIcon />, path: '/feedback' },
 ];
 
