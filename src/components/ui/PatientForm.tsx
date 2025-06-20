@@ -6,7 +6,6 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { createPatient } from '../../services/patientService';
 import { PatientRequestDto } from '../../types/patient-request-dto';
 
 interface PatientFormProps {
