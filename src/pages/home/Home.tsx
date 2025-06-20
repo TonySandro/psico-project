@@ -1,19 +1,21 @@
-import React from 'react';
+import React from "react";
 import {
-  Container,
-  Typography,
-  Grid,
+  Box,
+  Button,
   Card,
-  CardHeader,
   CardContent,
+  CardHeader,
+  Container,
+  Divider,
+  Grid,
+  Link,
   List,
   ListItem,
-  ListItemText,
-  Divider,
-  Link,
   ListItemButton,
-  Box,
-} from '@mui/material';
+  ListItemText,
+  Typography,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 
 export default function DashboardOverview() {
   return (
@@ -25,18 +27,29 @@ export default function DashboardOverview() {
         Bem-vindo de volta! Aqui está um resumo da sua atividade recente e informações importantes.
       </Typography>
 
-      <Grid container spacing={3}>
+      <Grid container spacing={3} justifyContent="center">
         <Grid item xs={12} sm={6} md={4}>
-          <Card sx={{ p: 2, boxShadow: 1, borderRadius: 2 }}>
+          <Card
+            sx={{
+              p: 2,
+              boxShadow: 1,
+              borderRadius: 2,
+              height: "300px",
+              width: "350px",
+              display: "flex",
+              flexDirection: "column",
+              margin: "0 auto",
+            }}
+          >
             <CardHeader title="Estatísticas Principais" />
-            <CardContent>
+            <CardContent sx={{ flexGrow: 1 }}>
               <List disablePadding>
                 {[
-                  ['Pacientes Ativos', '12'],
-                  ['Testes Aplicados (Este Mês)', '45'],
-                  ['Próximas Consultas', '3'],
+                  ["Pacientes Ativos", "12"],
+                  ["Testes Aplicados (Este Mês)", "45"],
+                  ["Próximas Consultas", "3"],
                 ].map(([label, value], i) => (
-                  <Box key={i} sx={{ display: 'flex', justifyContent: 'space-between', py: 1 }}>
+                  <Box key={i} sx={{ display: "flex", justifyContent: "space-between", py: 1 }}>
                     <Typography>{label}</Typography>
                     <Typography color="primary">{value}</Typography>
                     {i < 2 && <Divider flexItem />}
@@ -53,15 +66,26 @@ export default function DashboardOverview() {
         </Grid>
 
         <Grid item xs={12} sm={6} md={4}>
-          <Card sx={{ p: 2, boxShadow: 1, borderRadius: 2 }}>
+          <Card
+            sx={{
+              p: 2,
+              boxShadow: 1,
+              borderRadius: 2,
+              height: "300px",
+              width: "350px",
+              display: "flex",
+              flexDirection: "column",
+              margin: "0 auto",
+            }}
+          >
             <CardHeader title="Atividades Recentes" />
-            <CardContent>
+            <CardContent sx={{ flexGrow: 1, overflowY: "auto" }}>
               <List dense disablePadding>
                 {[
-                  'Resultados do teste de João Silva processados.',
-                  'Nova paciente Maria Oliveira adicionada à sua lista.',
-                  'Plano de assinatura renovado com sucesso.',
-                  'Lembrete: Acompanhamento com Carlos Lima agendado para amanhã.',
+                  "Resultados do teste de João Silva processados.",
+                  "Nova paciente Maria Oliveira adicionada à sua lista.",
+                  "Plano de assinatura renovado com sucesso.",
+                  "Lembrete: Acompanhamento com Carlos Lima agendado para amanhã.",
                 ].map((text, i) => (
                   <React.Fragment key={i}>
                     <ListItem disableGutters>
@@ -81,15 +105,26 @@ export default function DashboardOverview() {
         </Grid>
 
         <Grid item xs={12} sm={6} md={4}>
-          <Card sx={{ p: 2, boxShadow: 1, borderRadius: 2 }}>
+          <Card
+            sx={{
+              p: 2,
+              boxShadow: 1,
+              borderRadius: 2,
+              height: "300px",
+              width: "350px",
+              display: "flex",
+              flexDirection: "column",
+              margin: "0 auto",
+            }}
+          >
             <CardHeader title="Acesso Rápido" />
-            <CardContent>
+            <CardContent sx={{ flexGrow: 1 }}>
               <List disablePadding>
                 {[
-                  ['Aplicar Novo Teste', '/tests/new'],
-                  ['Criar Perfil de Paciente', '/patients/new'],
-                  ['Ver Biblioteca de Testes', '/tests'],
-                  ['Gerenciar Configurações da Conta', '/settings'],
+                  ["Aplicar Novo Teste", "/tests/new"],
+                  ["Criar Perfil de Paciente", "/patients/new"],
+                  ["Ver Biblioteca de Testes", "/tests"],
+                  ["Gerenciar Configurações da Conta", "/settings"],
                 ].map(([label, href]) => (
                   <ListItemButton key={label} component={Link} href={href} sx={{ py: 1 }}>
                     <ListItemText primary={label} />
