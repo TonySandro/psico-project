@@ -6,6 +6,7 @@ import Dashboard from './pages/dashboard/Dashboard';
 import MainLayout from './layouts/mainLayout';
 import Home from './pages/home/Home';
 import AvailableTestsPage from './pages/tests/AvailableTestsPage';
+import FeedbackPage from './pages/feedback/Feedback';
 
 const App: React.FC = () => {
   return (
@@ -17,7 +18,7 @@ const App: React.FC = () => {
         <Route path="/home" element={<Home />} />
         <Route path="/patients" element={<PatientsPage />} />
         <Route path="/tests" element={<AvailableTestsPage />} />
-        <Route path="/feedback" />
+        <Route path="/feedback" element={<FeedbackPage/>} />
       </Route>
     </Routes>
   );
