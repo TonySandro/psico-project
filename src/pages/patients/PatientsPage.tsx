@@ -1,34 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import styles from './PatientsPage.module.scss';
-import { deletePatient, getPatients } from '../../services/patientService';
-import AddPatientButton from '../../components/patient/PatientButton/AddPatientButton';
-import PatientCard from '../../components/patient/PatientCard/PatientCard';
-import PatientForm from '../../components/patient/PatientForm/PatientForm';
-import PatientEditForm from '../../components/patient/PatientEditForm/PatientEditForm';
-import AnamnesisForm from '../../components/patient/AnamnesisForm/AnamnesisForm';
-import ConfirmDeleteModal from '../../components/patient/ConfirmDeleteModal/ConfirmDeleteModal';
-
-interface Patient {
-  id: string;
-  name: string;
-  age: number;
-  schoolYear: string;
-  gender: string;
-  address?: string;
-  phoneNumber?: string;
-  motherName?: string;
-  fatherName?: string;
-  dateOfBirth?: string;
-}
+import {
+  Box,
+  Typography,
+  Button,
+  Stack,
+  CircularProgress,
+  Alert,
+  Divider,
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { Patient } from '../../types/patient';
+import {
+  getPatients,
+  deletePatient,
+  createPatient,
+  updatePatient,
+  addAnamnesis,
+} from '../../services/patientService';
+import ConfirmDeleteModal from '../../components/ui/ConfirmDeleteModal';
+import AnamnesisForm from '../../components/ui/AnamnesisForm';
+import PatientEditForm from '../../components/ui/PatientEditForm';
+import PatientForm from '../../components/ui/PatientForm';
+import PatientCard from '../../components/ui/PatientCard';
+import { PatientRequestDto } from '../../types/patient-request-dto';
 
 type ViewMode = 'list' | 'create' | 'edit' | 'anamnesis';
 
-const PatientsPage: React.FC = () => {
+export default function PatientsPage() {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('list');
-  const [isListView, setIsListView] = useState(true);
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,12 +41,8 @@ const PatientsPage: React.FC = () => {
     try {
       const response = await getPatients();
       setPatients(response.data);
-    } catch (err) {
-      if (patients.length === 0) {
-        setError('Nenhum paciente encontrado.');
-      }
-      
-      setError('Erro ao carregar pacientes. Tente novamente mais tarde.');
+    } catch {
+      setError('Erro ao carregar pacientes.');
     } finally {
       setLoading(false);
     }
@@ -54,29 +52,43 @@ const PatientsPage: React.FC = () => {
     loadPatients();
   }, []);
 
-  const handleDeleteConfirm = async () => {
-    if (deleteTargetId) {
-      await deletePatient(deleteTargetId);
-      setDeleteTargetId(null);
-      loadPatients();
+  const handleCreatePatient = async (data: PatientRequestDto) => {
+    try {
+      await createPatient(data);
+      handleBackToList();
+    } catch {
+      setError('Erro ao adicionar paciente.');
     }
   };
 
-  const handleAddPatient = () => {
-    setViewMode('create');
-    setSelectedPatientId(null);
+  const handleUpdatePatient = async (id: string, data: Partial<Patient>) => {
+    try {
+      await updatePatient(id, data);
+      handleBackToList();
+    } catch {
+      setError('Erro ao editar paciente.');
+    }
   };
 
-  const handleEditPatient = (patient: Patient) => {
-    setEditingPatient(patient);
-    setViewMode('edit');
-    setSelectedPatientId(null);
+  const handleAddAnamnesis = async (patientId: string, anamnesisData: any) => {
+    try {
+      await addAnamnesis(patientId, anamnesisData);
+      handleBackToList();
+    } catch {
+      setError('Erro ao adicionar anamnese.');
+    }
   };
 
-  const handleAddAnamnesis = (patient: Patient) => {
-    setEditingPatient(patient);
-    setViewMode('anamnesis');
-    setSelectedPatientId(null);
+  const handleDeleteConfirm = async () => {
+    if (deleteTargetId) {
+      try {
+        await deletePatient(deleteTargetId);
+        setDeleteTargetId(null);
+        loadPatients();
+      } catch {
+        setError('Erro ao excluir paciente.');
+      }
+    }
   };
 
   const handleBackToList = () => {
@@ -87,54 +99,66 @@ const PatientsPage: React.FC = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <Box sx={{ p: 3 }}>
       {viewMode === 'list' && (
         <>
-          <div className={styles.header}>
-            <h1>Meus Pacientes</h1>
-            <div>
-              <button onClick={() => setIsListView(!isListView)}>
-                {isListView ? 'Modo Grade' : 'Modo Lista'}
-              </button>
-              <AddPatientButton onClick={handleAddPatient} />
-            </div>
-          </div>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
+            <Typography variant="h4">Meus Pacientes</Typography>
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={<AddIcon />}
+              onClick={() => setViewMode('create')}
+            >
+              Adicionar Paciente
+            </Button>
+          </Stack>
 
-          {loading && <p>Carregando pacientes...</p>}
+          {loading && <CircularProgress />}
 
-          {error && <p className={styles.error}>{error}</p>}
+          {error && <Alert severity="error">{error}</Alert>}
 
           {!loading && !error && patients.length === 0 && (
-            <p className={styles.empty}>Nenhum paciente encontrado.</p>
+            <Alert severity="info">Nenhum paciente encontrado.</Alert>
           )}
 
           {!loading && !error && patients.length > 0 && (
-            <div className={styles.cardGrid}>
+            <Stack divider={<Divider />} spacing={1}>
               {patients.map((patient) => (
                 <PatientCard
                   key={patient.id}
                   patient={patient}
-                  isExpanded={selectedPatientId === patient.id}
-                  isListView={isListView}
-                  onSelect={() => setSelectedPatientId(patient.id === selectedPatientId ? null : patient.id)}
-                  onEdit={() => handleEditPatient(patient)}
-                  onAddAnamnesis={() => handleAddAnamnesis(patient)}
+                  isSelected={selectedPatientId === patient.id}
+                  onSelect={() =>
+                    setSelectedPatientId((prev) => (prev === patient.id ? null : patient.id))
+                  }
+                  onEdit={() => {
+                    setEditingPatient(patient);
+                    setViewMode('edit');
+                  }}
+                  onAddAnamnesis={() => {
+                    setEditingPatient(patient);
+                    setViewMode('anamnesis');
+                  }}
                   onDelete={() => setDeleteTargetId(patient.id)}
                 />
               ))}
-            </div>
+            </Stack>
           )}
         </>
       )}
 
       {viewMode === 'create' && (
-        <PatientForm onSuccess={handleBackToList} onCancel={handleBackToList} />
+        <PatientForm
+          onSuccess={handleCreatePatient}
+          onCancel={handleBackToList}
+        />
       )}
 
       {viewMode === 'edit' && editingPatient && (
         <PatientEditForm
           patient={editingPatient}
-          onSuccess={handleBackToList}
+          onSuccess={handleUpdatePatient}
           onCancel={handleBackToList}
         />
       )}
@@ -142,10 +166,7 @@ const PatientsPage: React.FC = () => {
       {viewMode === 'anamnesis' && editingPatient && (
         <AnamnesisForm
           patientId={editingPatient.id}
-          patientName={editingPatient.name}
-          age={editingPatient.age}
-          schoolYear={editingPatient.schoolYear}
-          onSuccess={handleBackToList}
+          onSuccess={handleAddAnamnesis}
           onCancel={handleBackToList}
         />
       )}
@@ -155,8 +176,6 @@ const PatientsPage: React.FC = () => {
         onConfirm={handleDeleteConfirm}
         onCancel={() => setDeleteTargetId(null)}
       />
-    </div>
+    </Box>
   );
-};
-
-export default PatientsPage;
+}
