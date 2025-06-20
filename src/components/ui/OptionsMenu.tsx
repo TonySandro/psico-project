@@ -10,6 +10,7 @@ import ListItemIcon, { listItemIconClasses } from '@mui/material/ListItemIcon';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
 import MenuButton from './MenuButton';
+import { useNavigate } from 'react-router-dom';
 
 const MenuItem = styled(MuiMenuItem)({
   margin: '2px 0',
@@ -18,12 +19,21 @@ const MenuItem = styled(MuiMenuItem)({
 export default function OptionsMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleNavigate = (path: string) => {
+    handleClose();
+    navigate(path);
+  };
+
   return (
     <React.Fragment>
       <MenuButton
@@ -33,6 +43,7 @@ export default function OptionsMenu() {
       >
         <MoreVertRoundedIcon />
       </MenuButton>
+
       <Menu
         anchorEl={anchorEl}
         id="menu"
@@ -42,24 +53,22 @@ export default function OptionsMenu() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         sx={{
-          [`& .${listClasses.root}`]: {
-            padding: '4px',
-          },
-          [`& .${paperClasses.root}`]: {
-            padding: 0,
-          },
-          [`& .${dividerClasses.root}`]: {
-            margin: '4px -4px',
-          },
+          [`& .${listClasses.root}`]: { padding: '4px' },
+          [`& .${paperClasses.root}`]: { padding: 0 },
+          [`& .${dividerClasses.root}`]: { margin: '4px -4px' },
         }}
       >
-        <MenuItem onClick={handleClose}>Perfil</MenuItem>
-        <MenuItem onClick={handleClose}>Minha conta</MenuItem>
+        <MenuItem onClick={() => handleNavigate('/profile')}>Perfil</MenuItem>
+        <MenuItem onClick={() => handleNavigate('/account')}>Minha conta</MenuItem>
+
         <Divider />
-        <MenuItem onClick={handleClose}>Configurações</MenuItem>
+
+        <MenuItem onClick={() => handleNavigate('/settings')}>Configurações</MenuItem>
+
         <Divider />
+
         <MenuItem
-          onClick={handleClose}
+          onClick={() => handleNavigate('/logout')}
           sx={{
             [`& .${listItemIconClasses.root}`]: {
               ml: 'auto',

@@ -20,6 +20,11 @@ const App: React.FC = () => {
         <Route path="/tests" element={<AvailableTestsPage />} />
         <Route path="/docs" />
         <Route path="/feedback" element={<FeedbackPage/>} />
+
+        <Route path="/profile" />
+        <Route path="/my-account" />
+        <Route path="/settings" />
+        <Route path="/logout" />
       </Route>
     </Routes>
   );
