@@ -60,10 +60,21 @@ export default function AvailableTestsPage() {
       )}
 
       {!loading && !error && tests.length > 0 && (
-        <Grid container spacing={2}>
+        <Grid container spacing={2} justifyContent="center">
           {tests.map((test) => (
-            <Grid item xs={12} md={6} lg={4} key={test.id}>
-              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <Grid item xs={12} sm={6} md={4} key={test.id}>
+              <Card
+                sx={{
+                  height: '250px',
+                  width: '350px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  margin: '0 auto',
+                  boxShadow: 1,
+                  borderRadius: 2,
+                }}
+              >
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Typography variant="h6">{test.name}</Typography>
                   <Typography variant="body2" color="text.secondary">
