@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import SelectContent from './SelectContent';
+import AppBranding from './AppBranding';
 import MenuContent from './MenuContent';
 import OptionsMenu from './OptionsMenu';
 
@@ -45,7 +45,7 @@ export default function SideMenu({ mobileOpen, onClose }: SideMenuProps) {
           p: 1.5,
         }}
       >
-        <SelectContent />
+        <AppBranding />
       </Box>
       <Divider />
 
