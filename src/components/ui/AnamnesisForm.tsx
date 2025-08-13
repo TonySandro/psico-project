@@ -9,10 +9,10 @@ import {
 
 interface AnamnesisFormProps {
   patientId: string;
-  patientName: string;
-  age: number;
-  schoolYear: string;
-  onSuccess: () => void;
+  patientName?: string;
+  age?: number;
+  schoolYear?: string;
+  onSuccess: (data: Record<string, unknown>) => Promise<void>;
   onCancel: () => void;
 }
 
@@ -25,22 +25,32 @@ export default function AnamnesisForm({
   onCancel,
 }: AnamnesisFormProps) {
   const [description, setDescription] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Nova Anamnese para:', patientId, description);
-    onSuccess();
+    setSubmitting(true);
+    try {
+      await onSuccess({ description });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 500, mx: 'auto', p: 2 }}>
       <Typography variant="h5" mb={2}>
-        Nova Anamnese - {patientName}
+        Nova Anamnese{patientName ? ` - ${patientName}` : ''}
       </Typography>
-      <Stack spacing={2}>
-        <Typography variant="body2" color="text.secondary">
-          Idade: {age} anos | Ano Escolar: {schoolYear}
+
+      {(age !== undefined || schoolYear) && (
+        <Typography variant="body2" color="text.secondary" mb={1}>
+          {age !== undefined ? `Idade: ${age} anos` : ''} {age !== undefined && schoolYear ? ' | ' : ''}
+          {schoolYear ? `Ano Escolar: ${schoolYear}` : ''}
         </Typography>
+      )}
+
+      <Stack spacing={2}>
         <TextField
           label="Descrição da Anamnese"
           multiline
@@ -50,10 +60,10 @@ export default function AnamnesisForm({
           required
         />
         <Stack direction="row" spacing={1}>
-          <Button type="submit" variant="contained" color="primary">
-            Salvar Anamnese
+          <Button type="submit" variant="contained" disabled={submitting}>
+            {submitting ? 'Salvando...' : 'Salvar Anamnese'}
           </Button>
-          <Button onClick={onCancel} variant="outlined">
+          <Button onClick={onCancel} variant="outlined" disabled={submitting}>
             Cancelar
           </Button>
         </Stack>

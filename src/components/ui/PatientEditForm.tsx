@@ -5,12 +5,12 @@ import {
   Button,
   Stack,
   Typography,
-} from '@mui/material'; 
+} from '@mui/material';
 import { Patient } from '../../types/patient';
 
 interface PatientEditFormProps {
   patient: Patient;
-  onSuccess: () => void;
+  onSuccess: (data: Partial<Patient>) => Promise<void>;
   onCancel: () => void;
 }
 
@@ -22,11 +22,16 @@ export default function PatientEditForm({
   const [name, setName] = useState(patient.name);
   const [age, setAge] = useState<number>(patient.age);
   const [schoolYear, setSchoolYear] = useState(patient.schoolYear);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Paciente editado:', { id: patient.id, name, age, schoolYear });
-    onSuccess();
+    setSubmitting(true);
+    try {
+      await onSuccess({ name, age, schoolYear });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -45,17 +50,18 @@ export default function PatientEditForm({
           value={age}
           onChange={(e) => setAge(Number(e.target.value))}
           required
+          inputProps={{ min: 0 }}
         />
         <TextField
           label="Ano Escolar"
-          value={schoolYear}
+          value={schoolYear ?? ''}
           onChange={(e) => setSchoolYear(e.target.value)}
         />
         <Stack direction="row" spacing={1}>
-          <Button type="submit" variant="contained" color="primary">
-            Salvar Alterações
+          <Button type="submit" variant="contained" disabled={submitting}>
+            {submitting ? 'Salvando...' : 'Salvar Alterações'}
           </Button>
-          <Button onClick={onCancel} variant="outlined">
+          <Button onClick={onCancel} variant="outlined" disabled={submitting}>
             Cancelar
           </Button>
         </Stack>

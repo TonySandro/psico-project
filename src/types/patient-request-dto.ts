@@ -1,4 +1,5 @@
 export interface PatientRequestDto {
+  accountId: string;
   name: string;
   age: number;
   schoolYear: string;

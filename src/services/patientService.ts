@@ -2,7 +2,7 @@ import axios from "axios";
 import { Patient } from "../types/patient";
 import { PatientRequestDto } from "../types/patient-request-dto";
 
-const API_URL = "http://localhost:3301/api";
+const API_URL = "http://localhost:30001/api";
 
 export interface PatientPayload {
   name: string;
@@ -17,7 +17,7 @@ export interface PatientPayload {
 }
 
 export const getAvailableTests = () => {
-  // return axios.get("http://localhost:3301/api/tests/available");
+  // return axios.get("http://localhost:30001/api/tests/available");
   return {
     data: [
       {
@@ -46,7 +46,12 @@ export const getAvailableTests = () => {
   };
 };
 
-export const getPatients = () => axios.get(`${API_URL}/all-patients`);
+export const getPatients = async (accountId: string) =>
+  await axios.get(`${API_URL}/all-patients`, {
+    params: {
+      accountId,
+    },
+  });
 
 export const createPatient = async (data: PatientRequestDto): Promise<void> => {
   console.log("OBJETO NO FRONT", data);

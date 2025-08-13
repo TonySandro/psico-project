@@ -8,6 +8,7 @@ import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { login } from '../../features/user/userSlice';
 import { fakeUsers } from '../../data/fakeUsers';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const LoginComponent: React.FC = () => {
   const loginSchema = yup.object({
@@ -31,27 +32,28 @@ const LoginComponent: React.FC = () => {
     resolver: yupResolver(loginSchema),
   });
 
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const onSubmit = async (data: LoginFormData) => {
-    const matchedUser = fakeUsers.find(
-      (user) => user.email === data.email && user.password === data.password
-    );
+    let matchedUser;
+    try {
+      const response = await axios.post('http://localhost:30002/api/login', {
+        email: data.email,
+        password: data.password,
+      });
+
+      localStorage.setItem("accessToken", response.data.accessToken);
+      matchedUser = response.status;
+    } catch (error) {
+      matchedUser = null;
+    }
 
     if (!matchedUser) {
       alert('Credenciais inválidas');
       return;
     }
-
-    dispatch(
-      login({
-        name: matchedUser.name,
-        email: matchedUser.email,
-        role: matchedUser.role,
-      })
-    );
-
+    
     navigate('/home');
   };
 
