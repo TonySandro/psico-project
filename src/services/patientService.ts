@@ -17,7 +17,7 @@ export interface PatientPayload {
 }
 
 export const getAvailableTests = () => {
-  // return axios.get("http://localhost:30001/api/tests/available");
+  // return axios.get(`${API_URL}/tests/available`);
   return {
     data: [
       {
@@ -54,7 +54,6 @@ export const getPatients = async (accountId: string) =>
   });
 
 export const createPatient = async (data: PatientRequestDto): Promise<void> => {
-  console.log("OBJETO NO FRONT", data);
   try {
     await axios.post(`${API_URL}/patients`, data, {
       headers: { "Content-Type": "application/json" },
@@ -68,7 +67,11 @@ export const deletePatient = (id: string) =>
   axios.delete(`${API_URL}/patients/${id}`);
 
 export const updatePatient = (id: string, data: Partial<Patient>) => {
-  return axios.put(`${API_URL}/${id}`, data);
+  try {
+    return axios.put(`${API_URL}/patients/${id}`, data);
+  } catch (error) {
+    console.error("Erro ao atualizar paciente:", error);
+  }
 };
 
 export const addAnamnesis = (patientId: string, anamnesisData: any) => {
