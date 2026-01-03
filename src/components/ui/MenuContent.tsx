@@ -13,7 +13,7 @@ import {
   AnalyticsRounded as AnalyticsRoundedIcon,
   PeopleRounded as PeopleRoundedIcon,
   HelpRounded as HelpRoundedIcon,
-  Description as DescriptionIcon 
+  Description as DescriptionIcon
 } from '@mui/icons-material';
 
 const mainListItems = [
@@ -45,18 +45,20 @@ export default function MenuContent() {
                 borderRadius: 1,
                 my: 0.5,
                 px: 1,
+                color: 'text.secondary',
                 '&:hover': {
-                  backgroundColor: '#8AC0CA',
-                  color: '#fff',
-                  '& .MuiListItemIcon-root': { color: '#fff' },
+                  backgroundColor: 'action.hover',
+                  color: 'primary.main',
+                  '& .MuiListItemIcon-root': { color: 'primary.main' },
                 },
                 '&.Mui-selected': {
-                  backgroundColor: '#8AC0CA !important',
-                  color: '#fff !important',
-                  '& .MuiListItemIcon-root': { color: '#fff !important' },
+                  backgroundColor: 'primary.light',
+                  color: 'primary.dark',
+                  fontWeight: 600,
+                  '& .MuiListItemIcon-root': { color: 'primary.dark' },
                 },
                 '&.Mui-selected:hover': {
-                  backgroundColor: '#8AC0CA !important',
+                  backgroundColor: 'primary.light', // Keep selection color on hover
                 },
               }}
             >

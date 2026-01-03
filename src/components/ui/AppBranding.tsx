@@ -20,14 +20,14 @@ export default function AppBranding() {
         transition: 'background-color 0.2s ease-in-out',
 
         '&:hover': {
-          backgroundColor: '#8ac0ca2f',
+          backgroundColor: 'action.hover',
         },
       }}
     >
       <Typography
         variant="h6"
         sx={{
-          color: '#000000',
+          color: 'primary.main',
           fontWeight: 500,
           fontSize: '1.2rem',
           textAlign: 'center',

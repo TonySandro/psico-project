@@ -34,9 +34,9 @@ export default function PatientCard({
         justifyContent: 'space-between',
         alignItems: 'center',
         cursor: 'pointer',
-        backgroundColor: isSelected ? '#f0f7ff' : 'white',
+        backgroundColor: isSelected ? 'action.selected' : 'background.paper',
         transition: 'background-color 0.2s',
-        '&:hover': { backgroundColor: '#f0f7ff' },
+        '&:hover': { backgroundColor: 'action.hover' },
       }}
     >
       <Box>

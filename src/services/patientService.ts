@@ -1,8 +1,6 @@
-import axios from "axios";
+import api from "./api";
 import { Patient } from "../types/patient";
 import { PatientRequestDto } from "../types/patient-request-dto";
-
-const API_URL = "http://localhost:30001/api";
 
 export interface PatientPayload {
   name: string;
@@ -17,7 +15,7 @@ export interface PatientPayload {
 }
 
 export const getAvailableTests = () => {
-  // return axios.get(`${API_URL}/tests/available`);
+  // return api.get(`/tests/available`);
   return {
     data: [
       {
@@ -47,33 +45,32 @@ export const getAvailableTests = () => {
 };
 
 export const getPatients = async (accountId: string) =>
-  await axios.get(`${API_URL}/all-patients`, {
-    params: {
-      accountId,
-    },
-  });
+  await api.get(`/get-all-patients-by-account/${accountId}`);
 
 export const createPatient = async (data: PatientRequestDto): Promise<void> => {
   try {
-    await axios.post(`${API_URL}/patients`, data, {
-      headers: { "Content-Type": "application/json" },
-    });
+    await api.post(`/create-patient`, data);
   } catch (error) {
     console.error("Erro ao criar paciente:", error);
+    throw error;
   }
 };
 
 export const deletePatient = (id: string) =>
-  axios.delete(`${API_URL}/patients/${id}`);
+  api.delete(`/delete-patient/${id}`);
 
 export const updatePatient = (id: string, data: Partial<Patient>) => {
   try {
-    return axios.put(`${API_URL}/patients/${id}`, data);
+    return api.patch(`/update-patient/${id}`, data);
   } catch (error) {
     console.error("Erro ao atualizar paciente:", error);
+    throw error;
   }
 };
 
 export const addAnamnesis = (patientId: string, anamnesisData: any) => {
-  return axios.post(`${API_URL}/${patientId}/anamnesis`, anamnesisData);
+  // Ajustando para o endpoint correto. Assumindo que o patientId deve ir no corpo ou a rota mudou.
+  // Baseado em anamnesis-routes.ts: router.post("/create-anamnesis", ...)
+  // Provavelmente o patientId deve ser parte do anamnesisData no backend.
+  return api.post(`/create-anamnesis`, { ...anamnesisData, patientId });
 };

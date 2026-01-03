@@ -8,7 +8,7 @@ import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { login } from '../../features/user/userSlice';
 import { fakeUsers } from '../../data/fakeUsers';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../services/api';
 
 const LoginComponent: React.FC = () => {
   const loginSchema = yup.object({
@@ -32,29 +32,34 @@ const LoginComponent: React.FC = () => {
     resolver: yupResolver(loginSchema),
   });
 
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const onSubmit = async (data: LoginFormData) => {
-    let matchedUser;
     try {
-      const response = await axios.post('http://localhost:30002/api/login', {
+      const response = await api.post('/login', {
         email: data.email,
         password: data.password,
       });
 
-      localStorage.setItem("accessToken", response.data.accessToken);
-      matchedUser = response.status;
-    } catch (error) {
-      matchedUser = null;
-    }
+      const { accessToken } = response.data;
+      localStorage.setItem("accessToken", accessToken);
 
-    if (!matchedUser) {
-      alert('Credenciais inválidas');
-      return;
+      // Integrando com Redux para persistir estado global (descomentado)
+      dispatch(login({
+        email: data.email,
+        token: accessToken,
+        name: 'Usuário', // Valor temporário até o backend retornar o nome
+        role: 'client'   // Valor padrão
+      }));
+
+      navigate('/home');
+    } catch (error) {
+      // Melhora simples no tratamento de erro. 
+      // Idealmente usaria um componente de Toast ou setError do hook-form.
+      console.error("Erro no login:", error);
+      alert('Credenciais inválidas ou erro no servidor');
     }
-    
-    navigate('/home');
   };
 
   return (

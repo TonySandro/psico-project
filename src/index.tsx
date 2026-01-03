@@ -1,5 +1,8 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { theme } from './theme/AppTheme';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import App from './App';
@@ -15,11 +18,14 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <Suspense>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </Suspense>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Suspense>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </Suspense>
+        </ThemeProvider>
       </PersistGate>
     </Provider>
   </React.StrictMode>
