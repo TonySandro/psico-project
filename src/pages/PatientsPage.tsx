@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Typography, Stack, Button, TextField, InputAdornment, Box, CircularProgress, Alert, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Chip, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import { Plus, Search, Edit, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Typography, Stack, Button, TextField, InputAdornment, Box, CircularProgress, Alert, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Chip, Dialog, DialogTitle, DialogContent, DialogActions, Tooltip } from '@mui/material';
+import { Plus, Search, Edit, Trash2, FileText } from 'lucide-react';
 import { usePatients, useDeletePatient } from '@/hooks/usePatients';
 import { useAuthStore } from '@/stores/authStore';
 import { formatDate } from '@/utils/formatters';
@@ -8,6 +9,7 @@ import PatientForm from '@/components/PatientForm';
 import type { Patient } from '@/types/schema';
 
 export default function PatientsPage() {
+  const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   const { data: patients, isLoading, error } = usePatients(user?.id || '');
   const deletePatient = useDeletePatient();
@@ -29,6 +31,10 @@ export default function PatientsPage() {
   const handleDelete = (id: string) => {
     setPatientToDelete(id);
     setDeleteDialogOpen(true);
+  };
+
+  const handleAnamnesis = (id: string) => {
+    navigate(`/patients/${id}/anamnesis/new`);
   };
 
   const confirmDelete = () => {
@@ -135,10 +141,15 @@ export default function PatientsPage() {
                     />
                   </TableCell>
                   <TableCell align="right">
-                    <IconButton size="small" onClick={() => handleEdit(patient)}>
+                    <Tooltip title="Nova Anamnese">
+                      <IconButton size="small" onClick={() => handleAnamnesis(patient.id)} color="primary">
+                        <FileText size={18} />
+                      </IconButton>
+                    </Tooltip>
+                    <IconButton size="small" onClick={() => handleEdit(patient)} color="warning">
                       <Edit size={18} />
                     </IconButton>
-                    <IconButton size="small" onClick={() => handleDelete(patient.id)}>
+                    <IconButton size="small" onClick={() => handleDelete(patient.id)} color="error">
                       <Trash2 size={18} />
                     </IconButton>
                   </TableCell>
