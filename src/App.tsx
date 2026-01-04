@@ -1,33 +1,55 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import LoginPage from './pages/login';
-import PatientsPage from './pages/patients/PatientsPage';
-import Dashboard from './pages/dashboard/Dashboard';
-import MainLayout from './layouts/mainLayout';
-import Home from './pages/home/Home';
-import AvailableTestsPage from './pages/tests/AvailableTestsPage';
-import FeedbackPage from './pages/feedback/Feedback';
+import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useAuthStore } from './stores/authStore';
 
-const App: React.FC = () => {
+// Pages
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
+import DashboardPage from './pages/DashboardPage';
+import PatientsPage from './pages/PatientsPage';
+import PatientDetailPage from './pages/PatientDetailPage';
+import TestsPage from './pages/TestsPage';
+import FeedbackPage from './pages/FeedbackPage';
+import ProfilePage from './pages/ProfilePage';
+
+// Layout
+import DashboardLayout from './layouts/DashboardLayout';
+import ProtectedRoute from './components/ProtectedRoute';
+
+function App() {
+  const initializeAuth = useAuthStore((state) => state.initializeAuth);
+
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
+
   return (
-    <Routes>
-      <Route path="/" element={<LoginPage />} />
-
-      <Route element={<MainLayout />}>
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/patients" element={<PatientsPage />} />
-        <Route path="/tests" element={<AvailableTestsPage />} />
-        <Route path="/docs" />
-        <Route path="/feedback" element={<FeedbackPage/>} />
-
-        <Route path="/profile" />
-        <Route path="/my-account" />
-        <Route path="/settings" />
-        <Route path="/logout" />
-      </Route>
-    </Routes>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Navigate to="/dashboard" replace />} />
+          <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="patients" element={<PatientsPage />} />
+          <Route path="patients/:id" element={<PatientDetailPage />} />
+          <Route path="tests" element={<TestsPage />} />
+          <Route path="feedback" element={<FeedbackPage />} />
+          <Route path="profile" element={<ProfilePage />} />
+        </Route>
+        
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
-};
+}
 
 export default App;

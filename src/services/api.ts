@@ -1,16 +1,37 @@
 import axios from 'axios';
 
-const api = axios.create({
-    baseURL: 'http://localhost:3000/api',
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+export const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json'
+  }
 });
 
-// Adiciona o token em todas as requisições se ele existir
-api.interceptors.request.use((config) => {
+// Request interceptor to add auth token
+api.interceptors.request.use(
+  (config) => {
     const token = localStorage.getItem('accessToken');
     if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+      config.headers['x-access-token'] = token;
     }
     return config;
-});
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
-export default api;
+// Response interceptor for error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
