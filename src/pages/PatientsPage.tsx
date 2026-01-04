@@ -58,7 +58,9 @@ export default function PatientsPage() {
   if (error) {
     return (
       <Alert severity="error">
-        Erro ao carregar pacientes. Tente novamente.
+        Erro ao carregar pacientes: {(error as Error).message}
+        <br />
+        <pre>{JSON.stringify(error, null, 2)}</pre>
       </Alert>
     );
   }
