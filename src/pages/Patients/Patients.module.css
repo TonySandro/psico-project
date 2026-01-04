@@ -1,0 +1,127 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pageTitle {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+}
+
+.filters {
+    display: flex;
+    gap: 1rem;
+}
+
+.searchWrapper {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+}
+
+/* Override input padding for search icon */
+.searchInput {
+    padding-left: 2.5rem !important;
+}
+
+.tableCard {
+    padding: 0;
+    overflow: hidden;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    text-align: left;
+    padding: 1rem 1.5rem;
+    background-color: var(--color-bg-body);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-size: 0.875rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.table td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text-main);
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.nameCell {
+    font-weight: 500;
+}
+
+.statusBadge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.statusBadge.Ativo {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.statusBadge.EmAvaliação {
+    background-color: #e0f2fe;
+    color: #075985;
+}
+
+.statusBadge.Inativo {
+    background-color: #f1f5f9;
+    color: #475569;
+}
+
+.actionsCell {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.actionBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    color: var(--color-text-muted);
+    transition: all 0.2s;
+}
+
+.actionBtn:hover {
+    background-color: var(--color-bg-input);
+    color: var(--color-text-main);
+}
+
+.deleteBtn:hover {
+    background-color: #fee2e2;
+    color: var(--color-danger);
+}

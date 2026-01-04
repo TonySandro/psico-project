@@ -1,0 +1,73 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.intro {
+    text-align: center;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text-main);
+    margin-bottom: 1rem;
+}
+
+.instructions {
+    font-size: 1.125rem;
+    color: var(--color-text-muted);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.testArea {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+}
+
+.stimulus {
+    font-size: 4rem;
+    font-weight: 800;
+}
+
+.options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+.optionBtn {
+    padding: 1rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    border: 2px solid var(--color-border);
+    background: white;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.optionBtn:hover {
+    border-color: var(--color-primary);
+    background-color: #f0f9ff;
+}
+
+.results {
+    text-align: center;
+}
+
+.score {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    margin: 1rem 0;
+}
