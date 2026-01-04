@@ -12,6 +12,7 @@ import TestsPage from './pages/TestsPage';
 import FeedbackPage from './pages/FeedbackPage';
 import ProfilePage from './pages/ProfilePage';
 import CreateAnamnesisPage from './pages/CreateAnamnesisPage';
+import TestRunnerPage from './pages/TestRunnerPage';
 
 // Layout
 import DashboardLayout from './layouts/DashboardLayout';
@@ -44,6 +45,7 @@ function App() {
           <Route path="patients/:id" element={<PatientDetailPage />} />
           <Route path="patients/:patientId/anamnesis/new" element={<CreateAnamnesisPage />} />
           <Route path="tests" element={<TestsPage />} />
+          <Route path="tests/:type/run" element={<TestRunnerPage />} />
           <Route path="feedback" element={<FeedbackPage />} />
           <Route path="profile" element={<ProfilePage />} />
         </Route>

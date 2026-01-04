@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { Typography, Stack, Grid, Card, CardContent, CardActions, Button, Box } from '@mui/material';
 import { ClipboardList, Brain, Palette, Target, Activity, MessageCircle } from 'lucide-react';
 
@@ -53,9 +54,10 @@ const tests = [
 ];
 
 export default function TestsPage() {
+  const navigate = useNavigate();
+
   const handleStartTest = (testId: string) => {
-    // TODO: Navigate to test form
-    console.log('Starting test:', testId);
+    navigate(`/tests/${testId}/run`);
   };
 
   return (
@@ -71,7 +73,7 @@ export default function TestsPage() {
       <Grid container spacing={3}>
         {tests.map((test) => {
           const Icon = test.icon;
-          
+
           return (
             <Grid key={test.id} size={{ xs: 12, sm: 6, md: 4 }}>
               <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
