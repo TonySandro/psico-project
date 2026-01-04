@@ -133,6 +133,7 @@ export default function PatientsPage() {
                   <TableCell>{patient.schoolYear}</TableCell>
                   <TableCell>{patient.gender}</TableCell>
                   <TableCell>{formatDate(patient.dateOfBirth)}</TableCell>
+
                   <TableCell>
                     <Chip
                       label={patient.status === 'Active' ? 'Ativo' : 'Inativo'}
@@ -140,18 +141,25 @@ export default function PatientsPage() {
                       color={patient.status === 'Active' ? 'success' : 'default'}
                     />
                   </TableCell>
+
                   <TableCell align="right">
                     <Tooltip title="Nova Anamnese">
                       <IconButton size="small" onClick={() => handleAnamnesis(patient.id)} color="primary">
                         <FileText size={18} />
                       </IconButton>
                     </Tooltip>
-                    <IconButton size="small" onClick={() => handleEdit(patient)} color="warning">
-                      <Edit size={18} />
-                    </IconButton>
-                    <IconButton size="small" onClick={() => handleDelete(patient.id)} color="error">
-                      <Trash2 size={18} />
-                    </IconButton>
+
+                    <Tooltip title="Editar">
+                      <IconButton size="small" onClick={() => handleEdit(patient)} color="warning">
+                        <Edit size={18} />
+                      </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Excluir">
+                      <IconButton size="small" onClick={() => handleDelete(patient.id)} color="error">
+                        <Trash2 size={18} />
+                      </IconButton>
+                    </Tooltip>
                   </TableCell>
                 </TableRow>
               ))}
