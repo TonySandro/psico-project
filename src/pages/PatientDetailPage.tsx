@@ -87,7 +87,7 @@ export default function PatientDetailPage() {
                     GÊNERO
                   </Typography>
                   <Typography variant="body1">
-                    {patient.gender === 'Male' ? 'Masculino' : patient.gender === 'Female' ? 'Feminino' : 'Outro'}
+                    {patient.gender === 'Masculino' ? 'Masculino' : patient.gender === 'Feminino' ? 'Feminino' : 'Outro'}
                   </Typography>
                 </Stack>
               </Grid>

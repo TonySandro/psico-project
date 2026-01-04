@@ -36,7 +36,7 @@ const schoolYears: SchoolYear[] = [
   'Ensino Médio'
 ];
 
-const genders: Gender[] = ['Male', 'Female', 'Other'];
+const genders: Gender[] = ['Masculino', 'Feminino', 'Outro'];
 
 export default function PatientForm({ patient, onClose }: PatientFormProps) {
   const user = useAuthStore((state) => state.user);
@@ -49,7 +49,7 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
       name: '',
       age: 0,
       dateOfBirth: '',
-      gender: 'Other',
+      gender: 'Outro',
       schoolYear: 'Educação Infantil',
       address: '',
       phoneNumber: '',
@@ -158,7 +158,7 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
                   >
                     {genders.map((gender) => (
                       <MenuItem key={gender} value={gender}>
-                        {gender === 'Male' ? 'Masculino' : gender === 'Female' ? 'Feminino' : 'Outro'}
+                        {gender}
                       </MenuItem>
                     ))}
                   </TextField>
