@@ -56,7 +56,7 @@ export default function DashboardLayout() {
           >
             <MenuIcon size={24} />
           </IconButton>
-          
+
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 600 }}>
             Sistema de Gestão Clínica
           </Typography>
@@ -70,7 +70,7 @@ export default function DashboardLayout() {
                 fontSize: '0.875rem'
               }}
             >
-              {user?.name.charAt(0).toUpperCase()}
+              {user?.name?.charAt(0).toUpperCase() || 'U'}
             </Avatar>
           </IconButton>
 
@@ -128,7 +128,7 @@ export default function DashboardLayout() {
             {menuItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
-              
+
               return (
                 <ListItem key={item.path} disablePadding className="mb-1">
                   <ListItemButton
