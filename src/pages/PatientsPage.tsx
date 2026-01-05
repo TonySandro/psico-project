@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Stack, Button, TextField, InputAdornment, Box, CircularProgress, Alert, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Chip, Dialog, DialogTitle, DialogContent, DialogActions, Tooltip } from '@mui/material';
-import { Plus, Search, Edit, Trash2, FileText } from 'lucide-react';
+import { Typography, Stack, Button, TextField, InputAdornment, Box, CircularProgress, Alert, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Plus, Search } from 'lucide-react';
 import { usePatients, useDeletePatient } from '@/hooks/usePatients';
 import { useAuthStore } from '@/stores/authStore';
-import { formatDate } from '@/utils/formatters';
 import PatientForm from '@/components/PatientForm';
 import type { Patient } from '@/types/schema';
+
+// ... imports
+import PatientRow from '@/components/PatientRow';
 
 export default function PatientsPage() {
   const navigate = useNavigate();
@@ -18,6 +20,7 @@ export default function PatientsPage() {
   const [selectedPatient, setSelectedPatient] = useState<Patient | undefined>();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [patientToDelete, setPatientToDelete] = useState<string | null>(null);
+  const [expandedPatientId, setExpandedPatientId] = useState<string | null>(null);
 
   const filteredPatients = patients?.filter((patient) =>
     patient.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -37,7 +40,12 @@ export default function PatientsPage() {
     navigate(`/patients/${id}/anamnesis/new`);
   };
 
+  const handleToggleExpand = (id: string) => {
+    setExpandedPatientId(prev => prev === id ? null : id);
+  };
+
   const confirmDelete = () => {
+    // ... existing confirmDelete
     if (patientToDelete) {
       deletePatient.mutate(patientToDelete, {
         onSuccess: () => {
@@ -62,6 +70,7 @@ export default function PatientsPage() {
   }
 
   if (error) {
+    // ... existing error handling
     return (
       <Alert severity="error">
         Erro ao carregar pacientes: {(error as Error).message}
@@ -127,41 +136,15 @@ export default function PatientsPage() {
             </TableHead>
             <TableBody>
               {filteredPatients.map((patient) => (
-                <TableRow key={patient.id} hover>
-                  <TableCell>{patient.name}</TableCell>
-                  <TableCell>{patient.age} anos</TableCell>
-                  <TableCell>{patient.schoolYear}</TableCell>
-                  <TableCell>{patient.gender}</TableCell>
-                  <TableCell>{formatDate(patient.dateOfBirth)}</TableCell>
-
-                  <TableCell>
-                    <Chip
-                      label={patient.status === 'Active' ? 'Ativo' : 'Inativo'}
-                      size="small"
-                      color={patient.status === 'Active' ? 'success' : 'default'}
-                    />
-                  </TableCell>
-
-                  <TableCell align="right">
-                    <Tooltip title="Nova Anamnese">
-                      <IconButton size="small" onClick={() => handleAnamnesis(patient.id)} color="primary">
-                        <FileText size={18} />
-                      </IconButton>
-                    </Tooltip>
-
-                    <Tooltip title="Editar">
-                      <IconButton size="small" onClick={() => handleEdit(patient)} color="warning">
-                        <Edit size={18} />
-                      </IconButton>
-                    </Tooltip>
-
-                    <Tooltip title="Excluir">
-                      <IconButton size="small" onClick={() => handleDelete(patient.id)} color="error">
-                        <Trash2 size={18} />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
+                <PatientRow
+                  key={patient.id}
+                  patient={patient}
+                  expanded={expandedPatientId === patient.id}
+                  onToggle={() => handleToggleExpand(patient.id)}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  onAnamnesis={handleAnamnesis}
+                />
               ))}
             </TableBody>
           </Table>

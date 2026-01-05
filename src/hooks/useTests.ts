@@ -1,5 +1,6 @@
 import { api } from "@/services/api";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import type { Protocol } from '@/types/schema';
 
 // Result interfaces based on the mock endpoints
 export interface StroopResult {
@@ -63,5 +64,21 @@ export const useTestResult = () => {
                 throw error;
             }
         }
+    });
+};
+
+export const useGetProtocols = (patientId: string) => {
+    return useQuery({
+        queryKey: ['protocols', patientId],
+        queryFn: async () => {
+            try {
+                const response = await api.get<Protocol[]>(`/get-protocols-by-patient/${patientId}`);
+                return response.data;
+            } catch (error) {
+                return [];
+            }
+        },
+        enabled: !!patientId,
+        retry: false
     });
 };
