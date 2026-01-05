@@ -24,15 +24,11 @@ export const useGetAnamnesis = (patientId: string) => {
     return useQuery({
         queryKey: ['anamnesis', patientId],
         queryFn: async () => {
-            // Assuming the endpoint is /anamnesis/patient/:id or similar.
-            // Based on previous create route: /create-anamnesis (POST)
-            // I'll guess GET /anamnesis/:patientId or /get-anamnesis/:patientId
-            // Let's try /get-anamnesis-by-patient/:id based on patient naming convention
             try {
                 const response = await api.get<Anamnesis>(`/get-anamnesis-by-patient/${patientId}`);
                 return response.data;
             } catch (error) {
-                return null; // Return null if not found
+                return null;
             }
         },
         enabled: !!patientId,

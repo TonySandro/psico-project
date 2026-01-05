@@ -82,3 +82,12 @@ export const useGetProtocols = (patientId: string) => {
         retry: false
     });
 };
+
+export const useAddProtocol = () => {
+    return useMutation({
+        mutationFn: async ({ patientId, accountId, data }: { patientId: string; accountId: string; data: { name: string; type: string; data: any } }) => {
+            const response = await api.post(`/patient/${patientId}/${accountId}/protocols`, data);
+            return response.data;
+        }
+    });
+};
