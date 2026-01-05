@@ -53,12 +53,11 @@ export interface Statistics {
   totalActivePatients: number;
   totalInactivePatients: number;
   newPatientsThisMonth: number;
-  patientsByAge: { ageRange: string; count: number }[];
-  patientsBySchoolYear: { schoolYear: string; count: number }[];
-  totalAssessments: number;
-  assessmentsByType: { type: string; count: number }[];
-  totalReports: number;
-  reportsThisMonth: number;
+  patientsByAgeGroup: Record<string, number>;
+  patientsByEducationLevel: Record<string, number>;
+  totalProtocols: number;
+  protocolsByTestType: Record<string, number>;
+  mostUsedTests: string[];
 }
 
 // Component props

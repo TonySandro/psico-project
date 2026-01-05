@@ -1,6 +1,6 @@
 import { Typography, Stack, Grid, Card, CardContent, Box, CircularProgress, Alert } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
-import { Users, UserX, UserPlus, ClipboardList, FileText } from 'lucide-react';
+import { Users, UserX, UserPlus, ClipboardList } from 'lucide-react';
 import StatCard from '@/components/StatCard';
 import { useStatistics } from '@/hooks/useStatistics';
 import { useAuthStore } from '@/stores/authStore';
@@ -61,8 +61,8 @@ export default function DashboardPage() {
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
-            title="Total de Avaliações"
-            value={stats?.totalAssessments || 0}
+            title="Total de Protocolos"
+            value={stats?.totalProtocols || 0}
             icon={<ClipboardList size={20} />}
             color="warning"
           />
@@ -78,7 +78,7 @@ export default function DashboardPage() {
                 Pacientes por Faixa Etária
               </Typography>
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={stats?.patientsByAge || []}>
+                <BarChart data={Object.entries(stats?.patientsByAgeGroup || {}).map(([ageRange, count]) => ({ ageRange, count }))}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                   <XAxis dataKey="ageRange" stroke="#6B7280" />
                   <YAxis stroke="#6B7280" />
@@ -99,7 +99,7 @@ export default function DashboardPage() {
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
-                    data={stats?.patientsBySchoolYear || []}
+                    data={Object.entries(stats?.patientsByEducationLevel || {}).map(([schoolYear, count]) => ({ schoolYear, count }))}
                     dataKey="count"
                     nameKey="schoolYear"
                     cx="50%"
@@ -107,7 +107,7 @@ export default function DashboardPage() {
                     outerRadius={100}
                     label
                   >
-                    {(stats?.patientsBySchoolYear || []).map((_, index) => (
+                    {Object.entries(stats?.patientsByEducationLevel || {}).map(([_, __], index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
@@ -126,10 +126,10 @@ export default function DashboardPage() {
           <Card>
             <CardContent>
               <Typography variant="h6" fontWeight={600} className="mb-4">
-                Avaliações por Tipo de Teste
+                Protocolos por Tipo de Teste
               </Typography>
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={stats?.assessmentsByType || []} layout="vertical">
+                <BarChart data={Object.entries(stats?.protocolsByTestType || {}).map(([type, count]) => ({ type, count }))} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                   <XAxis type="number" stroke="#6B7280" />
                   <YAxis type="category" dataKey="type" stroke="#6B7280" width={100} />
@@ -144,29 +144,21 @@ export default function DashboardPage() {
         <Grid size={{ xs: 12, md: 6 }}>
           <Card>
             <CardContent>
-              <Stack spacing={3}>
-                <Typography variant="h6" fontWeight={600}>
-                  Relatórios
-                </Typography>
-                
-                <Stack direction="row" spacing={3}>
-                  <Box className="flex-1">
-                    <StatCard
-                      title="Total de Relatórios"
-                      value={stats?.totalReports || 0}
-                      icon={<FileText size={20} />}
-                      color="primary"
-                    />
-                  </Box>
-                  <Box className="flex-1">
-                    <StatCard
-                      title="Gerados no Mês"
-                      value={stats?.reportsThisMonth || 0}
-                      icon={<FileText size={20} />}
-                      color="success"
-                    />
-                  </Box>
-                </Stack>
+              <Typography variant="h6" fontWeight={600} className="mb-4">
+                Testes Mais Utilizados
+              </Typography>
+              <Stack spacing={2}>
+                {stats?.mostUsedTests?.length ? (
+                  stats.mostUsedTests.map((test, index) => (
+                    <Box key={index} className="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                      <Typography variant="body1" fontWeight={500}>
+                        {index + 1}. {test}
+                      </Typography>
+                    </Box>
+                  ))
+                ) : (
+                  <Typography color="text.secondary">Nenhum dado disponível</Typography>
+                )}
               </Stack>
             </CardContent>
           </Card>
