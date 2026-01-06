@@ -4,6 +4,7 @@ import { Menu as MenuIcon, LayoutDashboard, Users, ClipboardList, MessageSquare,
 import { useState } from 'react';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const DRAWER_WIDTH = 240;
 
@@ -175,7 +176,9 @@ export default function DashboardLayout() {
       >
         <Toolbar />
         <Box className="p-6">
-          <Outlet />
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
         </Box>
       </Box>
     </Box>

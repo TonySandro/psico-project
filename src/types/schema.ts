@@ -57,7 +57,7 @@ export interface Statistics {
   patientsByEducationLevel: Record<string, number>;
   totalProtocols: number;
   protocolsByTestType: Record<string, number>;
-  mostUsedTests: string[];
+  mostUsedTests: { name: string; count: number }[];
 }
 
 // Component props

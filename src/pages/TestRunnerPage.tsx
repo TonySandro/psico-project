@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, Paper, Stack, TextField, Alert, Card, CardContent, Autocomplete, Checkbox, FormControlLabel, CircularProgress } from '@mui/material';
-import { ArrowLeft, PlayCircle, Save } from 'lucide-react';
+import { ArrowLeft, PlayCircle } from 'lucide-react';
 import { useTestResult, useAddProtocol } from '@/hooks/useTests';
 import { usePatients } from '@/hooks/usePatients';
 import { useAuthStore } from '@/stores/authStore';
