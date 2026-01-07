@@ -27,7 +27,7 @@ export const useGetAnamnesis = (patientId: string) => {
             try {
                 const response = await api.get<Anamnesis>(`/get-anamnesis-by-patient/${patientId}`);
                 return response.data;
-            } catch (error) {
+            } catch (_) { // eslint-disable-line @typescript-eslint/no-unused-vars
                 return null;
             }
         },

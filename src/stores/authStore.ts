@@ -6,58 +6,24 @@ interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
   setUser: (user: Account, token: string) => void;
+  setToken: (token: string) => void;
   logout: () => void;
-  initializeAuth: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => {
-  // Initialize state from localStorage immediately
-  const storedUser = localStorage.getItem('user');
-  const storedToken = localStorage.getItem('accessToken');
+export const useAuthStore = create<AuthState>((set) => ({
+  user: null,
+  token: null,
+  isAuthenticated: false,
 
-  let initialUser = null;
-  let initialIsAuthenticated = false;
+  setUser: (user, token) => {
+    set({ user, token, isAuthenticated: true });
+  },
 
-  if (storedUser && storedToken) {
-    try {
-      initialUser = JSON.parse(storedUser);
-      initialIsAuthenticated = true;
-    } catch {
-      localStorage.removeItem('user');
-      localStorage.removeItem('accessToken');
-    }
+  setToken: (token) => {
+    set((state) => ({ token, isAuthenticated: !!token, user: state.user }));
+  },
+
+  logout: () => {
+    set({ user: null, token: null, isAuthenticated: false });
   }
-
-  return {
-    user: initialUser,
-    token: storedToken,
-    isAuthenticated: initialIsAuthenticated,
-
-    setUser: (user, token) => {
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('accessToken', token);
-      set({ user, token, isAuthenticated: true });
-    },
-
-    logout: () => {
-      localStorage.removeItem('user');
-      localStorage.removeItem('accessToken');
-      set({ user: null, token: null, isAuthenticated: false });
-    },
-
-    initializeAuth: () => {
-      const storedUser = localStorage.getItem('user');
-      const storedToken = localStorage.getItem('accessToken');
-
-      if (storedUser && storedToken) {
-        try {
-          const user = JSON.parse(storedUser);
-          set({ user, token: storedToken, isAuthenticated: true });
-        } catch {
-          localStorage.removeItem('user');
-          localStorage.removeItem('accessToken');
-        }
-      }
-    }
-  };
-});
+}));

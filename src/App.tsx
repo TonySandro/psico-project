@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './stores/authStore';
-
-// Pages
+import { api } from '@/services/api';
+import type { Account } from '@/types/schema'
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import DashboardPage from './pages/DashboardPage';
@@ -12,18 +12,23 @@ import TestsPage from './pages/TestsPage';
 import FeedbackPage from './pages/FeedbackPage';
 import ProfilePage from './pages/ProfilePage';
 import CreateAnamnesisPage from './pages/CreateAnamnesisPage';
-import TestRunnerPage from './pages/TestRunnerPage';
-
-// Layout
+import TestRunnerPage from './pages/TestRunnerPage'
 import DashboardLayout from './layouts/DashboardLayout';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
-  const initializeAuth = useAuthStore((state) => state.initializeAuth);
-
   useEffect(() => {
-    initializeAuth();
-  }, [initializeAuth]);
+    api.get<Account>('/me')
+      .then((response) => {
+        const token = useAuthStore.getState().token;
+        if (token && response.data) {
+          useAuthStore.getState().setUser(response.data, token);
+        }
+      })
+      .catch(() => {
+        useAuthStore.getState().logout();
+      });
+  }, []);
 
   return (
     <BrowserRouter>

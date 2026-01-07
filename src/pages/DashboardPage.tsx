@@ -107,7 +107,7 @@ export default function DashboardPage() {
                     outerRadius={100}
                     label
                   >
-                    {Object.entries(stats?.patientsByEducationLevel || {}).map(([_, __], index) => (
+                    {Object.entries(stats?.patientsByEducationLevel || {}).map((_entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>

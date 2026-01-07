@@ -52,6 +52,7 @@ export interface TDEResult {
 
 export const useTestResult = () => {
     return useMutation({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         mutationFn: async ({ testType, data }: { testType: string; data: any }) => {
             try {
                 console.log("testType: ", testType);
@@ -74,7 +75,7 @@ export const useGetProtocols = (patientId: string) => {
             try {
                 const response = await api.get<Protocol[]>(`/get-protocols-by-patient/${patientId}`);
                 return response.data;
-            } catch (error) {
+            } catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
                 return [];
             }
         },
@@ -85,6 +86,7 @@ export const useGetProtocols = (patientId: string) => {
 
 export const useAddProtocol = () => {
     return useMutation({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         mutationFn: async ({ patientId, accountId, data }: { patientId: string; accountId: string; data: { name: string; type: string; data: any } }) => {
             const response = await api.post(`/patient/${patientId}/${accountId}/protocols`, data);
             return response.data;

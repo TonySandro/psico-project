@@ -1,7 +1,7 @@
 import {
     TableRow, TableCell, Collapse, Box, Typography, Grid, Button, IconButton, Chip, Tooltip, Stack
 } from '@mui/material';
-import { Edit, Trash2, FileText, ChevronDown, ChevronUp, Eye } from 'lucide-react';
+import { Edit, Trash2, FileText, ChevronDown, ChevronUp, Eye, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { Patient } from '@/types/schema';
 import { formatDate } from '@/utils/formatters';
@@ -34,7 +34,7 @@ export default function PatientRow({
     // Since we don't have a reports endpoint, we'll assume protocols cover evaluations.
     // We'll leave Reports inactive or based on protocols for now.
     const hasAnamnesis = !!anamnesis;
-    const hasEvaluations = protocols && protocols.length > 0;
+    // const hasEvaluations = protocols && protocols.length > 0;
 
     // Mock logic for Reports - assuming if evaluations exist, reports might exist
     const hasReports = false;
@@ -128,31 +128,21 @@ export default function PatientRow({
                                                 {hasAnamnesis ? (
                                                     <Button
                                                         size="small"
+                                                        variant="outlined"
                                                         startIcon={<Eye size={16} />}
                                                         onClick={() => alert('Visualização de Anamnese em desenvolvimento')}
                                                     >
                                                         Visualizar
                                                     </Button>
                                                 ) : (
-                                                    <Typography variant="caption" color="text.secondary">Não possui</Typography>
-                                                )}
-                                            </Stack>
-                                        </Box>
-
-                                        {/* Evaluations Section */}
-                                        <Box sx={{ p: 1.5, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
-                                            <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                                <Typography variant="subtitle2">Avaliações</Typography>
-                                                {hasEvaluations ? (
                                                     <Button
                                                         size="small"
-                                                        startIcon={<Eye size={16} />}
-                                                        onClick={() => navigate('/tests')} // Navigate to tests list for now
+                                                        variant="contained"
+                                                        startIcon={<Plus size={16} />}
+                                                        onClick={() => onAnamnesis(patient.id)}
                                                     >
-                                                        Visualizar ({protocols?.length})
+                                                        Adicionar
                                                     </Button>
-                                                ) : (
-                                                    <Typography variant="caption" color="text.secondary">Não possui</Typography>
                                                 )}
                                             </Stack>
                                         </Box>
@@ -164,13 +154,21 @@ export default function PatientRow({
                                                 {hasReports ? (
                                                     <Button
                                                         size="small"
+                                                        variant="outlined"
                                                         startIcon={<Eye size={16} />}
                                                         onClick={() => { }}
                                                     >
                                                         Visualizar
                                                     </Button>
                                                 ) : (
-                                                    <Typography variant="caption" color="text.secondary">Não possui</Typography>
+                                                    <Button
+                                                        size="small"
+                                                        variant="contained"
+                                                        startIcon={<Plus size={16} />}
+                                                        onClick={() => alert('Funcionalidade de Relatório em desenvolvimento')}
+                                                    >
+                                                        Adicionar
+                                                    </Button>
                                                 )}
                                             </Stack>
                                         </Box>

@@ -4,7 +4,7 @@ import svgr from 'vite-plugin-svgr';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  let proxyTarget = 'http://localhost:3000';
+  let proxyTarget = env.VITE_API_URL;
   if (env.VITE_API_URL) {
     let apiUrl = env.VITE_API_URL;
     if (!apiUrl.startsWith('http') && !apiUrl.startsWith('/')) {
@@ -13,7 +13,7 @@ export default defineConfig(({ mode }) => {
 
     try {
       proxyTarget = new URL(apiUrl).origin;
-    } catch (e) {
+    } catch (_) {
       proxyTarget = apiUrl;
     }
   }

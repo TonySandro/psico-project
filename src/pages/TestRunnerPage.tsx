@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, Paper, Stack, TextField, Alert, Card, CardContent, Autocomplete, Checkbox, FormControlLabel, CircularProgress } from '@mui/material';
