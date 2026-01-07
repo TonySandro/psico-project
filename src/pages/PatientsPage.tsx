@@ -20,7 +20,7 @@ export default function PatientsPage() {
   const [selectedPatient, setSelectedPatient] = useState<Patient | undefined>();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [patientToDelete, setPatientToDelete] = useState<string | null>(null);
-  const [expandedPatientId, setExpandedPatientId] = useState<string | null>(null);
+
 
   const filteredPatients = patients?.filter((patient) =>
     patient.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -40,9 +40,7 @@ export default function PatientsPage() {
     navigate(`/patients/${id}/anamnesis/new`);
   };
 
-  const handleToggleExpand = (id: string) => {
-    setExpandedPatientId(prev => prev === id ? null : id);
-  };
+
 
   const confirmDelete = () => {
     // ... existing confirmDelete
@@ -139,8 +137,6 @@ export default function PatientsPage() {
                 <PatientRow
                   key={patient.id}
                   patient={patient}
-                  expanded={expandedPatientId === patient.id}
-                  onToggle={() => handleToggleExpand(patient.id)}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
                   onAnamnesis={handleAnamnesis}
