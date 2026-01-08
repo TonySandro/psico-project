@@ -72,7 +72,7 @@ export const useLogout = () => {
 
   return useMutation({
     mutationFn: async () => {
-      await api.post('/logout');
+      await api.post('/logout', {});
     },
     onSuccess: () => {
       logoutStore();
