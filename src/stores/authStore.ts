@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import type { Account } from '@/types/schema';
 
 interface AuthState {
@@ -10,20 +11,28 @@ interface AuthState {
   logout: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  token: null,
-  isAuthenticated: false,
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      token: null,
+      isAuthenticated: false,
 
-  setUser: (user, token) => {
-    set({ user, token, isAuthenticated: true });
-  },
+      setUser: (user, token) => {
+        set({ user, token, isAuthenticated: true });
+      },
 
-  setToken: (token) => {
-    set((state) => ({ token, isAuthenticated: !!token, user: state.user }));
-  },
+      setToken: (token) => {
+        set((state) => ({ token, isAuthenticated: !!token, user: state.user }));
+      },
 
-  logout: () => {
-    set({ user: null, token: null, isAuthenticated: false });
-  }
-}));
+      logout: () => {
+        set({ user: null, token: null, isAuthenticated: false });
+        localStorage.removeItem('auth-storage');
+      }
+    }),
+    {
+      name: 'auth-storage',
+    }
+  )
+);
