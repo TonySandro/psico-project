@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Box, Typography, Button, Paper, Stack, TextField, Alert, Card, CardContent, Autocomplete, Checkbox, FormControlLabel, CircularProgress } from '@mui/material';
-import { ArrowLeft, PlayCircle } from 'lucide-react';
+import { PlayCircle } from 'lucide-react';
+import BackButton from '@/components/BackButton';
 import { useTestResult, useAddProtocol } from '@/hooks/useTests';
 import { usePatients } from '@/hooks/usePatients';
 import { useAuthStore } from '@/stores/authStore';
@@ -10,7 +11,6 @@ import type { Patient } from '@/types/schema';
 
 export default function TestRunnerPage() {
     const { type } = useParams<{ type: string }>();
-    const navigate = useNavigate();
     const user = useAuthStore((state) => state.user);
     const { mutate: processTest, isPending, data: result, error } = useTestResult();
     const { mutate: addProtocol, isPending: isSaving, isSuccess: isSaved } = useAddProtocol();
@@ -425,13 +425,7 @@ export default function TestRunnerPage() {
     return (
         <Box>
             <Stack direction="row" alignItems="center" spacing={2} className="mb-6">
-                <Button
-                    startIcon={<ArrowLeft size={20} />}
-                    onClick={() => navigate('/tests')}
-                    variant="outlined"
-                >
-                    Voltar
-                </Button>
+                <BackButton to="/tests" />
                 <Typography variant="h4" fontWeight={700}>
                     Executar Teste: {testName}
                 </Typography>

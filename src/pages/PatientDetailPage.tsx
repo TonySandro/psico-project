@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Stack, Button, Grid, Box, CircularProgress, Alert, Typography, Dialog, DialogTitle } from '@mui/material';
 import { Edit, Plus } from 'lucide-react';
+import BackButton from '@/components/BackButton';
 import { usePatient } from '@/hooks/usePatients';
 import PatientForm from '@/components/PatientForm';
 import PatientProfileCard from '@/components/patient/PatientProfileCard';
@@ -36,27 +37,30 @@ export default function PatientDetailPage() {
     <Stack spacing={3}>
       {/* Header */}
       <Stack direction="row" alignItems="center" spacing={2} justifyContent="space-between">
-        <Box>
-          <Stack direction="row" alignItems="center" spacing={1} mb={1}>
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
-              onClick={() => navigate('/patients')}
-            >
-              Pacientes
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              &gt;
-            </Typography>
-            <Typography variant="caption" color="text.primary" fontWeight={600}>
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <BackButton to="/patients" />
+          <Box>
+            <Stack direction="row" alignItems="center" spacing={1} mb={0.5}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                onClick={() => navigate('/patients')}
+              >
+                Pacientes
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                &gt;
+              </Typography>
+              <Typography variant="caption" color="text.primary" fontWeight={600}>
+                {patient.name}
+              </Typography>
+            </Stack>
+            <Typography variant="h4" fontWeight={700}>
               {patient.name}
             </Typography>
-          </Stack>
-          <Typography variant="h4" fontWeight={700}>
-            {patient.name}
-          </Typography>
-        </Box>
+          </Box>
+        </Stack>
 
         <Stack direction="row" spacing={2}>
           <Button
