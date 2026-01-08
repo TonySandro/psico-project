@@ -26,7 +26,7 @@ export const usePatient = (id: string) => {
 
 export const useCreatePatient = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async (patient: Partial<Patient>) => {
       const response = await api.post<Patient>('/create-patient', patient);
@@ -40,21 +40,22 @@ export const useCreatePatient = () => {
 
 export const useUpdatePatient = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async ({ id, data }: { id: string; data: Partial<Patient> }) => {
-      const response = await api.patch<Patient>(`/update-patient/${id}`, data);
+      const response = await api.put<Patient>(`/update-patient/${id}`, data);
       return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['patients'] });
+      queryClient.invalidateQueries({ queryKey: ['patient', variables.id] });
     }
   });
 };
 
 export const useDeletePatient = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async (id: string) => {
       await api.delete(`/delete-patient/${id}`);

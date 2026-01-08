@@ -3,7 +3,7 @@ import { DialogContent, DialogActions, Button, TextField, Grid, MenuItem, Stack,
 import { useCreatePatient, useUpdatePatient } from '@/hooks/usePatients';
 import { useAuthStore } from '@/stores/authStore';
 import type { Patient } from '@/types/schema';
-import type { SchoolYear, Gender } from '@/types/enums';
+import type { SchoolYear, Gender, PatientStatus } from '@/types/enums';
 
 interface PatientFormProps {
   patient?: Patient;
@@ -20,6 +20,7 @@ interface FormData {
   phoneNumber: string;
   motherName: string;
   fatherName: string;
+  status: PatientStatus;
 }
 
 const schoolYears: SchoolYear[] = [
@@ -37,6 +38,7 @@ const schoolYears: SchoolYear[] = [
 ];
 
 const genders: Gender[] = ['Masculino', 'Feminino', 'Outro'];
+const statuses: PatientStatus[] = ['active', 'inactive'];
 
 export default function PatientForm({ patient, onClose }: PatientFormProps) {
   const user = useAuthStore((state) => state.user);
@@ -45,7 +47,10 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
   const isEditing = !!patient;
 
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
-    defaultValues: patient || {
+    defaultValues: patient ? {
+      ...patient,
+      status: patient.status || 'active'
+    } : {
       name: '',
       age: 0,
       dateOfBirth: '',
@@ -54,7 +59,8 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
       address: '',
       phoneNumber: '',
       motherName: '',
-      fatherName: ''
+      fatherName: '',
+      status: 'active'
     }
   });
 
@@ -62,7 +68,6 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
     const patientData = {
       ...data,
       accountId: user?.id,
-      status: 'Active' as const
     };
 
     if (isEditing && patient) {
@@ -141,6 +146,28 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
                     error={!!errors.dateOfBirth}
                     helperText={errors.dateOfBirth?.message}
                   />
+                )}
+              />
+            </Grid>
+
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Controller
+                name="status"
+                control={control}
+                rules={{ required: 'Status é obrigatório' }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    select
+                    label="Status"
+                  >
+                    {statuses.map((status) => (
+                      <MenuItem key={status} value={status}>
+                        {status === 'active' ? 'Ativo' : 'Inativo'}
+                      </MenuItem>
+                    ))}
+                  </TextField>
                 )}
               />
             </Grid>

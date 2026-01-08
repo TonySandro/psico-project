@@ -1,4 +1,5 @@
 import { Card, CardContent, Typography, Button, Stack, Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { FileText, ChevronRight } from 'lucide-react';
 import { useGetAnamnesis } from '@/hooks/useAnamnesis';
 import { formatDate } from '@/utils/formatters';
@@ -8,6 +9,7 @@ interface AnamnesisCardProps {
 }
 
 export default function AnamnesisCard({ patientId }: AnamnesisCardProps) {
+    const navigate = useNavigate();
     const { data: anamnesis } = useGetAnamnesis(patientId);
 
     return (
@@ -68,6 +70,7 @@ export default function AnamnesisCard({ patientId }: AnamnesisCardProps) {
                                 color: anamnesis ? 'text.primary' : 'white',
                                 boxShadow: anamnesis ? 1 : 2
                             }}
+                            onClick={() => navigate(`/patients/${patientId}/anamnesis/new`)}
                         >
                             {anamnesis ? 'Visualizar' : 'Criar'}
                         </Button>

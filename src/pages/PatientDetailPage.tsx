@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Stack, Button, Grid, Box, CircularProgress, Alert, Typography } from '@mui/material';
+import { Stack, Button, Grid, Box, CircularProgress, Alert, Typography, Dialog, DialogTitle } from '@mui/material';
 import { Edit, Plus } from 'lucide-react';
 import { usePatient } from '@/hooks/usePatients';
+import PatientForm from '@/components/PatientForm';
 import PatientProfileCard from '@/components/patient/PatientProfileCard';
 import AnamnesisCard from '@/components/patient/AnamnesisCard';
 import AssessmentListCard from '@/components/patient/AssessmentListCard';
@@ -11,6 +13,8 @@ export default function PatientDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: patient, isLoading, error } = usePatient(id || '');
+
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -59,6 +63,7 @@ export default function PatientDetailPage() {
             variant="outlined"
             startIcon={<Edit size={18} />}
             sx={{ bgcolor: 'white', color: 'text.primary', borderColor: 'divider' }}
+            onClick={() => setIsEditOpen(true)}
           >
             Editar Perfil
           </Button>
@@ -66,8 +71,9 @@ export default function PatientDetailPage() {
             variant="contained"
             startIcon={<Plus size={18} />}
             color="secondary"
+            onClick={() => navigate('/tests')}
           >
-            Novo Atendimento
+            Novo Teste
           </Button>
         </Stack>
       </Stack>
@@ -87,6 +93,11 @@ export default function PatientDetailPage() {
           </Stack>
         </Grid>
       </Grid>
+
+      <Dialog open={isEditOpen} onClose={() => setIsEditOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle>Editar Paciente</DialogTitle>
+        <PatientForm patient={patient} onClose={() => setIsEditOpen(false)} />
+      </Dialog>
     </Stack>
   );
 }

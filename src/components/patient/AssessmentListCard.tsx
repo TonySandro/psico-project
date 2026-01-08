@@ -1,4 +1,5 @@
 import { Card, CardContent, Typography, Button, Stack, Box, List, ListItem, ListItemText, ListItemIcon } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { ClipboardList, Plus, HelpCircle } from 'lucide-react';
 import { useGetProtocols } from '@/hooks/useTests';
 import { formatDate } from '@/utils/formatters';
@@ -8,6 +9,7 @@ interface AssessmentListCardProps {
 }
 
 export default function AssessmentListCard({ patientId }: AssessmentListCardProps) {
+    const navigate = useNavigate();
     const { data: protocols } = useGetProtocols(patientId);
 
     return (
@@ -19,15 +21,16 @@ export default function AssessmentListCard({ patientId }: AssessmentListCardProp
                             <ClipboardList size={24} />
                         </Box>
                         <Typography variant="h6" fontWeight={700}>
-                            Avaliações
+                            Testes
                         </Typography>
                     </Stack>
                     <Button
                         variant="text"
                         startIcon={<Plus size={18} />}
                         sx={{ bgcolor: 'primary.50', color: 'primary.main', fontWeight: 600, '&:hover': { bgcolor: 'primary.100' } }}
+                        onClick={() => navigate('/tests')}
                     >
-                        Nova Avaliação
+                        Novo Teste
                     </Button>
                 </Stack>
 
@@ -67,11 +70,11 @@ export default function AssessmentListCard({ patientId }: AssessmentListCardProp
                         ))
                     ) : (
                         <Typography variant="body2" color="text.secondary" textAlign="center" py={4}>
-                            Nenhuma avaliação registrada.
+                            Nenhum teste registrado.
                         </Typography>
                     )}
                 </List>
             </CardContent>
-        </Card>
+        </Card >
     );
 }
