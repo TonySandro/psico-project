@@ -7,7 +7,6 @@ import { useAuthStore } from '@/stores/authStore';
 import PatientForm from '@/components/PatientForm';
 import type { Patient } from '@/types/schema';
 
-// ... imports
 import PatientRow from '@/components/PatientRow';
 
 export default function PatientsPage() {
@@ -43,7 +42,6 @@ export default function PatientsPage() {
 
 
   const confirmDelete = () => {
-    // ... existing confirmDelete
     if (patientToDelete) {
       deletePatient.mutate(patientToDelete, {
         onSuccess: () => {
@@ -68,7 +66,6 @@ export default function PatientsPage() {
   }
 
   if (error) {
-    // ... existing error handling
     return (
       <Alert severity="error">
         Erro ao carregar pacientes: {(error as Error).message}
