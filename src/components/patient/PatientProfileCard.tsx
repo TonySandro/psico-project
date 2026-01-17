@@ -1,7 +1,5 @@
-import React from 'react';
 import { Card, CardContent, Typography, Avatar, Stack, Box, Chip, Divider } from '@mui/material';
 import { Phone, User, MapPin, GraduationCap, FileText } from 'lucide-react';
-import { formatDate } from '@/utils/formatters';
 import type { Patient } from '@/types/schema';
 
 interface PatientProfileCardProps {

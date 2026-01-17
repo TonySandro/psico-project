@@ -38,7 +38,7 @@ const schoolYears: SchoolYear[] = [
 ];
 
 const genders: Gender[] = ['Masculino', 'Feminino', 'Outro'];
-const statuses: PatientStatus[] = ['active', 'inactive'];
+const statuses: PatientStatus[] = ['Active', 'Inactive'];
 
 export default function PatientForm({ patient, onClose }: PatientFormProps) {
   const user = useAuthStore((state) => state.user);
@@ -49,7 +49,7 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
     defaultValues: patient ? {
       ...patient,
-      status: patient.status || 'active'
+      status: patient.status || 'Active'
     } : {
       name: '',
       age: 0,
@@ -60,7 +60,7 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
       phoneNumber: '',
       motherName: '',
       fatherName: '',
-      status: 'active'
+      status: 'Active'
     }
   });
 
@@ -164,7 +164,7 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
                   >
                     {statuses.map((status) => (
                       <MenuItem key={status} value={status}>
-                        {status === 'active' ? 'Ativo' : 'Inativo'}
+                        {status === 'Active' ? 'Ativo' : 'Inativo'}
                       </MenuItem>
                     ))}
                   </TextField>
