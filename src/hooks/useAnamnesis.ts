@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/services/api';
 import type { Anamnesis } from '@/types/schema';
 
@@ -12,9 +12,26 @@ export const useCreateAnamnesis = () => {
             const response = await api.post<Anamnesis>('/create-anamnesis', data);
             return response.data;
         },
+        // ... existing code ...
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ['patient', variables.patientId] });
             queryClient.invalidateQueries({ queryKey: ['anamnesis', variables.patientId] });
         }
+    });
+};
+
+export const useGetAnamnesis = (patientId: string) => {
+    return useQuery({
+        queryKey: ['anamnesis', patientId],
+        queryFn: async () => {
+            try {
+                const response = await api.get<Anamnesis>(`/get-anamnesis-by-patient/${patientId}`);
+                return response.data;
+            } catch (_) { // eslint-disable-line @typescript-eslint/no-unused-vars
+                return null;
+            }
+        },
+        enabled: !!patientId,
+        retry: false
     });
 };

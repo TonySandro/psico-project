@@ -23,6 +23,7 @@ export const useLogin = () => {
       const response = await api.post<Account>('/login', credentials);
       return response.data;
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any) => {
       console.log('Login API Response:', data);
       const accessToken = data.accessToken;
@@ -62,6 +63,22 @@ export const useSignup = () => {
       if (data.accessToken) {
         setUser(data, data.accessToken);
       }
+    }
+  });
+};
+
+export const useLogout = () => {
+  const logoutStore = useAuthStore((state) => state.logout);
+
+  return useMutation({
+    mutationFn: async () => {
+      await api.post('/logout', {});
+    },
+    onSuccess: () => {
+      logoutStore();
+    },
+    onError: () => {
+      logoutStore();
     }
   });
 };

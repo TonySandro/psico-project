@@ -107,7 +107,7 @@ export default function DashboardPage() {
                     outerRadius={100}
                     label
                   >
-                    {Object.entries(stats?.patientsByEducationLevel || {}).map(([_, __], index) => (
+                    {Object.entries(stats?.patientsByEducationLevel || {}).map((_entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
@@ -152,7 +152,7 @@ export default function DashboardPage() {
                   stats.mostUsedTests.map((test, index) => (
                     <Box key={index} className="p-3 bg-gray-50 rounded-lg border border-gray-100">
                       <Typography variant="body1" fontWeight={500}>
-                        {index + 1}. {test}
+                        {index + 1}. {test.name} ({test.count} protocolos)
                       </Typography>
                     </Box>
                   ))

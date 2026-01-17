@@ -1,21 +1,55 @@
-import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, Button, Paper, Stack, TextField, Alert, Card, CardContent } from '@mui/material';
-import { ArrowLeft, PlayCircle } from 'lucide-react';
-import { useTestResult } from '@/hooks/useTests';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { Box, Typography, Button, Paper, Stack, TextField, Alert, Card, CardContent, Autocomplete, Checkbox, FormControlLabel, CircularProgress } from '@mui/material';
+import { PlayCircle } from 'lucide-react';
+import BackButton from '@/components/BackButton';
+import { useTestResult, useAddProtocol } from '@/hooks/useTests';
+import { usePatients } from '@/hooks/usePatients';
+import { useAuthStore } from '@/stores/authStore';
+import type { Patient } from '@/types/schema';
 
 export default function TestRunnerPage() {
     const { type } = useParams<{ type: string }>();
-    const navigate = useNavigate();
+    const user = useAuthStore((state) => state.user);
     const { mutate: processTest, isPending, data: result, error } = useTestResult();
+    const { mutate: addProtocol, isPending: isSaving, isSuccess: isSaved } = useAddProtocol();
+
+    // Fetch patients
+    const { data: patients, isLoading: isLoadingPatients } = usePatients(user?.id || '');
 
     const [patientName, setPatientName] = useState('');
     const [age, setAge] = useState('');
+    const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+    const [isAnonymous, setIsAnonymous] = useState(false);
 
     const testName = type?.toUpperCase() || 'Teste';
 
     // State to hold all form values
     const [formData, setFormData] = useState<Record<string, any>>({});
+
+    // Effect to handle Anonymous toggle
+    useEffect(() => {
+        if (isAnonymous) {
+            setPatientName('Não informado');
+            setSelectedPatient(null);
+            setAge('');
+        } else {
+            setPatientName('');
+            setAge('');
+        }
+    }, [isAnonymous]);
+
+    const handlePatientChange = (_: any, newValue: Patient | null) => {
+        setSelectedPatient(newValue);
+        if (newValue) {
+            setPatientName(newValue.name);
+            setAge(newValue.age.toString());
+        } else {
+            setPatientName('');
+            setAge('');
+        }
+    };
 
     const handleInputChange = (field: string, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }));
@@ -29,7 +63,23 @@ export default function TestRunnerPage() {
                 age: Number(age),
                 ...formData
             };
-            processTest({ testType: type, data });
+
+            processTest({ testType: type, data }, {
+                onSuccess: (testResult) => {
+                    // Automatically save if patient is selected
+                    if (selectedPatient && user?.id) {
+                        addProtocol({
+                            patientId: selectedPatient.id,
+                            accountId: user.id,
+                            data: {
+                                name: testName,
+                                type: type, // Store the test type key (e.g., 'stroop')
+                                data: testResult
+                            }
+                        });
+                    }
+                }
+            });
         }
     };
 
@@ -119,7 +169,28 @@ export default function TestRunnerPage() {
                 return (
                     <Stack spacing={2}>
                         <Typography variant="h6">Desempenho Escolar</Typography>
-                        {renderInput("Série Escolar", "schoolGrade", "text")}
+                        <TextField
+                            select
+                            label="Série Escolar"
+                            value={formData["schoolGrade"] || ''}
+                            onChange={(e) => handleInputChange("schoolGrade", e.target.value)}
+                            fullWidth
+                            SelectProps={{
+                                native: true,
+                            }}
+                        >
+                            <option value=""></option>
+                            <option value="1º ano">1º Ano</option>
+                            <option value="2º ano">2º Ano</option>
+                            <option value="3º ano">3º Ano</option>
+                            <option value="4º ano">4º Ano</option>
+                            <option value="5º ano">5º Ano</option>
+                            <option value="6º ano">6º Ano</option>
+                            <option value="7º ano">7º Ano</option>
+                            <option value="8º ano">8º Ano</option>
+                            <option value="9º ano">9º Ano</option>
+                            <option value="Ensino Médio">Ensino Médio</option>
+                        </TextField>
                         {renderInput("Escore Escrita", "writingScore")}
                         {renderInput("Escore Leitura", "readingScore")}
                         {renderInput("Escore Aritmética", "arithmeticScore")}
@@ -141,18 +212,63 @@ export default function TestRunnerPage() {
                     Preencha os dados abaixo para processar o resultado do teste.
                 </Alert>
 
-                <TextField
-                    label="Nome do Paciente"
-                    value={patientName}
-                    onChange={(e) => setPatientName(e.target.value)}
-                    fullWidth
-                />
+                <Box>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={isAnonymous}
+                                onChange={(e) => setIsAnonymous(e.target.checked)}
+                            />
+                        }
+                        label="Paciente não cadastrado (avulso)"
+                    />
+
+                    {!isAnonymous ? (
+                        <Autocomplete
+                            options={patients || []}
+                            getOptionLabel={(option) => option.name}
+                            value={selectedPatient}
+                            onChange={handlePatientChange}
+                            loading={isLoadingPatients}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Selecione o Paciente"
+                                    fullWidth
+                                    required={!isAnonymous}
+                                    slotProps={{
+                                        input: {
+                                            ...params.InputProps,
+                                            endAdornment: (
+                                                <>
+                                                    {isLoadingPatients ? <CircularProgress color="inherit" size={20} /> : null}
+                                                    {params.InputProps.endAdornment}
+                                                </>
+                                            ),
+                                        },
+                                    }}
+                                />
+                            )}
+                        />
+                    ) : (
+                        <TextField
+                            label="Nome do Paciente"
+                            value={patientName}
+                            disabled
+                            fullWidth
+                            helperText="Nome definido automaticamente como 'Não informado'"
+                        />
+                    )}
+                </Box>
+
                 <TextField
                     label="Idade"
                     type="number"
                     value={age}
                     onChange={(e) => setAge(e.target.value)}
                     fullWidth
+                    required
+                    helperText={selectedPatient ? "Preenchido automaticamente pelo cadastro do paciente" : "Informe a idade"}
                 />
 
                 {renderSpecificFields()}
@@ -256,6 +372,15 @@ export default function TestRunnerPage() {
                             </Box>
                         </Box>
 
+                        {/* Status Message for Saving */}
+                        {selectedPatient && (
+                            <Alert severity={isSaved ? "success" : isSaving ? "info" : "warning"}>
+                                {isSaving ? "Salvando no cadastro do paciente..." :
+                                    isSaved ? "Resultado salvo no cadastro do paciente!" :
+                                        "Resultado gerado (Não salvo automaticamente)"}
+                            </Alert>
+                        )}
+
                         {/* Dynamic Render based on result structure */}
                         <Box>
                             {renderMetrics(result)}
@@ -300,13 +425,7 @@ export default function TestRunnerPage() {
     return (
         <Box>
             <Stack direction="row" alignItems="center" spacing={2} className="mb-6">
-                <Button
-                    startIcon={<ArrowLeft size={20} />}
-                    onClick={() => navigate('/tests')}
-                    variant="outlined"
-                >
-                    Voltar
-                </Button>
+                <BackButton to="/tests" />
                 <Typography variant="h4" fontWeight={700}>
                     Executar Teste: {testName}
                 </Typography>
@@ -328,8 +447,8 @@ export default function TestRunnerPage() {
                                 type="submit"
                                 variant="contained"
                                 size="large"
-                                startIcon={<PlayCircle size={20} />}
-                                disabled={isPending}
+                                startIcon={isSaving ? <CircularProgress size={20} color="inherit" /> : <PlayCircle size={20} />}
+                                disabled={isPending || isSaving}
                             >
                                 {isPending ? 'Processando...' : 'Processar Resultado'}
                             </Button>

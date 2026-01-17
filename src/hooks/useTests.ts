@@ -1,5 +1,6 @@
 import { api } from "@/services/api";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import type { Protocol } from '@/types/schema';
 
 // Result interfaces based on the mock endpoints
 export interface StroopResult {
@@ -51,6 +52,7 @@ export interface TDEResult {
 
 export const useTestResult = () => {
     return useMutation({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         mutationFn: async ({ testType, data }: { testType: string; data: any }) => {
             try {
                 console.log("testType: ", testType);
@@ -62,6 +64,32 @@ export const useTestResult = () => {
                 console.error('Error fetching test result:', error);
                 throw error;
             }
+        }
+    });
+};
+
+export const useGetProtocols = (patientId: string) => {
+    return useQuery({
+        queryKey: ['protocols', patientId],
+        queryFn: async () => {
+            try {
+                const response = await api.get<Protocol[]>(`/get-protocols-by-patient/${patientId}`);
+                return response.data;
+            } catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
+                return [];
+            }
+        },
+        enabled: !!patientId,
+        retry: false
+    });
+};
+
+export const useAddProtocol = () => {
+    return useMutation({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        mutationFn: async ({ patientId, accountId, data }: { patientId: string; accountId: string; data: { name: string; type: string; data: any } }) => {
+            const response = await api.post(`/patient/${patientId}/${accountId}/protocols`, data);
+            return response.data;
         }
     });
 };

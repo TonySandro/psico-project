@@ -4,6 +4,8 @@ import { Menu as MenuIcon, LayoutDashboard, Users, ClipboardList, MessageSquare,
 import { useState } from 'react';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
+import { useLogout } from '@/hooks/useAuth';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const DRAWER_WIDTH = 240;
 
@@ -20,7 +22,8 @@ export default function DashboardLayout() {
   const location = useLocation();
   const sidebarOpen = useUIStore((state) => state.sidebarOpen);
   const toggleSidebar = useUIStore((state) => state.toggleSidebar);
-  const { user, logout } = useAuthStore();
+  const { user } = useAuthStore();
+  const { mutate: logout } = useLogout();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleUserMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -32,8 +35,11 @@ export default function DashboardLayout() {
   };
 
   const handleLogout = () => {
-    logout();
-    navigate('/login');
+    logout(undefined, {
+      onSuccess: () => {
+        navigate('/login');
+      }
+    });
   };
 
   return (
@@ -175,7 +181,9 @@ export default function DashboardLayout() {
       >
         <Toolbar />
         <Box className="p-6">
-          <Outlet />
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
         </Box>
       </Box>
     </Box>
