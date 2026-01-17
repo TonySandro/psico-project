@@ -60,7 +60,19 @@ export interface Statistics {
   mostUsedTests: { name: string; count: number }[];
 }
 
-// Component props
+export interface Report {
+  id: string;
+  patientId: string;
+  accountId: string;
+  title: string;
+  content: Record<string, unknown>;
+  sessionDate?: string;
+  reportType?: string;
+  isConfidential?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface StatCardProps {
   title: string;
   value: number | string;

@@ -15,6 +15,7 @@ import CreateAnamnesisPage from './pages/CreateAnamnesisPage';
 import TestRunnerPage from './pages/TestRunnerPage'
 import DashboardLayout from './layouts/DashboardLayout';
 import ProtectedRoute from './components/ProtectedRoute';
+import ReportEditorPage from './pages/ReportEditorPage';
 
 function App() {
   useEffect(() => {
@@ -49,6 +50,8 @@ function App() {
           <Route path="patients" element={<PatientsPage />} />
           <Route path="patients/:id" element={<PatientDetailPage />} />
           <Route path="patients/:patientId/anamnesis/new" element={<CreateAnamnesisPage />} />
+          <Route path="patients/:patientId/reports/new" element={<ReportEditorPage />} />
+          <Route path="reports/:reportId/edit" element={<ReportEditorPage />} />
           <Route path="tests" element={<TestsPage />} />
           <Route path="tests/:type/run" element={<TestRunnerPage />} />
           <Route path="feedback" element={<FeedbackPage />} />

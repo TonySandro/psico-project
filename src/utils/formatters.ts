@@ -31,8 +31,8 @@ export const formatScore = (score: number): string => {
 // Status formatters
 export const formatPatientStatus = (status: PatientStatus): string => {
   const statusMap: Record<PatientStatus, string> = {
-    Active: 'Ativo',
-    Inactive: 'Inativo'
+    active: 'Ativo',
+    inactive: 'Inativo'
   };
   return statusMap[status] || status;
 };

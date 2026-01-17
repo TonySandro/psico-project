@@ -1,7 +1,5 @@
-import React from 'react';
 import { Card, CardContent, Typography, Avatar, Stack, Box, Chip, Divider } from '@mui/material';
 import { Phone, User, MapPin, GraduationCap, FileText } from 'lucide-react';
-import { formatDate } from '@/utils/formatters';
 import type { Patient } from '@/types/schema';
 
 interface PatientProfileCardProps {
@@ -32,12 +30,12 @@ export default function PatientProfileCard({ patient }: PatientProfileCardProps)
                     </Box>
 
                     <Chip
-                        label={patient.status === 'Active' ? 'Ativo' : 'Inativo'}
-                        color={patient.status === 'Active' ? 'success' : 'default'}
+                        label={patient.status === 'active' ? 'Ativo' : 'Inativo'}
+                        color={patient.status === 'active' ? 'success' : 'default'}
                         size="small"
                         sx={{
-                            bgcolor: patient.status === 'Active' ? 'rgba(76, 175, 80, 0.1)' : undefined,
-                            color: patient.status === 'Active' ? 'success.main' : undefined,
+                            bgcolor: patient.status === 'active' ? 'rgba(76, 175, 80, 0.1)' : undefined,
+                            color: patient.status === 'active' ? 'success.main' : undefined,
                             fontWeight: 600
                         }}
                     />

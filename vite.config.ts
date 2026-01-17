@@ -39,6 +39,30 @@ export default defineConfig(({ mode }) => {
           secure: false
         }
       }
+    },
+    build: {
+      chunkSizeWarningLimit: 1000,
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('@mui')) {
+                return 'vendor-mui';
+              }
+              if (id.includes('@tiptap')) {
+                return 'vendor-tiptap';
+              }
+              if (id.includes('recharts') || id.includes('d3')) {
+                return 'vendor-charts';
+              }
+              if (id.includes('lucide-react')) {
+                return 'vendor-icons';
+              }
+              return 'vendor';
+            }
+          }
+        }
+      }
     }
   };
 });

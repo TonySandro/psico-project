@@ -165,12 +165,13 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
                     {statuses.map((status) => (
                       <MenuItem key={status} value={status}>
                         {status === 'active' ? 'Ativo' : 'Inativo'}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                      </MenuItem >
+                    ))
+                    }
+                  </TextField >
                 )}
               />
-            </Grid>
+            </Grid >
 
             <Grid size={{ xs: 12, sm: 6 }}>
               <Controller
@@ -271,9 +272,9 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
                 )}
               />
             </Grid>
-          </Grid>
-        </Stack>
-      </DialogContent>
+          </Grid >
+        </Stack >
+      </DialogContent >
 
       <DialogActions>
         <Button onClick={onClose} disabled={isPending}>
@@ -287,6 +288,6 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
           {isPending ? 'Salvando...' : isEditing ? 'Atualizar' : 'Criar'}
         </Button>
       </DialogActions>
-    </form>
+    </form >
   );
 }
