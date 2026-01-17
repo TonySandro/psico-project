@@ -12,8 +12,7 @@ import TestsPage from './pages/TestsPage';
 import FeedbackPage from './pages/FeedbackPage';
 import ProfilePage from './pages/ProfilePage';
 import CreateAnamnesisPage from './pages/CreateAnamnesisPage';
-import TestRunnerPage from './pages/TestRunnerPage';
-
+import TestRunnerPage from './pages/TestRunnerPage'
 import DashboardLayout from './layouts/DashboardLayout';
 import ProtectedRoute from './components/ProtectedRoute';
 import ReportEditorPage from './pages/ReportEditorPage';

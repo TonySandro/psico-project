@@ -38,7 +38,7 @@ const schoolYears: SchoolYear[] = [
 ];
 
 const genders: Gender[] = ['Masculino', 'Feminino', 'Outro'];
-const statuses: PatientStatus[] = ['Active', 'Inactive'];
+const statuses: PatientStatus[] = ['active', 'inactive'];
 
 export default function PatientForm({ patient, onClose }: PatientFormProps) {
   const user = useAuthStore((state) => state.user);
@@ -49,7 +49,7 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
     defaultValues: patient ? {
       ...patient,
-      status: patient.status || 'Active'
+      status: patient.status || 'active'
     } : {
       name: '',
       age: 0,
@@ -60,7 +60,7 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
       phoneNumber: '',
       motherName: '',
       fatherName: '',
-      status: 'Active'
+      status: 'active'
     }
   });
 
@@ -164,13 +164,14 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
                   >
                     {statuses.map((status) => (
                       <MenuItem key={status} value={status}>
-                        {status === 'Active' ? 'Ativo' : 'Inativo'}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                        {status === 'active' ? 'Ativo' : 'Inativo'}
+                      </MenuItem >
+                    ))
+                    }
+                  </TextField >
                 )}
               />
-            </Grid>
+            </Grid >
 
             <Grid size={{ xs: 12, sm: 6 }}>
               <Controller
@@ -271,9 +272,9 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
                 )}
               />
             </Grid>
-          </Grid>
-        </Stack>
-      </DialogContent>
+          </Grid >
+        </Stack >
+      </DialogContent >
 
       <DialogActions>
         <Button onClick={onClose} disabled={isPending}>
@@ -287,6 +288,6 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
           {isPending ? 'Salvando...' : isEditing ? 'Atualizar' : 'Criar'}
         </Button>
       </DialogActions>
-    </form>
+    </form >
   );
 }

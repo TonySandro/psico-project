@@ -41,9 +41,9 @@ export default function PatientRow({
             <TableCell>{formatDate(patient.dateOfBirth)}</TableCell>
             <TableCell>
                 <Chip
-                    label={patient.status === 'Active' ? 'Ativo' : 'Inativo'}
+                    label={patient.status === 'active' ? 'Ativo' : 'Inativo'}
                     size="small"
-                    color={patient.status === 'Active' ? 'success' : 'default'}
+                    color={patient.status === 'active' ? 'success' : 'default'}
                 />
             </TableCell>
             <TableCell align="right" onClick={(e) => e.stopPropagation()}>
