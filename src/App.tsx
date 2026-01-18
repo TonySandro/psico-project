@@ -5,6 +5,7 @@ import { api } from '@/services/api';
 import type { Account } from '@/types/schema'
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
+import ConfirmEmailPage from './pages/ConfirmEmailPage';
 import DashboardPage from './pages/DashboardPage';
 import PatientsPage from './pages/PatientsPage';
 import PatientDetailPage from './pages/PatientDetailPage';
@@ -36,6 +37,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/confirm-email" element={<ConfirmEmailPage />} />
 
         <Route
           path="/"
