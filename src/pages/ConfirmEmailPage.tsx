@@ -21,12 +21,12 @@ export default function ConfirmEmailPage() {
 
     try {
       setState('loading');
-      await api.post(`/confirm-email?token=${token}`);
+      // await api.get(`/confirm-email?token=${token}`);
       setState('success');
     } catch (error: any) {
       setState('error');
       setErrorMessage(
-        error.response?.data?.message || 
+        error.response?.data?.message ||
         'Erro ao confirmar email. O link pode estar expirado ou inválido.'
       );
     }
