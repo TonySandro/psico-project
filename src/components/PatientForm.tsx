@@ -37,7 +37,7 @@ const schoolYears: SchoolYear[] = [
   'Ensino Médio'
 ];
 
-const genders: Gender[] = ['Masculino', 'Feminino', 'Outro'];
+const genders: Gender[] = ['Masculino', 'Feminino'];
 const statuses: PatientStatus[] = ['active', 'inactive'];
 
 export default function PatientForm({ patient, onClose }: PatientFormProps) {
@@ -46,7 +46,7 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
   const updatePatient = useUpdatePatient();
   const isEditing = !!patient;
 
-  const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const { control, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
     defaultValues: patient ? {
       ...patient,
       status: patient.status || 'active'
@@ -54,7 +54,7 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
       name: '',
       age: 0,
       dateOfBirth: '',
-      gender: 'Outro',
+      gender: 'null',
       schoolYear: 'Educação Infantil',
       address: '',
       phoneNumber: '',
@@ -63,6 +63,21 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
       status: 'active'
     }
   });
+
+  const calculateAge = (dateString: string) => {
+    if (!dateString) return 0;
+    const today = new Date();
+    const [year, month, day] = dateString.split('-').map(Number);
+    // Create date using local time constructor to avoid timezone issues
+    const birthDate = new Date(year, month - 1, day);
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age >= 0 ? age : 0;
+  };
 
   const onSubmit = (data: FormData) => {
     const patientData = {
@@ -134,9 +149,14 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
                 name="dateOfBirth"
                 control={control}
                 rules={{ required: 'Data de nascimento é obrigatória' }}
-                render={({ field }) => (
+                render={({ field: { onChange, ...field } }) => (
                   <TextField
                     {...field}
+                    onChange={(e) => {
+                      onChange(e);
+                      const computedAge = calculateAge(e.target.value);
+                      setValue('age', computedAge);
+                    }}
                     fullWidth
                     label="Data de Nascimento"
                     type="date"
