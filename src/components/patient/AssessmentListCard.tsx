@@ -28,7 +28,7 @@ export default function AssessmentListCard({ patientId }: AssessmentListCardProp
                         variant="text"
                         startIcon={<Plus size={18} />}
                         sx={{ bgcolor: 'primary.50', color: 'primary.main', fontWeight: 600, '&:hover': { bgcolor: 'primary.100' } }}
-                        onClick={() => navigate('/tests')}
+                        onClick={() => navigate('/app/tests')}
                     >
                         Novo Teste
                     </Button>

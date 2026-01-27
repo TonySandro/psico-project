@@ -57,7 +57,7 @@ export default function TestsPage() {
   const navigate = useNavigate();
 
   const handleStartTest = (testId: string) => {
-    navigate(`/tests/${testId}/run`);
+    navigate(`/app/tests/${testId}/run`);
   };
 
   return (

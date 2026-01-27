@@ -38,14 +38,14 @@ export default function PatientDetailPage() {
       {/* Header */}
       <Stack direction="row" alignItems="center" spacing={2} justifyContent="space-between">
         <Stack direction="row" alignItems="center" spacing={2}>
-          <BackButton to="/patients" />
+          <BackButton to="/app/patients" />
           <Box>
             <Stack direction="row" alignItems="center" spacing={1} mb={0.5}>
               <Typography
                 variant="caption"
                 color="text.secondary"
                 sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
-                onClick={() => navigate('/patients')}
+                onClick={() => navigate('/app/patients')}
               >
                 Pacientes
               </Typography>
@@ -75,7 +75,7 @@ export default function PatientDetailPage() {
             variant="contained"
             startIcon={<Plus size={18} />}
             color="secondary"
-            onClick={() => navigate('/tests')}
+            onClick={() => navigate('/app/tests')}
           >
             Novo Teste
           </Button>

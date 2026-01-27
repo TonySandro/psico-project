@@ -425,7 +425,7 @@ export default function TestRunnerPage() {
     return (
         <Box>
             <Stack direction="row" alignItems="center" spacing={2} className="mb-6">
-                <BackButton to="/tests" />
+                <BackButton to="/app/tests" />
                 <Typography variant="h4" fontWeight={700}>
                     Executar Teste: {testName}
                 </Typography>
