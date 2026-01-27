@@ -10,11 +10,11 @@ import ErrorBoundary from '@/components/ErrorBoundary';
 const DRAWER_WIDTH = 240;
 
 const menuItems = [
-  { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-  { label: 'Pacientes', path: '/patients', icon: Users },
-  { label: 'Testes', path: '/tests', icon: ClipboardList },
-  { label: 'Feedback', path: '/feedback', icon: MessageSquare },
-  { label: 'Perfil', path: '/profile', icon: UserCircle }
+  { label: 'Dashboard', path: '/app/dashboard', icon: LayoutDashboard },
+  { label: 'Pacientes', path: '/app/patients', icon: Users },
+  { label: 'Testes', path: '/app/tests', icon: ClipboardList },
+  { label: 'Feedback', path: '/app/feedback', icon: MessageSquare },
+  { label: 'Perfil', path: '/app/profile', icon: UserCircle }
 ];
 
 export default function DashboardLayout() {
@@ -37,7 +37,7 @@ export default function DashboardLayout() {
   const handleLogout = () => {
     logout(undefined, {
       onSuccess: () => {
-        navigate('/login');
+        navigate('/');
       }
     });
   };
@@ -96,7 +96,7 @@ export default function DashboardLayout() {
               </Typography>
             </Stack>
             <Divider />
-            <MenuItem onClick={() => { navigate('/profile'); handleUserMenuClose(); }}>
+            <MenuItem onClick={() => { navigate('/app/profile'); handleUserMenuClose(); }}>
               <ListItemIcon>
                 <UserCircle size={20} />
               </ListItemIcon>

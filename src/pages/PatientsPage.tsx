@@ -26,8 +26,7 @@ export default function PatientsPage() {
   ) || [];
 
   const handleEdit = (patient: Patient) => {
-    setSelectedPatient(patient);
-    setFormOpen(true);
+    navigate(`/app/patients/${patient.id}`);
   };
 
   const handleDelete = (id: string) => {

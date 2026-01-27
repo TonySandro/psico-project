@@ -14,7 +14,7 @@ export default function LoginPage() {
     e.preventDefault();
     login({ email, password }, {
       onSuccess: () => {
-        navigate('/dashboard');
+        navigate('/app/dashboard');
       }
     });
   };

@@ -24,7 +24,7 @@ export default function SignupPage() {
 
     signup({ name, email, password, passwordConfirmation }, {
       onSuccess: () => {
-        navigate('/dashboard');
+        navigate('/app/dashboard');
       },
       onError: () => {
         setErrorMessage('Erro ao criar conta. Tente novamente.');
