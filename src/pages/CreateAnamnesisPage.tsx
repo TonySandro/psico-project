@@ -39,7 +39,7 @@ export default function CreateAnamnesisPage() {
             ...formData
         }, {
             onSuccess: () => {
-                navigate('/patients');
+                navigate('/app/patients');
             }
         });
     };
@@ -65,7 +65,7 @@ export default function CreateAnamnesisPage() {
             <Stack direction="row" alignItems="center" spacing={2} className="mb-6">
                 <Button
                     startIcon={<ArrowLeft size={20} />}
-                    onClick={() => navigate('/patients')}
+                    onClick={() => navigate('/app/patients')}
                     color="inherit"
                 >
                     Voltar
@@ -142,7 +142,7 @@ export default function CreateAnamnesisPage() {
                         <Box className="flex justify-end gap-2 mt-4">
                             <Button
                                 variant="outlined"
-                                onClick={() => navigate('/patients')}
+                                onClick={() => navigate('/app/patients')}
                                 disabled={isSaving}
                             >
                                 Cancelar

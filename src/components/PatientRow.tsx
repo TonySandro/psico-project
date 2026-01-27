@@ -21,7 +21,7 @@ export default function PatientRow({
     return (
         <TableRow
             hover
-            onClick={() => navigate(`/patients/${patient.id}`)}
+            onClick={() => navigate(`/app/patients/${patient.id}`)}
             sx={{ cursor: 'pointer' }}
         >
             <TableCell>

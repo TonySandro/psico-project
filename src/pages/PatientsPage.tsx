@@ -35,7 +35,7 @@ export default function PatientsPage() {
   };
 
   const handleAnamnesis = (id: string) => {
-    navigate(`/patients/${id}/anamnesis/new`);
+    navigate(`/app/patients/${id}/anamnesis/new`);
   };
 
 

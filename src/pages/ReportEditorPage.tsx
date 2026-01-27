@@ -236,7 +236,7 @@ export default function ReportEditorPage() {
                         <Typography
                             variant="body2"
                             sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
-                            onClick={() => navigate('/patients')}
+                            onClick={() => navigate('/app/patients')}
                         >
                             Pacientes
                         </Typography>
@@ -244,7 +244,7 @@ export default function ReportEditorPage() {
                         <Typography
                             variant="body2"
                             sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
-                            onClick={() => navigate(`/patients/${patient?.id}`)}
+                            onClick={() => navigate(`/app/patients/${patient?.id}`)}
                         >
                             {patient?.name || 'Paciente'}
                         </Typography>
