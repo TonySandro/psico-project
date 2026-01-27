@@ -25,7 +25,6 @@ const MOCK_REPORTS = [
 ];
 
 export default function ReportListCard({ patientId: _patientId }: ReportListCardProps) {
-    // const { data: reports } = useGetReports(patientId); // Future implementation
 
     return (
         <Card sx={{ mb: 3 }}>
