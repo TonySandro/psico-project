@@ -55,8 +55,6 @@ export const useTestResult = () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         mutationFn: async ({ testType, data }: { testType: string; data: any }) => {
             try {
-                console.log("testType: ", testType);
-                console.log("data: ", data);
                 const type = testType.toLowerCase();
                 const response = await api.post(`/${type}`, data);
                 return response.data;

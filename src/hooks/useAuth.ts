@@ -25,14 +25,12 @@ export const useLogin = () => {
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (data: any) => {
-      console.log('Login API Response:', data);
       const accessToken = data.accessToken;
       let userObj = data.user || data.account || data;
 
       if (accessToken && (!userObj || !userObj.id)) {
         try {
           const payload = JSON.parse(atob(accessToken.split('.')[1]));
-          console.log('Decoded Token Payload:', payload);
           userObj = {
             ...userObj,
             id: payload.id || payload.sub || payload.accountId,

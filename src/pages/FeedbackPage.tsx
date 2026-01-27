@@ -11,8 +11,6 @@ export default function FeedbackPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement feedback submission
-    console.log({ type, subject, description });
     setSubmitted(true);
     setTimeout(() => {
       setType('Suggestion');

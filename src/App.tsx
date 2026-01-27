@@ -20,7 +20,7 @@ import ReportEditorPage from './pages/ReportEditorPage';
 
 function App() {
   useEffect(() => {
-    api.get<Account>('/me')
+    api.get<Account>('/auth')
       .then((response) => {
         const token = useAuthStore.getState().token;
         if (token && response.data) {
@@ -28,7 +28,7 @@ function App() {
         }
       })
       .catch((error) => {
-        console.error('Error validating session:', error);
+        // console.error('Error validating session:', error);
       });
   }, []);
 
