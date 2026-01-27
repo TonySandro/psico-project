@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Card, CardContent, Button, Typography, Alert, Stack, Box, CircularProgress } from '@mui/material';
 import { HeartPulse, CheckCircle, XCircle } from 'lucide-react';
-import { api } from '@/services/api';
+
 
 type ConfirmationState = 'loading' | 'success' | 'error';
 

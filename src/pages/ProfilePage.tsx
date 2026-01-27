@@ -15,20 +15,16 @@ import {
   Container,
   InputAdornment,
   IconButton,
-  LinearProgress
 } from '@mui/material';
 import {
   User,
   Mail,
   Phone,
-  Briefcase,
   Lock,
   Eye,
   EyeOff,
   Check,
   Star,
-  Headphones,
-  ArrowRight,
   Shield,
   Calendar,
   Camera
@@ -176,7 +172,7 @@ export default function ProfilePage() {
         </Card>
 
         <Grid container spacing={3}>
-          <Grid item xs={12} lg={7}>
+          <Grid size={{ xs: 12, lg: 7 }}>
             <Stack spacing={3}>
 
 
@@ -193,7 +189,7 @@ export default function ProfilePage() {
 
                   <form onSubmit={handleUpdateProfile}>
                     <Grid container spacing={2}>
-                      <Grid item xs={12} md={6}>
+                      <Grid size={{ xs: 12, md: 6 }}>
                         <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>Nome Completo</Typography>
                         <TextField
                           fullWidth
@@ -211,7 +207,7 @@ export default function ProfilePage() {
                         />
                       </Grid>
 
-                      <Grid item xs={12} md={6}>
+                      <Grid size={{ xs: 12, md: 6 }}>
                         <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>Endereço de Email</Typography>
                         <TextField
                           fullWidth
@@ -229,7 +225,7 @@ export default function ProfilePage() {
                         />
                       </Grid>
 
-                      <Grid item xs={12} md={6}>
+                      <Grid size={{ xs: 12, md: 6 }}>
                         <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>Telefone</Typography>
                         <TextField
                           fullWidth
@@ -247,7 +243,7 @@ export default function ProfilePage() {
                         />
                       </Grid>
 
-                      <Grid item xs={12} display="flex" justifyContent="flex-end">
+                      <Grid size={{ xs: 12 }} display="flex" justifyContent="flex-end">
                         <Button
                           type="submit"
                           variant="contained"
@@ -388,7 +384,7 @@ export default function ProfilePage() {
           </Grid>
 
           {/* Right Column */}
-          <Grid item xs={12} lg={5}>
+          <Grid size={{ xs: 12, lg: 5 }}>
             <Stack spacing={3}>
 
               {/* Plan Card */}

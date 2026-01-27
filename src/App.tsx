@@ -28,7 +28,7 @@ function App() {
           useAuthStore.getState().setUser(response.data, token);
         }
       })
-      .catch((error) => {
+      .catch(() => {
         // console.error('Error validating session:', error);
       });
   }, []);
