@@ -1,8 +1,4 @@
-import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuthStore } from './stores/authStore';
-import { api } from '@/services/api';
-import type { Account } from '@/types/schema'
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
@@ -18,6 +14,9 @@ import TestRunnerPage from './pages/TestRunnerPage'
 import DashboardLayout from './layouts/DashboardLayout';
 import ProtectedRoute from './components/ProtectedRoute';
 import ReportEditorPage from './pages/ReportEditorPage';
+import PaymentSuccessPage from './pages/payment/SuccessPage';
+import PaymentFailurePage from './pages/payment/FailurePage';
+import PaymentPendingPage from './pages/payment/PendingPage';
 
 function App() {
   // useEffect(() => {
@@ -40,6 +39,10 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/confirm-email" element={<ConfirmEmailPage />} />
+
+        <Route path="/payment/success" element={<PaymentSuccessPage />} />
+        <Route path="/payment/failure" element={<PaymentFailurePage />} />
+        <Route path="/payment/pending" element={<PaymentPendingPage />} />
 
         <Route
           path="/app"

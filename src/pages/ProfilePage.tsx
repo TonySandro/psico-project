@@ -27,7 +27,8 @@ import {
   Star,
   Shield,
   Calendar,
-  Camera
+  Camera,
+  CreditCard
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { api } from '@/services/api';
@@ -40,6 +41,7 @@ export default function ProfilePage() {
   useAccount(user?.id);
 
   const [loading, setLoading] = useState(false);
+  const [subscribing, setSubscribing] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -83,6 +85,29 @@ export default function ProfilePage() {
       setErrorMsg('Erro ao atualizar perfil. Tente novamente.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSubscribe = async () => {
+    try {
+      setSubscribing(true);
+      setErrorMsg('');
+
+      const response = await api.post('/payment/preference', {
+        description: "Assinatura Premium Mensal",
+        price: 29.90
+      });
+
+      if (response.data && response.data.checkoutUrl) {
+        window.location.href = response.data.checkoutUrl;
+      } else {
+        throw new Error('URL de checkout não recebida');
+      }
+    } catch (err: any) {
+      console.error(err);
+      setErrorMsg(err.response?.data?.error || 'Erro ao iniciar pagamento. Tente novamente.');
+    } finally {
+      setSubscribing(false);
     }
   };
 
@@ -391,7 +416,7 @@ export default function ProfilePage() {
               <Card
                 sx={{
                   borderRadius: 3,
-                  bgcolor: '#1e1b4b',
+                  bgcolor: user?.subscriptionStatus === 'active' ? '#4F46E5' : '#1e1b4b',
                   color: 'white',
                   position: 'relative',
                   overflow: 'visible'
@@ -403,13 +428,13 @@ export default function ProfilePage() {
 
                 <CardContent sx={{ p: 4 }}>
                   <Typography variant="h6" fontWeight={700} gutterBottom>
-                    Plano Grátis - Tester
+                    {user?.subscriptionStatus === 'active' ? 'Plano Premium' : 'Plano Grátis'}
                   </Typography>
                   <Chip
-                    label="ATIVO"
+                    label={user?.subscriptionStatus === 'active' ? 'PREMIUM ATIVO' : 'FREE'}
                     size="small"
                     sx={{
-                      bgcolor: '#10B981',
+                      bgcolor: user?.subscriptionStatus === 'active' ? '#F59E0B' : '#6B7280',
                       color: 'white',
                       fontWeight: 700,
                       fontSize: '0.7rem',
@@ -420,23 +445,26 @@ export default function ProfilePage() {
 
                   <Box display="flex" alignItems="baseline" sx={{ mb: 3 }}>
                     <Typography variant="h3" fontWeight={700}>
-                      Grátis
+                      {user?.subscriptionStatus === 'active' ? 'R$ 29,90' : 'Grátis'}
                     </Typography>
-                    {/* <Typography variant="body1" sx={{ opacity: 0.7, ml: 1 }}>
-                      /mês
-                    </Typography> */}
+                    {user?.subscriptionStatus === 'active' && (
+                      <Typography variant="body1" sx={{ opacity: 0.7, ml: 1 }}>
+                        /mês
+                      </Typography>
+                    )}
                   </Box>
 
                   <Stack spacing={2} sx={{ mb: 4 }}>
                     {[
                       'Acesso total à plataforma',
-                      'Suporte prioritário via WhatsApp',
-                      'Usuários ilimitados'
+                      'Relatórios Ilimitados',
+                      'Suporte prioritário',
+                      user?.subscriptionStatus !== 'active' ? 'Limite de 5 pacientes' : 'Pacientes ilimitados'
                     ].map((feature, idx) => (
                       <Stack key={idx} direction="row" spacing={1.5} alignItems="center">
                         <Box
                           sx={{
-                            bgcolor: '#10B981',
+                            bgcolor: user?.subscriptionStatus === 'active' ? '#F59E0B' : 'rgba(255,255,255,0.2)',
                             borderRadius: '50%',
                             p: 0.5,
                             display: 'flex'
@@ -448,6 +476,32 @@ export default function ProfilePage() {
                       </Stack>
                     ))}
                   </Stack>
+
+                  {user?.subscriptionStatus !== 'active' && (
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      size="large"
+                      onClick={handleSubscribe}
+                      disabled={subscribing}
+                      startIcon={<CreditCard size={20} />}
+                      sx={{
+                        bgcolor: '#F59E0B',
+                        color: 'white',
+                        fontWeight: 700,
+                        '&:hover': { bgcolor: '#D97706' },
+                        py: 1.5
+                      }}
+                    >
+                      {subscribing ? 'Processando...' : 'Obter Premium - R$ 29,90'}
+                    </Button>
+                  )}
+
+                  {user?.subscriptionStatus === 'active' && (
+                    <Typography variant="body2" sx={{ opacity: 0.8, fontStyle: 'italic' }}>
+                      Sua assinatura está ativa e renova automaticamente.
+                    </Typography>
+                  )}
                 </CardContent>
               </Card>
             </Stack>

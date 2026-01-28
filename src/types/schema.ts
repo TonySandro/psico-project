@@ -6,6 +6,8 @@ export interface Account {
   name: string;
   email: string;
   accessToken?: string;
+  subscriptionStatus?: 'active' | 'inactive' | 'pending';
+  subscriptionEndsAt?: string;
 }
 
 export interface Patient {
