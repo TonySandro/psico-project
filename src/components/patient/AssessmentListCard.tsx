@@ -1,16 +1,24 @@
+import { useState } from 'react';
 import { Card, CardContent, Typography, Button, Stack, Box, List, ListItem, ListItemText, ListItemIcon } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ClipboardList, Plus, HelpCircle } from 'lucide-react';
-import { useGetProtocols } from '@/hooks/useTests';
 import { formatDate } from '@/utils/formatters';
+import type { Protocol } from '@/types/schema';
+import TestResultDialog from './TestResultDialog';
 
 interface AssessmentListCardProps {
-    patientId: string;
+    protocols?: Protocol[];
 }
 
-export default function AssessmentListCard({ patientId }: AssessmentListCardProps) {
+export default function AssessmentListCard({ protocols = [] }: AssessmentListCardProps) {
     const navigate = useNavigate();
-    const { data: protocols } = useGetProtocols(patientId);
+    const [selectedProtocol, setSelectedProtocol] = useState<Protocol | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleProtocolClick = (protocol: Protocol) => {
+        setSelectedProtocol(protocol);
+        setIsModalOpen(true);
+    };
 
     return (
         <Card sx={{ mb: 3 }}>
@@ -39,11 +47,19 @@ export default function AssessmentListCard({ patientId }: AssessmentListCardProp
                         protocols.map((protocol) => (
                             <ListItem
                                 key={protocol.id}
+                                onClick={() => handleProtocolClick(protocol)}
                                 sx={{
                                     borderBottom: '1px solid',
                                     borderColor: 'divider',
                                     '&:last-child': { borderBottom: 'none' },
-                                    px: 0
+                                    px: 1,
+                                    py: 1,
+                                    cursor: 'pointer',
+                                    borderRadius: 1,
+                                    transition: 'background-color 0.2s',
+                                    '&:hover': {
+                                        bgcolor: 'primary.50'
+                                    }
                                 }}
                             >
                                 <ListItemIcon>
@@ -55,11 +71,6 @@ export default function AssessmentListCard({ patientId }: AssessmentListCardProp
                                     primary={
                                         <Typography variant="subtitle2" fontWeight={600}>
                                             {protocol.name}
-                                        </Typography>
-                                    }
-                                    secondary={
-                                        <Typography variant="caption" color="text.secondary">
-                                            {protocol.type.toUpperCase()}
                                         </Typography>
                                     }
                                 />
@@ -75,6 +86,12 @@ export default function AssessmentListCard({ patientId }: AssessmentListCardProp
                     )}
                 </List>
             </CardContent>
+
+            <TestResultDialog
+                open={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                protocol={selectedProtocol}
+            />
         </Card >
     );
 }

@@ -20,18 +20,18 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ReportEditorPage from './pages/ReportEditorPage';
 
 function App() {
-  useEffect(() => {
-    api.get<Account>('/auth')
-      .then((response) => {
-        const token = useAuthStore.getState().token;
-        if (token && response.data) {
-          useAuthStore.getState().setUser(response.data, token);
-        }
-      })
-      .catch(() => {
-        // console.error('Error validating session:', error);
-      });
-  }, []);
+  // useEffect(() => {
+  //   api.get<Account>('/auth')
+  //     .then((response) => {
+  //       const token = useAuthStore.getState().token;
+  //       if (token && response.data) {
+  //         useAuthStore.getState().setUser(response.data, token);
+  //       }
+  //     })
+  //     .catch(() => {
+  //       // console.error('Error validating session:', error);
+  //     });
+  // }, []);
 
   return (
     <BrowserRouter>

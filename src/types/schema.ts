@@ -21,7 +21,8 @@ export interface Patient {
   motherName: string;
   fatherName: string;
   status?: PatientStatus;
-  createdAt?: string;
+  createdAt?: string; // KEEP THIS
+  protocols?: Protocol[];
 }
 
 export interface Anamnesis {
@@ -41,10 +42,10 @@ export interface Anamnesis {
 
 export interface Protocol {
   id: string;
-  patientId: string;
-  accountId: string;
-  name: string;
-  type: TestType;
+  // patientId: string;
+  // accountId: string;
+  name: TestType;
+  // type: TestType;
   data: Record<string, unknown>;
   createdAt?: string;
 }
