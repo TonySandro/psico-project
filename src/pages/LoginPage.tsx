@@ -35,22 +35,28 @@ export default function LoginPage() {
         {/* Content Overlay */}
         <div className="relative z-10 max-w-md text-white">
           <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl">
-            <span className="material-symbols-outlined text-4xl text-white">psychology</span>
+            <span className="material-symbols-outlined text-4xl text-white">neurology</span>
+          </div>
+          <div className="inline-block px-3 py-1 mb-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
+            <span className="text-xs font-bold text-white uppercase tracking-wider">Exclusivo para Psicopedagogos</span>
           </div>
           <h2 className="text-4xl font-bold leading-tight tracking-tight mb-4">
-            Transforme a gestão da sua clínica.
+            Gestão completa de Avaliações Neuropsicopedagógicas.
           </h2>
           <p className="text-lg text-white/90 font-medium leading-relaxed">
-            Organize prontuários, agendamentos e acompanhe a evolução cognitiva dos seus pacientes em um só lugar.
+            Centralize avaliações, aplique testes padronizados (Token Test, Stroop) e gere relatórios clínicos automáticos.
+            Acompanhe a evolução cognitiva dos seus pacientes em um único ambiente seguro.
           </p>
-          <div className="mt-8 flex items-center gap-4">
+
+          {/* <div className="mt-8 flex items-center gap-4">
             <div className="flex -space-x-3">
               <img alt="Avatar user 1" className="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzFjbAu8apEqmhsgjlz4fsINp0qCOdBuCk_P8QsIKs4nIjmZPMwZ8rQ3lmL-D7ss5p2AUyTO1AMsKhM-5Zj9IsEKbNF11PVn_qXIH7fJoJ4eNw5ddEfxpb53hU_m1brDFhAVvpX4c8Pl-DlDXySsqdZpeO2b6EoYwo-rmQ_ycJop51nIoVR8AimdyBq7ocwiWbSxWnzm8DdCY5bLd1A8y56N53YJT-weSrA7V9CZmOokeKIP1iRUOTW14rGU6EB_H3XL2ZLaDxHqKI" />
               <img alt="Avatar user 2" className="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDc6zTRc5OUy8Z36vZySf9pxqm4SSjqWfEyYlFnz-Mdzky_HHGNCkh8r_aJFs_i-ZGbzPi4JExSPD6sAoeNAEDNQVNKuZyzyvjfasI8_1ryIcHaI8Yb71dbOKhV8aoJcv312-wROAgr7J39wjxAEw6OlyeO9LK9a7QIYExHF6ZkYwkxH8vOFHd8AWb6--j3LQQPtJccTkKmyFlzvv4PhMpdi3Guqa0d78EM9c8LOkouJerQNGVIfet1vmgIDbxOktNc4ut1Y8FJErtX" />
               <img alt="Avatar user 3" className="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrUcD5DtLZrSWeBDDGc-09im5OVb-sYE8byI7r4PcUnUx2eEvYMRNjK8zK2OgCgS1iusI0Av2lmI2XeYnFjk0pLcSdaydRkbf6I5FsV6Yooo7YoCYOdJR1SfnF0Tpej3rnQDdG9l5zS_hv20XDEdfoL-eZYJFZstd4kYS5tGPa3qNwf65JAHLpAMH6r6pfscK5Ujt624pBCJCC_b-CXTGlMqRH7WvQramHrwQC4p0bQqnoyWclan_JAVZSiolETuOxR-SIC8fQu-tn" />
             </div>
             <p className="text-sm font-medium text-white/90">Mais de 2.000 profissionais confiam.</p>
-          </div>
+          
+          </div> */}
         </div>
       </div>
 
@@ -66,13 +72,13 @@ export default function LoginPage() {
                 <div className="flex items-center justify-center size-10 rounded-xl bg-primary text-white shadow-lg shadow-primary/20">
                   <HeartPulse size={24} />
                 </div>
-                <h2 className="text-xl font-bold leading-tight tracking-[-0.015em] text-text-main">NPPAvalia</h2>
+                <h2 className="text-xl font-bold leading-tight tracking-[-0.015em] text-text-main">NeuroPPAvalia</h2>
               </div>
               <h1 className="text-3xl font-black leading-tight tracking-tight text-text-main sm:text-4xl">
-                Bem-vindo de volta
+                Acesso Profissional
               </h1>
               <p className="text-base text-gray-500 font-normal">
-                Acesse sua conta para gerenciar seus pacientes e organizar sua clínica.
+                Faça login para acessar avaliações, testes e relatórios clínicos.
               </p>
             </div>
 
@@ -86,7 +92,7 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               {/* Email Field */}
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium leading-normal text-text-main" htmlFor="email">E-mail</label>
+                <label className="text-sm font-medium leading-normal text-text-main" htmlFor="email">E-mail profissional cadastrado</label>
                 <div className="relative flex items-center">
                   <span className="material-symbols-outlined absolute left-4 text-[#664c9a] z-10 pointer-events-none">mail</span>
                   <input
@@ -104,7 +110,7 @@ export default function LoginPage() {
               {/* Password Field */}
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium leading-normal text-text-main" htmlFor="password">Senha</label>
+                  <label className="text-sm font-medium leading-normal text-text-main" htmlFor="password">Senha de acesso à conta clínica</label>
                 </div>
                 <div className="relative flex items-center">
                   <span className="material-symbols-outlined absolute left-4 text-[#664c9a] z-10 pointer-events-none">lock</span>
@@ -141,9 +147,23 @@ export default function LoginPage() {
             </form>
 
             {/* Footer */}
-            <div className="flex items-center justify-center gap-2">
-              <p className="text-sm font-medium text-gray-500">Não tem uma conta?</p>
-              <Link className="text-sm font-bold text-primary hover:text-primary/80 transition-colors" to="/signup">Cadastre-se</Link>
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex items-center justify-center gap-2">
+                <p className="text-sm font-medium text-gray-500">Ainda não possui cadastro?</p>
+                <Link className="text-sm font-bold text-primary hover:text-primary/80 transition-colors" to="/signup">Criar conta profissional</Link>
+              </div>
+
+              <div className="w-full border-t border-gray-100 pt-4 mt-2">
+                <div className="flex flex-col items-center text-center gap-2">
+                  <p className="text-xs text-gray-400 max-w-[300px]">
+                    <span className="material-symbols-outlined align-middle text-sm mr-1">lock</span>
+                    Ambiente seguro. Seus dados e de seus pacientes estão protegidos conforme a <a href="#" className="underline hover:text-primary">LGPD</a>.
+                  </p>
+                  <p className="text-xs text-primary/70 font-medium bg-primary/5 px-3 py-1 rounded-full">
+                    Plano de assinatura com acesso completo a testes e relatórios
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
