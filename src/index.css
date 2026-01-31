@@ -2,8 +2,11 @@
 
 @theme {
   --color-primary: #5b13ec;
+  --color-primary-hover: #4a0ec0;
   --color-background-light: rgb(246 246 248);
   --color-background-dark: #161022;
+  --color-surface-light: #ffffff;
+  --color-surface-dark: #1e172e;
   --color-text-main: #000000;
   --color-text-secondary: #664c9a;
   --font-display: Manrope, sans-serif;
