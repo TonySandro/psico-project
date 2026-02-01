@@ -41,15 +41,6 @@ export interface TokenResult {
     correctAnswers: number;
 }
 
-export interface TDEResult {
-    patientName: string;
-    age: number;
-    schoolGrade: string;
-    writingScore: number;
-    readingScore: number;
-    arithmeticScore: number;
-}
-
 export const useTestResult = () => {
     return useMutation({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -306,7 +306,6 @@ export default function TestRunnerPage() {
                 score: 'Pontuação',
                 classification: 'Classificação',
                 obs: 'Observações',
-                // TDE Interpretation Keys
                 writing: 'Escrita',
                 reading: 'Leitura',
                 arithmetic: 'Aritmética',

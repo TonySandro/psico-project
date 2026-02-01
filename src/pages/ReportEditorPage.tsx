@@ -69,7 +69,6 @@ const DEFAULT_TEMPLATE = `
 <ul>
   <li>Anamnese com os pais</li>
   <li>EOCA (Entrevista Operativa Centrada na Aprendizagem)</li>
-  <li>TDE II (Teste de Desempenho Escolar)</li>
 </ul>
 
 <h2>4. Análise dos Resultados</h2>

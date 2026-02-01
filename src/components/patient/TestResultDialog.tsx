@@ -19,43 +19,6 @@ const LabelValue = ({ label, value }: { label: string; value: React.ReactNode })
     </Box>
 );
 
-// Specific Viewers
-const TDEResultView = ({ data }: { data: any }) => {
-    const interpretation = data.interpretation || {};
-
-    return (
-        <Grid container spacing={2}>
-            <Grid size={{ xs: 12 }}>
-                <Typography variant="subtitle2" color="primary" gutterBottom>
-                    Interpretação Geral
-                </Typography>
-                <Box bgcolor="primary.50" p={2} borderRadius={1}>
-                    <Typography variant="body1" fontWeight={600} color="primary.main">
-                        {interpretation.overall || 'N/A'}
-                    </Typography>
-                </Box>
-            </Grid>
-
-            <Grid size={{ xs: 12 }}>
-                <Divider sx={{ my: 1 }} />
-                <Typography variant="subtitle2" gutterBottom>
-                    Detalhes por Área
-                </Typography>
-            </Grid>
-
-            <Grid size={{ xs: 4 }}>
-                <LabelValue label="Escrita" value={interpretation.writing} />
-            </Grid>
-            <Grid size={{ xs: 4 }}>
-                <LabelValue label="Leitura" value={interpretation.reading} />
-            </Grid>
-            <Grid size={{ xs: 4 }}>
-                <LabelValue label="Aritmética" value={interpretation.arithmetic} />
-            </Grid>
-        </Grid>
-    );
-};
-
 const StroopResultView = ({ data }: { data: any }) => (
     <Grid container spacing={2}>
         <Grid size={{ xs: 12 }}>
@@ -104,8 +67,6 @@ export default function TestResultDialog({ open, onClose, protocol }: TestResult
 
     const renderContent = () => {
         switch (protocol.name) {
-            case 'TDE':
-                return <TDEResultView data={protocol.data} />;
             case 'Stroop':
                 return <StroopResultView data={protocol.data} />;
             case 'ATA':

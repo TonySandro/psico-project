@@ -14,7 +14,7 @@ export default function HomePage() {
     {
       icon: ClipboardList,
       title: 'Protocolos de Avaliação',
-      description: 'Acesse testes padronizados como TDE, CARS, Stroop, ATA, SNAP e Token Test integrados ao sistema.'
+      description: 'Acesse testes padronizados como CARS, Stroop, ATA, SNAP e Token Test integrados ao sistema.'
     },
     {
       icon: BarChart,

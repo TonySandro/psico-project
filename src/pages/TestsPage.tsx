@@ -4,14 +4,6 @@ import { ClipboardList, Brain, Palette, Target, Activity, MessageCircle } from '
 
 const tests = [
   {
-    id: 'tde',
-    name: 'TDE',
-    fullName: 'Teste de Desempenho Escolar',
-    description: 'Avalia habilidades de escrita, leitura e aritmética',
-    icon: ClipboardList,
-    color: '#3B82F6'
-  },
-  {
     id: 'cars',
     name: 'CARS',
     fullName: 'Escala de Avaliação de Autismo Infantil',

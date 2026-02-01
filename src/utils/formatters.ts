@@ -39,7 +39,6 @@ export const formatPatientStatus = (status: PatientStatus): string => {
 
 export const formatTestType = (type: TestType): string => {
   const typeMap: Record<TestType, string> = {
-    TDE: 'TDE - Teste de Desempenho Escolar',
     CARS: 'CARS - Escala de Avaliação de Autismo',
     Stroop: 'Stroop - Teste de Cores e Palavras',
     ATA: 'ATA - Avaliação de Atenção',
