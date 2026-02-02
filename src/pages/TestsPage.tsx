@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Typography, Stack, Grid, Card, CardContent, CardActions, Button, Box } from '@mui/material';
-import { ClipboardList, Brain, Palette, Target, Activity, MessageCircle } from 'lucide-react';
+import { Brain, Palette, Target, Activity, MessageCircle } from 'lucide-react';
 
 const tests = [
   {
