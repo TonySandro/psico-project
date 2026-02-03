@@ -1,6 +1,6 @@
 import { Typography, Stack, Grid, Card, CardContent, Box, CircularProgress, Alert } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
-import { Users, UserX, UserPlus, ClipboardList } from 'lucide-react';
+import { Users, UserX, UserPlus, ClipboardList, FileText, FilePlus } from 'lucide-react';
 import StatCard from '@/components/StatCard';
 import { useStatistics } from '@/hooks/useStatistics';
 import { useAuthStore } from '@/stores/authStore';
@@ -35,7 +35,7 @@ export default function DashboardPage() {
 
       {/* Stat Cards */}
       <Grid container spacing={3}>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <StatCard
             title="Pacientes Ativos"
             value={stats?.totalActivePatients || 0}
@@ -43,7 +43,7 @@ export default function DashboardPage() {
             color="primary"
           />
         </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <StatCard
             title="Inativos/Alta"
             value={stats?.totalInactivePatients || 0}
@@ -51,7 +51,7 @@ export default function DashboardPage() {
             color="secondary"
           />
         </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <StatCard
             title="Novos no Mês"
             value={stats?.newPatientsThisMonth || 0}
@@ -59,12 +59,28 @@ export default function DashboardPage() {
             color="success"
           />
         </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <StatCard
             title="Total de Protocolos"
             value={stats?.totalProtocols || 0}
             icon={<ClipboardList size={20} />}
             color="warning"
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+          <StatCard
+            title="Total de Relatórios"
+            value={stats?.totalReports || 0}
+            icon={<FileText size={20} />}
+            color="info"
+          />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+          <StatCard
+            title="Relatórios no Mês"
+            value={stats?.reportsThisMonth || 0}
+            icon={<FilePlus size={20} />}
+            color="success"
           />
         </Grid>
       </Grid>

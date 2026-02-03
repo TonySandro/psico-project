@@ -8,7 +8,8 @@ export default function StatCard({ title, value, icon, trend, color = 'primary' 
     secondary: 'secondary.main',
     success: 'success.main',
     warning: 'warning.main',
-    error: 'error.main'
+    error: 'error.main',
+    info: 'info.main'
   };
 
   return (

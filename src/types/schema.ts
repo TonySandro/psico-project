@@ -61,6 +61,8 @@ export interface Statistics {
   totalProtocols: number;
   protocolsByTestType: Record<string, number>;
   mostUsedTests: { name: string; count: number }[];
+  totalReports: number;
+  reportsThisMonth: number;
 }
 
 export interface Report {
@@ -84,7 +86,7 @@ export interface StatCardProps {
     value: number;
     positive: boolean;
   };
-  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error';
+  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
 }
 
 export interface PatientFormProps {
