@@ -1,49 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { Typography, Stack, Grid, Card, CardContent, CardActions, Button, Box } from '@mui/material';
-import { Brain, Palette, Target, Activity, MessageCircle } from 'lucide-react';
 
-const tests = [
-  {
-    id: 'cars',
-    name: 'CARS',
-    fullName: 'Escala de Avaliação de Autismo Infantil',
-    description: 'Avalia comportamentos relacionados ao autismo',
-    icon: Brain,
-    color: '#14B8A6'
-  },
-  {
-    id: 'stroop',
-    name: 'Stroop',
-    fullName: 'Teste de Cores e Palavras',
-    description: 'Avalia atenção seletiva e controle inibitório',
-    icon: Palette,
-    color: '#F59E0B'
-  },
-  {
-    id: 'ata',
-    name: 'ATA',
-    fullName: 'Avaliação de Atenção',
-    description: 'Avalia atenção focada, sustentada e alternada',
-    icon: Target,
-    color: '#EF4444'
-  },
-  {
-    id: 'snap',
-    name: 'SNAP-IV',
-    fullName: 'Escala de Avaliação de TDAH',
-    description: 'Identifica sintomas de desatenção e hiperatividade',
-    icon: Activity,
-    color: '#10B981'
-  },
-  {
-    id: 'token',
-    name: 'Token Test',
-    fullName: 'Teste de Compreensão de Linguagem',
-    description: 'Avalia compreensão de comandos verbais',
-    icon: MessageCircle,
-    color: '#8B5CF6'
-  }
-];
+
+import { TEST_DEFINITIONS } from '@/constants/test-definitions';
+
+const tests = Object.values(TEST_DEFINITIONS);
+
 
 export default function TestsPage() {
   const navigate = useNavigate();
