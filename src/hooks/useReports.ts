@@ -38,8 +38,8 @@ export const useUpdateReport = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ id, data }: { id: string; data: UpdateReportDTO }) => {
-            const response = await api.patch<Report>(`/update-report/${id}`, data);
+        mutationFn: async ({ patientId, accountId, data }: { patientId: string; accountId: string; data: UpdateReportDTO }) => {
+            const response = await api.put<Report>(`/report/${patientId}/${accountId}`, data);
             return response.data;
         },
         onSuccess: (data) => {

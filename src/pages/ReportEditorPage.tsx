@@ -42,8 +42,7 @@ import {
     AlignRight,
     List as ListIcon,
     ListOrdered,
-    FileText,
-    Printer,
+
     Save,
     X
 } from 'lucide-react';
@@ -83,7 +82,7 @@ export default function ReportEditorPage() {
     const [title, setTitle] = useState('Avaliação Neuropsicopedagógica - Inicial');
     const [sessionDate, setSessionDate] = useState(new Date().toISOString().split('T')[0]);
     const [reportType, setReportType] = useState('Avaliação Inicial');
-    const [isConfidential, setIsConfidential] = useState(false);
+
     const [showDiscardDialog, setShowDiscardDialog] = useState(false);
 
     const { data: report, isLoading: loadingReport } = useGetReport(reportId || '');
@@ -113,8 +112,9 @@ export default function ReportEditorPage() {
 
     const wordCount = useWordCount(editor);
 
-    const { save, saveNow, status: saveStatus, lastSaved } = useAutosave({
-        reportId: reportId || '',
+    const { save, saveNow, status: saveStatus, lastSaved, saveSource } = useAutosave({
+        patientId: patientId || report?.patientId || '',
+        accountId: user?.id || '',
         updateMutation: updateReport,
     });
 
@@ -124,12 +124,12 @@ export default function ReportEditorPage() {
             setTitle(report.title || title);
             setSessionDate(report.sessionDate || sessionDate);
             setReportType(report.reportType || reportType);
-            setIsConfidential(report.isConfidential || false);
+
         }
     }, [report, editor]);
 
     useEffect(() => {
-        if (!editor || !reportId) return;
+        if (!editor) return;
 
         const handleUpdate = () => {
             const content = editor.getJSON();
@@ -141,7 +141,7 @@ export default function ReportEditorPage() {
         return () => {
             editor.off('update', handleUpdate);
         };
-    }, [editor, reportId, save]);
+    }, [editor, save]); // Removed reportId dependency as save handles it
 
     const handleImageUpload = async (file: File) => {
         try {
@@ -204,9 +204,9 @@ export default function ReportEditorPage() {
     };
 
     const handleManualSave = () => {
-        if (!editor || !reportId) return;
+        if (!editor) return;
         const content = editor.getJSON();
-        saveNow(content);
+        saveNow(content, true);
     };
 
     const handleDiscard = () => {
@@ -271,7 +271,7 @@ export default function ReportEditorPage() {
                                 </Typography>
                             </>
                         )}
-                        {saveStatus === 'error' && (
+                        {saveStatus === 'error' && saveSource === 'manual' && (
                             <Chip label="Erro ao salvar" color="error" size="small" />
                         )}
                     </Stack>
@@ -281,7 +281,7 @@ export default function ReportEditorPage() {
                         variant="contained"
                         startIcon={<Save size={18} />}
                         onClick={handleManualSave}
-                        disabled={!reportId}
+                        disabled={!editor}
                         sx={{ mr: 2 }}
                     >
                         Salvar Relatório
@@ -497,76 +497,11 @@ export default function ReportEditorPage() {
                                     <MenuItem value="Relatório de Acompanhamento">Relatório de Acompanhamento</MenuItem>
                                     <MenuItem value="Relatório Final">Relatório Final</MenuItem>
                                 </TextField>
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={isConfidential}
-                                            onChange={(e) => setIsConfidential(e.target.checked)}
-                                        />
-                                    }
-                                    label="Confidencial"
-                                />
+
                             </Stack>
                         </Box>
 
-                        <Divider />
 
-                        {/* Anexos */}
-                        <Box>
-                            <Typography variant="h6" fontWeight={600} sx={{ mb: 2 }}>
-                                ANEXOS
-                            </Typography>
-                            <Typography variant="caption" color="text.secondary" sx={{ mb: 2, display: 'block' }}>
-                                Nenhum anexo adicionado
-                            </Typography>
-                            <Button
-                                variant="contained"
-                                color="secondary"
-                                fullWidth
-                                size="small"
-                                disabled
-                            >
-                                + Adicionar
-                            </Button>
-                        </Box>
-
-                        <Divider />
-
-                        {/* Exportar */}
-                        <Box>
-                            <Typography variant="h6" fontWeight={600} sx={{ mb: 2 }}>
-                                EXPORTAR
-                            </Typography>
-                            <Stack spacing={1}>
-                                <Button
-                                    variant="outlined"
-                                    startIcon={<FileText size={18} />}
-                                    fullWidth
-                                    size="small"
-                                    disabled
-                                >
-                                    Word
-                                </Button>
-                                <Button
-                                    variant="outlined"
-                                    startIcon={<FileText size={18} />}
-                                    fullWidth
-                                    size="small"
-                                    disabled
-                                >
-                                    PDF
-                                </Button>
-                                <Button
-                                    variant="outlined"
-                                    startIcon={<Printer size={18} />}
-                                    fullWidth
-                                    size="small"
-                                    disabled
-                                >
-                                    Imprimir
-                                </Button>
-                            </Stack>
-                        </Box>
                     </Stack>
                 </Paper>
             </Box>
