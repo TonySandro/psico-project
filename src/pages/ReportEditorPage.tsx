@@ -18,8 +18,6 @@ import {
     Paper,
     TextField,
     MenuItem,
-    Switch,
-    FormControlLabel,
     Chip,
     Divider,
     Tooltip,

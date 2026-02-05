@@ -1,10 +1,10 @@
-import { useState } from 'react';
+
 import { Card, CardContent, Typography, Button, Stack, Box, Grid, Chip, Alert, CircularProgress } from '@mui/material';
 import { FileText, Plus, FileType } from 'lucide-react';
 import type { Report } from '@/types/schema';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
-import { reportService } from '@/services/reportService';
+import { useCreateReport } from '@/hooks/useReports';
 
 interface ReportListCardProps {
     report?: Report | null;
@@ -14,14 +14,13 @@ interface ReportListCardProps {
 export default function ReportListCard({ report, patientId }: ReportListCardProps) {
     const navigate = useNavigate();
     const user = useAuthStore(state => state.user);
-    const [isCreating, setIsCreating] = useState(false);
+    const createReportMutation = useCreateReport();
 
     const handleCreateReport = async () => {
         if (!user) return;
 
         try {
-            setIsCreating(true);
-            const newReport = await reportService.createReport({
+            const newReport = await createReportMutation.mutateAsync({
                 patientId,
                 accountId: user.id,
                 title: "Avaliação Neuropsicopedagógica - Inicial",
@@ -43,8 +42,6 @@ export default function ReportListCard({ report, patientId }: ReportListCardProp
             navigate(`/app/reports/${newReport.id}/edit`);
         } catch (error) {
             console.error('Error creating report:', error);
-        } finally {
-            setIsCreating(false);
         }
     };
 
@@ -67,12 +64,12 @@ export default function ReportListCard({ report, patientId }: ReportListCardProp
                     {!report && (
                         <Button
                             variant="text"
-                            startIcon={isCreating ? <CircularProgress size={18} color="inherit" /> : <Plus size={18} />}
-                            disabled={isCreating}
+                            startIcon={createReportMutation.isPending ? <CircularProgress size={18} color="inherit" /> : <Plus size={18} />}
+                            disabled={createReportMutation.isPending}
                             sx={{ bgcolor: 'secondary.50', color: 'secondary.main', fontWeight: 600, '&:hover': { bgcolor: 'secondary.100' } }}
                             onClick={handleCreateReport}
                         >
-                            {isCreating ? 'Criando...' : 'Novo Relatório'}
+                            {createReportMutation.isPending ? 'Criando...' : 'Novo Relatório'}
                         </Button>
                     )}
                 </Stack>
