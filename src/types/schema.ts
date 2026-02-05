@@ -25,6 +25,8 @@ export interface Patient {
   status?: PatientStatus;
   createdAt?: string; // KEEP THIS
   protocols?: Protocol[];
+  anamnesis?: Anamnesis | null;
+  report?: Report | null;
 }
 
 export interface Anamnesis {

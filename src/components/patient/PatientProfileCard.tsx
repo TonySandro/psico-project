@@ -110,24 +110,6 @@ export default function PatientProfileCard({ patient }: PatientProfileCardProps)
                         </Box>
                     </Box>
                 </Stack>
-
-                <Divider sx={{ my: 3 }} />
-
-                <Box>
-                    <Stack direction="row" alignItems="center" spacing={1} mb={2}>
-                        <Box sx={{ p: 0.5, bgcolor: 'secondary.main', borderRadius: 0.5, color: 'white' }}>
-                            <FileText size={16} />
-                        </Box>
-                        <Typography variant="subtitle2" fontWeight={700}>
-                            Notas Rápidas
-                        </Typography>
-                    </Stack>
-                    <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 2 }}>
-                        <Typography variant="body2" color="text.secondary" fontStyle="italic">
-                            Nenhuma nota registrada.
-                        </Typography>
-                    </Box>
-                </Box>
             </CardContent>
         </Card>
     );

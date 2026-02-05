@@ -1,30 +1,56 @@
-import { Card, CardContent, Typography, Button, Stack, Box, Grid, Chip } from '@mui/material';
-import { FileText, Plus, Download, FileType } from 'lucide-react';
-// import { formatDate } from '@/utils/formatters';
+import { useState } from 'react';
+import { Card, CardContent, Typography, Button, Stack, Box, Grid, Chip, Alert, CircularProgress } from '@mui/material';
+import { FileText, Plus, FileType } from 'lucide-react';
+import type { Report } from '@/types/schema';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/stores/authStore';
+import { reportService } from '@/services/reportService';
 
 interface ReportListCardProps {
+    report?: Report | null;
     patientId: string;
 }
 
-// Mock data for reports since we don't have an endpoint yet
-const MOCK_REPORTS = [
-    {
-        id: '1',
-        title: 'Relatório de Avaliação Neuropsicopedagógica',
-        date: '2023-10-05',
-        status: 'ASSINADO',
-        type: 'final'
-    },
-    {
-        id: '2',
-        title: 'Plano de Intervenção Individualizado',
-        date: '2023-10-06',
-        status: 'RASCUNHO',
-        type: 'pei'
-    }
-];
+export default function ReportListCard({ report, patientId }: ReportListCardProps) {
+    const navigate = useNavigate();
+    const user = useAuthStore(state => state.user);
+    const [isCreating, setIsCreating] = useState(false);
 
-export default function ReportListCard({ patientId: _patientId }: ReportListCardProps) {
+    const handleCreateReport = async () => {
+        if (!user) return;
+
+        try {
+            setIsCreating(true);
+            const newReport = await reportService.createReport({
+                patientId,
+                accountId: user.id,
+                title: "Avaliação Neuropsicopedagógica - Inicial",
+                content: {
+                    type: "doc",
+                    content: [
+                        {
+                            type: "paragraph",
+                            content: [
+                                {
+                                    type: "text",
+                                    text: "Início da avaliação..."
+                                }
+                            ]
+                        }
+                    ]
+                }
+            });
+            navigate(`/app/reports/${newReport.id}/edit`);
+        } catch (error) {
+            console.error('Error creating report:', error);
+        } finally {
+            setIsCreating(false);
+        }
+    };
+
+    const handleViewReport = (reportId: string) => {
+        navigate(`/app/reports/${reportId}/edit`);
+    };
 
     return (
         <Card sx={{ mb: 3 }}>
@@ -35,21 +61,29 @@ export default function ReportListCard({ patientId: _patientId }: ReportListCard
                             <FileText size={24} />
                         </Box>
                         <Typography variant="h6" fontWeight={700}>
-                            Relatórios
+                            Relatório
                         </Typography>
                     </Stack>
-                    <Button
-                        variant="text"
-                        startIcon={<Plus size={18} />}
-                        sx={{ bgcolor: 'secondary.50', color: 'secondary.main', fontWeight: 600, '&:hover': { bgcolor: 'secondary.100' } }}
-                    >
-                        Novo Relatório
-                    </Button>
+                    {!report && (
+                        <Button
+                            variant="text"
+                            startIcon={isCreating ? <CircularProgress size={18} color="inherit" /> : <Plus size={18} />}
+                            disabled={isCreating}
+                            sx={{ bgcolor: 'secondary.50', color: 'secondary.main', fontWeight: 600, '&:hover': { bgcolor: 'secondary.100' } }}
+                            onClick={handleCreateReport}
+                        >
+                            {isCreating ? 'Criando...' : 'Novo Relatório'}
+                        </Button>
+                    )}
                 </Stack>
 
-                <Grid container spacing={2}>
-                    {MOCK_REPORTS.map((report) => (
-                        <Grid size={{ xs: 12, md: 6 }} key={report.id}>
+                {!report ? (
+                    <Alert severity="info" variant="outlined">
+                        Nenhum relatório encontrado para este paciente.
+                    </Alert>
+                ) : (
+                    <Grid container spacing={2}>
+                        <Grid size={{ xs: 12, md: 6 }}>
                             <Box sx={{
                                 p: 2,
                                 border: '1px solid',
@@ -67,53 +101,39 @@ export default function ReportListCard({ patientId: _patientId }: ReportListCard
                                             <FileType size={20} />
                                         </Box>
                                         <Chip
-                                            label={report.status}
+                                            label="RELATÓRIO"
                                             size="small"
                                             sx={{
-                                                bgcolor: report.status === 'ASSINADO' ? 'success.50' : 'warning.50',
-                                                color: report.status === 'ASSINADO' ? 'success.main' : 'warning.main',
+                                                bgcolor: 'info.50',
+                                                color: 'info.main',
                                                 fontWeight: 700,
                                                 fontSize: '0.7rem'
                                             }}
                                         />
                                     </Stack>
                                     <Typography variant="subtitle2" fontWeight={700} gutterBottom>
-                                        {report.title}
+                                        {report.title || 'Sem título'}
                                     </Typography>
                                     <Typography variant="caption" color="text.secondary" display="block" mb={2}>
-                                        Gerado em {report.date}
+                                        {report.createdAt ? `Criado em ${new Date(report.createdAt).toLocaleDateString()}` : 'Data desconhecida'}
                                     </Typography>
                                 </Box>
 
                                 <Stack direction="row" spacing={1} mt={2}>
                                     <Button
                                         fullWidth
-                                        variant={report.status === 'RASCUNHO' ? "contained" : "outlined"}
+                                        variant="outlined"
                                         color="primary"
                                         size="small"
+                                        onClick={() => handleViewReport(report.id)}
                                     >
-                                        {report.status === 'RASCUNHO' ? 'Continuar Edição' : 'Visualizar'}
+                                        Visualizar / Editar
                                     </Button>
-                                    {report.status === 'ASSINADO' && (
-                                        <Box sx={{
-                                            border: '1px solid',
-                                            borderColor: 'divider',
-                                            borderRadius: 1,
-                                            p: '5px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            cursor: 'pointer',
-                                            '&:hover': { bgcolor: 'grey.50' }
-                                        }}>
-                                            <Download size={16} />
-                                        </Box>
-                                    )}
                                 </Stack>
                             </Box>
                         </Grid>
-                    ))}
-                </Grid>
+                    </Grid>
+                )}
             </CardContent>
         </Card>
     );

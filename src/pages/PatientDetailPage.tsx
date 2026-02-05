@@ -56,9 +56,6 @@ export default function PatientDetailPage() {
                 {patient.name}
               </Typography>
             </Stack>
-            <Typography variant="h4" fontWeight={700}>
-              {patient.name}
-            </Typography>
           </Box>
         </Stack>
 
@@ -70,14 +67,6 @@ export default function PatientDetailPage() {
             onClick={() => setIsEditOpen(true)}
           >
             Editar Perfil
-          </Button>
-          <Button
-            variant="contained"
-            startIcon={<Plus size={18} />}
-            color="secondary"
-            onClick={() => navigate('/app/tests')}
-          >
-            Novo Teste
           </Button>
         </Stack>
       </Stack>
@@ -93,7 +82,7 @@ export default function PatientDetailPage() {
           <Stack spacing={3}>
             <AnamnesisCard patientId={patient.id} />
             <AssessmentListCard protocols={patient.protocols} />
-            <ReportListCard patientId={patient.id} />
+            <ReportListCard patientId={patient.id} report={patient.report} />
           </Stack>
         </Grid>
       </Grid>
