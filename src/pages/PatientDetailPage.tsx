@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Stack, Button, Grid, Box, CircularProgress, Alert, Typography, Dialog, DialogTitle } from '@mui/material';
-import { Edit, Plus } from 'lucide-react';
+import { Edit } from 'lucide-react';
 import BackButton from '@/components/BackButton';
 import { usePatient } from '@/hooks/usePatients';
 import PatientForm from '@/components/PatientForm';
