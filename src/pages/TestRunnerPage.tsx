@@ -85,11 +85,30 @@ export default function TestRunnerPage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (type) {
-            const data = {
+            let data: Record<string, any> = {
                 patientName,
                 age: Number(age),
                 ...formData
             };
+
+            if (type === 'cars') {
+                const scores = Array.from({ length: 15 }, (_, i) => Number(formData[`score_${i}`] || 0));
+                data = {
+                    patientName,
+                    age: Number(age),
+                    scores
+                };
+            } else if (type === 'ata') {
+                data = {
+                    patientName,
+                    age: Number(age),
+                    scores: {
+                        focusedAttention: Number(formData.focusedAttention || 0),
+                        sustainedAttention: Number(formData.sustainedAttention || 0),
+                        alternatingAttention: Number(formData.alternatingAttention || 0)
+                    }
+                };
+            }
 
             processTest({ testType: type, data }, {
                 onSuccess: (testResult) => {
@@ -160,7 +179,8 @@ export default function TestRunnerPage() {
                                     label={`Item ${i + 1}`}
                                     type="number"
                                     size="small"
-                                    inputProps={{ min: 1, max: 4 }}
+                                    required
+                                    inputProps={{ min: 1, max: 4, step: 0.5 }}
                                     value={formData[`score_${i}`] || ''}
                                     onChange={(e) => handleInputChange(`score_${i}`, Number(e.target.value))}
                                 />
