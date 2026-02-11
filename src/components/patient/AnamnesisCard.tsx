@@ -1,4 +1,4 @@
-import { Card, CardContent, Typography, Button, Stack, Box } from '@mui/material';
+import { Card, CardContent, Typography, Button, Stack, Box, Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { FileText, ChevronRight } from 'lucide-react';
 import { useGetAnamnesis } from '@/hooks/useAnamnesis';
@@ -61,19 +61,29 @@ export default function AnamnesisCard({ patientId }: AnamnesisCardProps) {
                             </Stack>
                         )}
 
-                        <Button
-                            variant="contained"
-                            color={anamnesis ? 'inherit' : 'primary'}
-                            size="small"
-                            sx={{
-                                bgcolor: anamnesis ? 'white' : 'primary.main',
-                                color: anamnesis ? 'text.primary' : 'white',
-                                boxShadow: anamnesis ? 1 : 2
-                            }}
-                            onClick={() => navigate(`/patients/${patientId}/anamnesis/new`)}
-                        >
-                            {anamnesis ? 'Visualizar' : 'Criar'}
-                        </Button>
+                        <Tooltip title={!anamnesis ? "Funcionalidade indisponível no momento" : ""}>
+                            <span>
+                                <Button
+                                    variant="contained"
+                                    color={anamnesis ? 'inherit' : 'primary'}
+                                    size="small"
+                                    disabled={!anamnesis}
+                                    sx={{
+                                        ...(anamnesis && {
+                                            bgcolor: 'white',
+                                            color: 'text.primary',
+                                            boxShadow: 1
+                                        }),
+                                        ...(!anamnesis && {
+                                            boxShadow: 2
+                                        })
+                                    }}
+                                    onClick={() => navigate(`/patients/${patientId}/anamnesis/new`)}
+                                >
+                                    {anamnesis ? 'Visualizar' : 'Criar'}
+                                </Button>
+                            </span>
+                        </Tooltip>
                     </Stack>
                 </Box>
 
