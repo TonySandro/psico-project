@@ -84,7 +84,15 @@ export default function LoginPage() {
 
             {error && (
               <div className="bg-red-50 text-red-500 p-3 rounded-lg text-sm text-center">
-                Email ou senha inválidos
+                {(() => {
+                  const err = error as any;
+                  const data = err?.response?.data;
+                  const message = typeof data === 'string' ? data : (data?.message || data?.error);
+                  if (message === 'Unauthorized') {
+                    return 'Conta não verificada. Por favor, verifique seu e-mail.';
+                  }
+                  return 'Email ou senha inválidos';
+                })()}
               </div>
             )}
 
