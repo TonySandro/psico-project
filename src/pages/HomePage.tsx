@@ -1,6 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, Button, Typography, Box, Container, Stack, Card, CardContent, Grid } from '@mui/material';
 import { HeartPulse, ClipboardList, BarChart, Users, ArrowRight, CheckCircle } from 'lucide-react';
+import photo1 from '../images/photo-1.avif';
+import photo2 from '../images/photo-2.avif';
+
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -141,12 +144,14 @@ export default function HomePage() {
                 }}
               >
                 <img
-                  src="https://pixabay.com/get/g9bb1706ae17afccc9585e8d72c6f92e9d2fec2cf8096c60f066aee3e98564d49a4b1e11f7aa3b848ddec45c8add1fa6c.svg"
-                  alt="Medical healthcare team - Mohamed_hassan on Pixabay"
+                  src={photo1}
+                  alt="Profissional de psicopedagogia trabalhando"
                   style={{
                     width: '100%',
                     maxWidth: '500px',
-                    height: 'auto'
+                    height: 'auto',
+                    borderRadius: '16px',
+                    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
                   }}
                 />
               </Box>
@@ -251,12 +256,14 @@ export default function HomePage() {
                 }}
               >
                 <img
-                  src="https://pixabay.com/get/g123b6e44c818a8176a03b9615a1939f32fc01f5b609aa5e02165ef54dc46f4ad518e5ecc6ac87e6ed2f7069fdeada987.svg"
-                  alt="Medical doctor with mask - Megan_Rexazin_Conde on Pixabay"
+                  src={photo2}
+                  alt="Gestão de dados e relatórios clínicos"
                   style={{
                     width: '100%',
-                    maxWidth: '400px',
-                    height: 'auto'
+                    maxWidth: '430px',
+                    height: 'auto',
+                    borderRadius: '16px',
+                    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
                   }}
                 />
               </Box>
