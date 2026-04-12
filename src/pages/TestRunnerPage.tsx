@@ -50,7 +50,7 @@ export default function TestRunnerPage() {
     const [isAnonymous, setIsAnonymous] = useState(false);
     const [formData, setFormData] = useState<Record<string, any>>({});
     const [showForm, setShowForm] = useState(true);
-    
+
     // Ref for scrolling to results
     const resultsSectionRef = useRef<HTMLDivElement>(null);
 
@@ -70,9 +70,9 @@ export default function TestRunnerPage() {
     useEffect(() => {
         if (result && resultsSectionRef.current) {
             setTimeout(() => {
-                resultsSectionRef.current?.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
+                resultsSectionRef.current?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
                 });
             }, 100);
         }
@@ -131,6 +131,12 @@ export default function TestRunnerPage() {
                     patientName,
                     age: Number(age),
                     answers
+                };
+            } else if (type === 'token') {
+                data = {
+                    name: patientName,
+                    age: Number(age),
+                    correctAnswers: Number(formData.correctAnswers || 0)
                 };
             }
 
@@ -321,14 +327,14 @@ export default function TestRunnerPage() {
                 {Object.entries(data).map(([key, value]) => {
                     if (typeof value === 'object') return null;
                     return (
-                        <Paper 
-                            key={key} 
-                            elevation={0} 
-                            sx={{ 
-                                p: 2.5, 
+                        <Paper
+                            key={key}
+                            elevation={0}
+                            sx={{
+                                p: 2.5,
                                 bgcolor: 'white',
-                                borderRadius: 2, 
-                                border: '2px solid', 
+                                borderRadius: 2,
+                                border: '2px solid',
                                 borderColor: 'grey.200',
                                 transition: 'all 0.2s',
                                 '&:hover': {
@@ -338,11 +344,11 @@ export default function TestRunnerPage() {
                                 }
                             }}
                         >
-                            <Typography 
-                                variant="caption" 
-                                color="text.secondary" 
-                                sx={{ 
-                                    textTransform: 'uppercase', 
+                            <Typography
+                                variant="caption"
+                                color="text.secondary"
+                                sx={{
+                                    textTransform: 'uppercase',
                                     letterSpacing: 0.5,
                                     fontWeight: 600,
                                     display: 'block',
@@ -361,12 +367,12 @@ export default function TestRunnerPage() {
         );
 
         return (
-            <Card 
-                sx={{ 
-                    borderTop: 4, 
+            <Card
+                sx={{
+                    borderTop: 4,
                     borderColor: 'success.main',
                     background: 'linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)'
-                }} 
+                }}
                 elevation={4}
             >
                 <CardContent sx={{ p: { xs: 3, md: 4 } }}>
@@ -397,17 +403,17 @@ export default function TestRunnerPage() {
                                     </Typography>
                                 </Box>
                             </Stack>
-                            <Chip 
+                            <Chip
                                 icon={<CheckCircle2 size={18} />}
-                                label="Processado" 
-                                color="success" 
+                                label="Processado"
+                                color="success"
                                 variant="filled"
                                 sx={{ px: 1, fontWeight: 600 }}
                             />
                         </Stack>
 
                         {selectedPatient && (
-                            <Alert 
+                            <Alert
                                 severity={isSaved ? "success" : isSaving ? "info" : "warning"}
                                 sx={{ borderRadius: 2 }}
                             >
@@ -426,13 +432,13 @@ export default function TestRunnerPage() {
                             if (typeof value === 'object' && value !== null) {
                                 return (
                                     <Box key={key}>
-                                        <Typography 
-                                            variant="subtitle1" 
+                                        <Typography
+                                            variant="subtitle1"
                                             fontWeight={700}
-                                            gutterBottom 
-                                            sx={{ 
-                                                textTransform: 'uppercase', 
-                                                color: 'text.primary', 
+                                            gutterBottom
+                                            sx={{
+                                                textTransform: 'uppercase',
+                                                color: 'text.primary',
                                                 mt: 2,
                                                 mb: 2,
                                                 letterSpacing: 0.5
@@ -705,9 +711,9 @@ export default function TestRunnerPage() {
 
             {/* Results Section - Full Width */}
             {result && (
-                <Box 
+                <Box
                     ref={resultsSectionRef}
-                    sx={{ 
+                    sx={{
                         animation: 'fadeIn 0.6s ease-in-out',
                         '@keyframes fadeIn': {
                             '0%': { opacity: 0, transform: 'translateY(20px)' },
