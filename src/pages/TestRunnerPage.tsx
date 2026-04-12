@@ -125,6 +125,13 @@ export default function TestRunnerPage() {
                         alternatingAttention: Number(formData.alternatingAttention || 0)
                     }
                 };
+            } else if (type === 'snap') {
+                const answers = Array.from({ length: 26 }, (_, i) => Number(formData[`answer_${i}`] || 0));
+                data = {
+                    patientName,
+                    age: Number(age),
+                    answers
+                };
             }
 
             processTest({ testType: type, data }, {
