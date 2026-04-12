@@ -109,7 +109,7 @@ export default function TestRunnerPage() {
             };
 
             if (type === 'cars') {
-                const scores = Array.from({ length: 15 }, (_, i) => Number(formData[`score_${i}`] || 0));
+                const scores = Array.from({ length: 15 }, (_, i) => Number(formData[`score_${i}`] ?? 0));
                 data = {
                     patientName,
                     age: Number(age),
@@ -120,13 +120,13 @@ export default function TestRunnerPage() {
                     patientName,
                     age: Number(age),
                     scores: {
-                        focusedAttention: Number(formData.focusedAttention || 0),
-                        sustainedAttention: Number(formData.sustainedAttention || 0),
-                        alternatingAttention: Number(formData.alternatingAttention || 0)
+                        focusedAttention: Number(formData.focusedAttention ?? 0),
+                        sustainedAttention: Number(formData.sustainedAttention ?? 0),
+                        alternatingAttention: Number(formData.alternatingAttention ?? 0)
                     }
                 };
             } else if (type === 'snap') {
-                const answers = Array.from({ length: 26 }, (_, i) => Number(formData[`answer_${i}`] || 0));
+                const answers = Array.from({ length: 26 }, (_, i) => Number(formData[`answer_${i}`] ?? 0));
                 data = {
                     patientName,
                     age: Number(age),
@@ -136,7 +136,7 @@ export default function TestRunnerPage() {
                 data = {
                     name: patientName,
                     age: Number(age),
-                    correctAnswers: Number(formData.correctAnswers || 0)
+                    correctAnswers: Number(formData.correctAnswers ?? 0)
                 };
             }
 
@@ -177,8 +177,8 @@ export default function TestRunnerPage() {
                 type={type}
                 fullWidth
                 required
-                value={formData[field] || ''}
-                onChange={(e) => handleInputChange(field, type === 'number' ? Number(e.target.value) : e.target.value)}
+                value={formData[field] ?? ''}
+                onChange={(e) => handleInputChange(field, type === 'number' ? (e.target.value === '' ? '' : Number(e.target.value)) : e.target.value)}
             />
         );
 
@@ -223,8 +223,8 @@ export default function TestRunnerPage() {
                                     size="small"
                                     required
                                     inputProps={{ min: 1, max: 4, step: 0.5 }}
-                                    value={formData[`score_${i}`] || ''}
-                                    onChange={(e) => handleInputChange(`score_${i}`, Number(e.target.value))}
+                                    value={formData[`score_${i}`] ?? ''}
+                                    onChange={(e) => handleInputChange(`score_${i}`, e.target.value === '' ? '' : Number(e.target.value))}
                                 />
                             ))}
                         </Box>
@@ -242,8 +242,8 @@ export default function TestRunnerPage() {
                                     type="number"
                                     size="small"
                                     inputProps={{ min: 0, max: 3 }}
-                                    value={formData[`answer_${i}`] || ''}
-                                    onChange={(e) => handleInputChange(`answer_${i}`, Number(e.target.value))}
+                                    value={formData[`answer_${i}`] ?? ''}
+                                    onChange={(e) => handleInputChange(`answer_${i}`, e.target.value === '' ? '' : Number(e.target.value))}
                                 />
                             ))}
                         </Box>
