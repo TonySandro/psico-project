@@ -299,7 +299,22 @@ export default function TestRunnerPage() {
                 arithmetic: 'Aritmética',
                 overall: 'Geral',
                 status: 'Status',
-                level: 'Nível'
+                level: 'Nível',
+                inattention: 'Desatenção',
+                inattentionScore: 'Escore de Desatenção',
+                inattentionStatus: 'Status de Desatenção',
+                hyperactivity: 'Hiperatividade',
+                impulsivity: 'Impulsividade',
+                hyperactivityImpulsivity: 'Hiperatividade/Impulsividade',
+                hyperactivityImpulsivityScore: 'Escore Hiper./Impuls.',
+                hyperactivityImpulsivityStatus: 'Status Hiper./Impuls.',
+                oppositionalDefiant: 'Opositor Desafiador',
+                oppositionalDefiantScore: 'Escore Opositor Desafiador',
+                oppositionalDefiantStatus: 'Status Opositor Desafiador',
+                oppositional: 'Opositor',
+                oppositionalScore: 'Escore Opositor',
+                oppositionalStatus: 'Status Opositor',
+                totalScore: 'Escore Total'
             };
             return translations[key] || key.replace(/([A-Z])/g, ' $1').trim();
         };
@@ -317,7 +332,16 @@ export default function TestRunnerPage() {
                 'Very High': 'Muito Alta',
                 'Deficit': 'Déficit',
                 'Normal': 'Normal',
-                'Borderline': 'Limítrofe'
+                'Borderline': 'Limítrofe',
+                'Clinical': 'Clínico',
+                'Non-Clinical': 'Não Clínico',
+                'Non-clinical': 'Não Clínico',
+                'Subclinical': 'Subclínico',
+                'Mild': 'Leve',
+                'Moderate': 'Moderado',
+                'Severe': 'Severo',
+                'Typical': 'Típico',
+                'Atypical': 'Atípico'
             };
             return valueTranslations[value] || value;
         };
