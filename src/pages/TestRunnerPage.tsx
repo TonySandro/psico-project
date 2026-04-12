@@ -593,7 +593,7 @@ export default function TestRunnerPage() {
                     {/* Right Column: Form */}
                     <Stack spacing={4}>
                         <Paper elevation={2} sx={{ p: { xs: 3, md: 4 }, borderRadius: 2 }}>
-                            <form onSubmit={handleSubmit}>
+                            <form>
                                 <Stack spacing={4}>
                                     <Box>
                                         <Typography variant="h6" gutterBottom fontWeight={600}>
@@ -681,7 +681,8 @@ export default function TestRunnerPage() {
 
                                     <Box display="flex" justifyContent="flex-end" pt={2}>
                                         <Button
-                                            type="submit"
+                                            type="button"
+                                            onClick={handleSubmit}
                                             variant="contained"
                                             size="large"
                                             disabled={isPending || isSaving}
