@@ -10,6 +10,7 @@ import TestsPage from './pages/TestsPage';
 import FeedbackPage from './pages/FeedbackPage';
 import ProfilePage from './pages/ProfilePage';
 import CreateAnamnesisPage from './pages/CreateAnamnesisPage';
+import PublicAnamnesisPage from './pages/PublicAnamnesisPage';
 import TestRunnerPage from './pages/TestRunnerPage'
 import DashboardLayout from './layouts/DashboardLayout';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -39,6 +40,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/confirm" element={<ConfirmEmailPage />} />
+        <Route path="/anamnese/responder/:token" element={<PublicAnamnesisPage />} />
 
         <Route path="/payment/success" element={<PaymentSuccessPage />} />
         <Route path="/payment/failure" element={<PaymentFailurePage />} />

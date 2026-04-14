@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Card, CardContent, Typography, Button, Stack, Box, Tooltip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { FileText, ChevronRight } from 'lucide-react';
+import { FileText, ChevronRight, Link as LinkIcon } from 'lucide-react';
+import AnamnesisLinkModal from './AnamnesisLinkModal';
 import { useGetAnamnesis } from '@/hooks/useAnamnesis';
 import { formatDate } from '@/utils/formatters';
 
@@ -11,6 +13,7 @@ interface AnamnesisCardProps {
 export default function AnamnesisCard({ patientId }: AnamnesisCardProps) {
     const navigate = useNavigate();
     const { data: anamnesis } = useGetAnamnesis(patientId);
+    const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
 
     return (
         <Card sx={{ mb: 3 }}>
@@ -61,29 +64,40 @@ export default function AnamnesisCard({ patientId }: AnamnesisCardProps) {
                             </Stack>
                         )}
 
-                        <Tooltip title={!anamnesis ? "Funcionalidade indisponível no momento" : ""}>
-                            <span>
-                                <Button
-                                    variant="contained"
-                                    color={anamnesis ? 'inherit' : 'primary'}
-                                    size="small"
-                                    disabled={!anamnesis}
-                                    sx={{
-                                        ...(anamnesis && {
-                                            bgcolor: 'white',
-                                            color: 'text.primary',
-                                            boxShadow: 1
-                                        }),
-                                        ...(!anamnesis && {
-                                            boxShadow: 2
-                                        })
-                                    }}
-                                    onClick={() => navigate(`/patients/${patientId}/anamnesis/new`)}
-                                >
-                                    {anamnesis ? 'Visualizar' : 'Criar'}
-                                </Button>
-                            </span>
-                        </Tooltip>
+                        <Stack direction="row" spacing={1}>
+                            <Button
+                                variant="outlined"
+                                color="primary"
+                                size="small"
+                                startIcon={<LinkIcon size={16} />}
+                                onClick={() => setIsLinkModalOpen(true)}
+                            >
+                                Gerar link
+                            </Button>
+                            <Tooltip title={!anamnesis ? "Funcionalidade indisponível no momento" : ""}>
+                                <span>
+                                    <Button
+                                        variant="contained"
+                                        color={anamnesis ? 'inherit' : 'primary'}
+                                        size="small"
+                                        disabled={!anamnesis}
+                                        sx={{
+                                            ...(anamnesis && {
+                                                bgcolor: 'white',
+                                                color: 'text.primary',
+                                                boxShadow: 1
+                                            }),
+                                            ...(!anamnesis && {
+                                                boxShadow: 2
+                                            })
+                                        }}
+                                        onClick={() => navigate(`/patients/${patientId}/anamnesis/new`)}
+                                    >
+                                        {anamnesis ? 'Visualizar' : 'Criar'}
+                                    </Button>
+                                </span>
+                            </Tooltip>
+                        </Stack>
                     </Stack>
                 </Box>
 
@@ -92,6 +106,12 @@ export default function AnamnesisCard({ patientId }: AnamnesisCardProps) {
                         {anamnesis.reasonForReferral || "Sem resumo disponível."}
                     </Typography>
                 )}
+                
+                <AnamnesisLinkModal 
+                    open={isLinkModalOpen} 
+                    onClose={() => setIsLinkModalOpen(false)} 
+                    patientId={patientId} 
+                />
             </CardContent>
         </Card>
     );

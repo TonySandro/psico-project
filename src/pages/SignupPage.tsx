@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useSignup } from '@/hooks/useAuth';
+import { useSignup, useLogin } from '@/hooks/useAuth';
 import {
   Eye,
   EyeOff,
@@ -21,7 +21,10 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const { mutate: signup, isPending } = useSignup();
+  const { mutate: signup, isPending: isSignupPending } = useSignup();
+  const { mutate: login, isPending: isLoginPending } = useLogin();
+
+  const isPending = isSignupPending || isLoginPending;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,10 +42,18 @@ export default function SignupPage() {
 
     signup({ name, email, password, passwordConfirmation }, {
       onSuccess: () => {
-        navigate('/app/dashboard');
+        login({ email, password }, {
+          onSuccess: () => {
+            navigate('/app/dashboard');
+          },
+          onError: () => {
+            navigate('/login');
+          }
+        });
       },
-      onError: () => {
-        setErrorMessage('Erro ao criar conta. Tente novamente.');
+      onError: (error: any) => {
+        const errorMsg = error.response?.data?.error || 'Erro ao criar conta. Tente novamente.';
+        setErrorMessage(errorMsg);
       }
     });
   };

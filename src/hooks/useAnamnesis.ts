@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/services/api';
-import type { Anamnesis } from '@/types/schema';
+import { useAuthStore } from '@/stores/authStore';
+import type { Anamnesis, PublicAnamnesisLink, PublicAnamnesisData } from '@/types/schema';
 
 type CreateAnamnesisDTO = Omit<Anamnesis, 'id' | 'createdAt'>;
 
@@ -33,5 +34,36 @@ export const useGetAnamnesis = (patientId: string) => {
         },
         enabled: !!patientId,
         retry: false
+    });
+};
+
+export const useGenerateAnamnesisLink = () => {
+    return useMutation({
+        mutationFn: async (patientId: string) => {
+            const accountId = useAuthStore.getState().user?.id;
+            const response = await api.post<PublicAnamnesisLink>('/generate-link', { patientId, accountId });
+            return response.data;
+        }
+    });
+};
+
+export const useGetPublicAnamnesis = (token: string) => {
+    return useQuery({
+        queryKey: ['public-anamnesis', token],
+        queryFn: async () => {
+            const response = await api.get<PublicAnamnesisData>(`/public/${token}`);
+            return response.data;
+        },
+        enabled: !!token,
+        retry: false
+    });
+};
+
+export const useSubmitPublicAnamnesis = () => {
+    return useMutation({
+        mutationFn: async ({ token, answers }: { token: string, answers: Record<string, any> }) => {
+            const response = await api.post(`/public/${token}/answer`, { answers });
+            return response.data;
+        }
     });
 };

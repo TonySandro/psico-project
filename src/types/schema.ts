@@ -102,3 +102,25 @@ export interface TestFormProps {
   onSubmit: (data: unknown) => void;
   onCancel: () => void;
 }
+
+export interface PublicAnamnesisLink {
+  link?: string;
+  token?: string;
+  expiresAt: string;
+  status?: 'PENDING' | 'ANSWERED';
+}
+
+export interface PublicAnamnesisQuestion {
+  id: string;
+  type: 'text' | 'textarea' | 'select' | 'radio' | 'checkbox';
+  label: string;
+  options?: string[];
+  required?: boolean;
+}
+
+export interface PublicAnamnesisData {
+  patientId: string;
+  patientName: string;
+  title: string;
+  questions: PublicAnamnesisQuestion[];
+}
