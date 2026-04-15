@@ -11,6 +11,9 @@ import FeedbackPage from './pages/FeedbackPage';
 import ProfilePage from './pages/ProfilePage';
 import CreateAnamnesisPage from './pages/CreateAnamnesisPage';
 import PublicAnamnesisPage from './pages/PublicAnamnesisPage';
+import TemplatesPage from './pages/anamnese/TemplatesPage';
+import RespondPage from './pages/anamnese/RespondPage';
+import TemplateBuilderPage from './pages/anamnese/TemplateBuilderPage';
 import TestRunnerPage from './pages/TestRunnerPage'
 import DashboardLayout from './layouts/DashboardLayout';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -60,6 +63,10 @@ function App() {
           <Route path="patients/:id" element={<PatientDetailPage />} />
           <Route path="patients/:patientId/anamnesis/new" element={<CreateAnamnesisPage />} />
           <Route path="patients/:patientId/reports/new" element={<ReportEditorPage />} />
+          <Route path="anamneses/templates" element={<TemplatesPage />} />
+          <Route path="anamneses/templates/new" element={<TemplateBuilderPage />} />
+          <Route path="anamneses/templates/edit/:id" element={<TemplateBuilderPage />} />
+          <Route path="anamneses/respond/:responseId" element={<RespondPage />} />
           <Route path="reports/:reportId/edit" element={<ReportEditorPage />} />
           <Route path="tests" element={<TestsPage />} />
           <Route path="tests/:type/run" element={<TestRunnerPage />} />

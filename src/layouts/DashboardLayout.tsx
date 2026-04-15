@@ -1,6 +1,6 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Avatar, Menu, MenuItem, Divider, Box } from '@mui/material';
-import { Menu as MenuIcon, LayoutDashboard, Users, ClipboardList, MessageSquare, UserCircle, LogOut } from 'lucide-react';
+import { Menu as MenuIcon, LayoutDashboard, Users, ClipboardList, MessageSquare, UserCircle, LogOut, FileText } from 'lucide-react';
 import { useState } from 'react';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
@@ -12,6 +12,7 @@ const DRAWER_WIDTH = 240;
 const menuItems = [
   { label: 'Dashboard', path: '/app/dashboard', icon: LayoutDashboard },
   { label: 'Pacientes', path: '/app/patients', icon: Users },
+  { label: 'Anamneses', path: '/app/anamneses/templates', icon: FileText },
   { label: 'Testes', path: '/app/tests', icon: ClipboardList },
   { label: 'Feedback', path: '/app/feedback', icon: MessageSquare },
   { label: 'Perfil', path: '/app/profile', icon: UserCircle }

@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import { Copy, MessageCircle, Mail, CheckCircle2 } from 'lucide-react';
 import { useGenerateAnamnesisLink } from '@/hooks/useAnamnesis';
+import { useAnamnesisTemplates } from '@/hooks/useAnamnesisV2';
 import { formatDate } from '@/utils/formatters';
 
 interface AnamnesisLinkModalProps {
@@ -25,6 +26,10 @@ interface AnamnesisLinkModalProps {
 
 export default function AnamnesisLinkModal({ open, onClose, patientId }: AnamnesisLinkModalProps) {
   const { mutate: generateLink, isPending, error, data } = useGenerateAnamnesisLink();
+  const { data: templates } = useAnamnesisTemplates();
+
+  const activeTemplateName = templates && templates.length > 0 ? templates[0].name : "Modelo Padrão da Plataforma";
+
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -79,6 +84,15 @@ export default function AnamnesisLinkModal({ open, onClose, patientId }: Anamnes
             <Typography variant="body2" color="text.secondary">
               Este link pode ser enviado ao responsável para responder a anamnese. Ele não requer login para ser acessado.
             </Typography>
+
+            <Box sx={{ p: 2, bgcolor: 'primary.50', borderRadius: 2, border: '1px solid', borderColor: 'primary.100' }}>
+              <Typography variant="caption" fontWeight={700} color="primary.main" sx={{ mb: 0.5, display: 'block' }}>
+                MODELO ATIVO NO LINK
+              </Typography>
+              <Typography variant="body2" fontWeight={600} color="primary.dark">
+                {activeTemplateName}
+              </Typography>
+            </Box>
 
             <Box>
               <Typography variant="caption" fontWeight={600} color="text.secondary" sx={{ mb: 1, display: 'block' }}>

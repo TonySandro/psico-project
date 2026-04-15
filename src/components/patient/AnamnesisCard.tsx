@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { Card, CardContent, Typography, Button, Stack, Box, Tooltip } from '@mui/material';
+import { Card, CardContent, Typography, Button, Stack, Box, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { FileText, ChevronRight, Link as LinkIcon } from 'lucide-react';
+import { FileText, Link as LinkIcon, Plus, FileEdit, CheckCircle2 } from 'lucide-react';
 import AnamnesisLinkModal from './AnamnesisLinkModal';
 import { useGetAnamnesis } from '@/hooks/useAnamnesis';
+import { usePatientAnamnesisResponses, useAnamnesisTemplates, useCreateAnamnesisTemplate, useCreateAnamnesisResponse } from '@/hooks/useAnamnesisV2';
+import { DEFAULT_ANAMNESIS } from '@/constants/defaultAnamnesis';
 import { formatDate } from '@/utils/formatters';
 
 interface AnamnesisCardProps {
@@ -12,8 +14,45 @@ interface AnamnesisCardProps {
 
 export default function AnamnesisCard({ patientId }: AnamnesisCardProps) {
     const navigate = useNavigate();
-    const { data: anamnesis } = useGetAnamnesis(patientId);
+    const { data: legacyAnamnesis } = useGetAnamnesis(patientId);
+    const { data: responses, isLoading: responsesLoading } = usePatientAnamnesisResponses(patientId);
+    
+    // Hooks for auto-creation logic
+    const { data: templates } = useAnamnesisTemplates();
+    const { mutateAsync: createTemplate, isPending: isCreatingTemplate } = useCreateAnamnesisTemplate();
+    const { mutateAsync: createResponse, isPending: isCreatingResponse } = useCreateAnamnesisResponse();
+    
     const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
+
+    const hasNewAnamnesis = responses && responses.length > 0;
+    const isCreatingAnamnesis = isCreatingTemplate || isCreatingResponse;
+
+    const handleStartAnamnesis = async () => {
+        try {
+            if (!templates) return;
+
+            let targetTemplateId = '';
+            
+            if (templates.length === 0) {
+                // Creates default if none
+                const newTemplate = await createTemplate(DEFAULT_ANAMNESIS);
+                targetTemplateId = newTemplate.id;
+            } else if (templates.length === 1) {
+                // Use the only template they have
+                targetTemplateId = templates[0].id;
+            } else {
+                // Multiple templates exist, go to selector page
+                navigate(`/app/anamneses/templates?patientId=${patientId}`);
+                return;
+            }
+
+            const response = await createResponse({ templateId: targetTemplateId, patientId });
+            navigate(`/app/anamneses/respond/${response.id}`);
+        } catch (error) {
+            console.error("Error starting anamnesis:", error);
+            alert("Erro ao iniciar anamnese.");
+        }
+    };
 
     return (
         <Card sx={{ mb: 3 }}>
@@ -27,90 +66,125 @@ export default function AnamnesisCard({ patientId }: AnamnesisCardProps) {
                             Anamnese
                         </Typography>
                     </Stack>
-                    {anamnesis && (
-                        <Button
-                            color="secondary"
-                            size="small"
-                            endIcon={<ChevronRight size={16} />}
-                            sx={{ textTransform: 'none' }}
-                        >
-                            Ver Histórico Completo
-                        </Button>
+
+                    <Button
+                        color="secondary"
+                        size="small"
+                        disabled={isCreatingAnamnesis}
+                        startIcon={isCreatingAnamnesis ? <CircularProgress size={16} /> : <Plus size={16} />}
+                        onClick={handleStartAnamnesis}
+                    >
+                        Nova Anamnese
+                    </Button>
+                </Stack>
+
+                <Stack spacing={2}>
+                    {/* List of Dynamic Anamnesis */}
+                    {responsesLoading ? (
+                        <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
+                            <CircularProgress size={24} />
+                        </Box>
+                    ) : hasNewAnamnesis ? (
+                        responses.map((resp) => (
+                            <Box
+                                key={resp.id}
+                                sx={{
+                                    bgcolor: resp.status === 'completed' ? 'success.50' : 'grey.50',
+                                    p: 2,
+                                    borderRadius: 2,
+                                    border: '1px solid',
+                                    borderColor: resp.status === 'completed' ? 'success.100' : 'grey.200',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <Stack spacing={0.5}>
+                                    <Typography variant="subtitle2" fontWeight={700}>
+                                        {resp.templateName || 'Formulário Sem Nome'}
+                                    </Typography>
+                                    <Stack direction="row" spacing={2} alignItems="center">
+                                        <Stack direction="row" alignItems="center" spacing={0.5}>
+                                            {resp.status === 'completed' ? (
+                                                <CheckCircle2 size={14} color="#2e7d32" />
+                                            ) : (
+                                                <FileEdit size={14} color="#ed6c02" />
+                                            )}
+                                            <Typography variant="caption" fontWeight={600} color={resp.status === 'completed' ? 'success.main' : 'warning.main'}>
+                                                {resp.status === 'completed' ? 'CONCLUÍDA' : 'EM RASCUNHO'}
+                                            </Typography>
+                                        </Stack>
+                                        <Typography variant="caption" color="text.secondary">
+                                            {resp.updatedAt ? formatDate(resp.updatedAt) : '-'}
+                                        </Typography>
+                                    </Stack>
+                                </Stack>
+
+                                <Button
+                                    size="small"
+                                    variant="outlined"
+                                    onClick={() => navigate(`/app/anamneses/respond/${resp.id}`)}
+                                >
+                                    {resp.status === 'completed' ? 'Visualizar' : 'Continuar'}
+                                </Button>
+                            </Box>
+                        ))
+                    ) : !legacyAnamnesis && (
+                        <Box sx={{ bgcolor: 'grey.50', p: 3, borderRadius: 2, textAlign: 'center', border: '1px dashed', borderColor: 'grey.300' }}>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                Nenhuma anamnese registrada para este paciente.
+                            </Typography>
+                            <Button
+                                variant="contained"
+                                disabled={isCreatingAnamnesis}
+                                startIcon={isCreatingAnamnesis ? <CircularProgress size={16} color="inherit" /> : <Plus size={18} />}
+                                onClick={handleStartAnamnesis}
+                            >
+                                Iniciar do Zero
+                            </Button>
+                        </Box>
+                    )}
+
+                    {/* Legacy Anamnesis (if exists) */}
+                    {legacyAnamnesis && (
+                        <Box sx={{ border: '1px solid', borderColor: 'divider', p: 2, borderRadius: 2 }}>
+                            <Typography variant="caption" color="text.secondary" fontWeight={700} sx={{ display: 'block', mb: 1 }}>
+                                ANAMNESE ANTIGA (SISTEMA ANTERIOR)
+                            </Typography>
+                            <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                <Stack spacing={0.5}>
+                                    <Typography variant="body2" fontWeight={600}>
+                                        Ficha Original
+                                    </Typography>
+                                    <Typography variant="caption" color="text.secondary">
+                                        Data: {legacyAnamnesis.createdAt ? formatDate(legacyAnamnesis.createdAt) : '-'}
+                                    </Typography>
+                                </Stack>
+                                <Button size="small" variant="text" onClick={() => navigate(`/app/patients/${patientId}/anamnesis/new`)}>
+                                    Visualizar
+                                </Button>
+                            </Stack>
+                        </Box>
                     )}
                 </Stack>
 
-                <Box sx={{ bgcolor: 'grey.50', p: 2, borderRadius: 2 }}>
-                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                        <Stack spacing={0.5}>
-                            <Typography variant="caption" color="text.secondary" fontWeight={600}>
-                                STATUS
-                            </Typography>
-                            <Stack direction="row" alignItems="center" spacing={1}>
-                                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: anamnesis ? 'success.main' : 'warning.main' }} />
-                                <Typography variant="body2" fontWeight={600}>
-                                    {anamnesis ? 'Concluída' : 'Pendente'}
-                                </Typography>
-                            </Stack>
-                        </Stack>
+                <Stack direction="row" spacing={1} sx={{ mt: 3, pt: 2, borderTop: 1, borderColor: 'divider' }}>
+                    <Button
+                        // variant="soft"
+                        color="primary"
+                        size="small"
+                        startIcon={<LinkIcon size={16} />}
+                        onClick={() => setIsLinkModalOpen(true)}
+                        fullWidth
+                    >
+                        Enviar link externo
+                    </Button>
+                </Stack>
 
-                        {anamnesis && (
-                            <Stack spacing={0.5}>
-                                <Typography variant="caption" color="text.secondary" fontWeight={600}>
-                                    DATA
-                                </Typography>
-                                <Typography variant="body2" fontWeight={600}>
-                                    {anamnesis.createdAt ? formatDate(anamnesis.createdAt) : '-'}
-                                </Typography>
-                            </Stack>
-                        )}
-
-                        <Stack direction="row" spacing={1}>
-                            <Button
-                                variant="outlined"
-                                color="primary"
-                                size="small"
-                                startIcon={<LinkIcon size={16} />}
-                                onClick={() => setIsLinkModalOpen(true)}
-                            >
-                                Gerar link
-                            </Button>
-                            <Tooltip title={!anamnesis ? "Funcionalidade indisponível no momento" : ""}>
-                                <span>
-                                    <Button
-                                        variant="contained"
-                                        color={anamnesis ? 'inherit' : 'primary'}
-                                        size="small"
-                                        disabled={!anamnesis}
-                                        sx={{
-                                            ...(anamnesis && {
-                                                bgcolor: 'white',
-                                                color: 'text.primary',
-                                                boxShadow: 1
-                                            }),
-                                            ...(!anamnesis && {
-                                                boxShadow: 2
-                                            })
-                                        }}
-                                        onClick={() => navigate(`/patients/${patientId}/anamnesis/new`)}
-                                    >
-                                        {anamnesis ? 'Visualizar' : 'Criar'}
-                                    </Button>
-                                </span>
-                            </Tooltip>
-                        </Stack>
-                    </Stack>
-                </Box>
-
-                {anamnesis && (
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 2, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                        {anamnesis.reasonForReferral || "Sem resumo disponível."}
-                    </Typography>
-                )}
-                
-                <AnamnesisLinkModal 
-                    open={isLinkModalOpen} 
-                    onClose={() => setIsLinkModalOpen(false)} 
-                    patientId={patientId} 
+                <AnamnesisLinkModal
+                    open={isLinkModalOpen}
+                    onClose={() => setIsLinkModalOpen(false)}
+                    patientId={patientId}
                 />
             </CardContent>
         </Card>
