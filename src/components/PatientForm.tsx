@@ -1,4 +1,5 @@
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
+import { useEffect } from 'react';
 import { DialogContent, DialogActions, Button, TextField, Grid, MenuItem, Stack, Alert } from '@mui/material';
 import { useCreatePatient, useUpdatePatient } from '@/hooks/usePatients';
 import { useAuthStore } from '@/stores/authStore';
@@ -63,6 +64,15 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
       status: 'active'
     }
   });
+  
+  const dob = useWatch({ control, name: 'dateOfBirth' });
+
+  useEffect(() => {
+    if (dob) {
+      const computedAge = calculateAge(dob);
+      setValue('age', computedAge);
+    }
+  }, [dob, setValue]);
 
   const calculateAge = (dateString: string) => {
     if (!dateString) return 0;
@@ -137,8 +147,12 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
                     fullWidth
                     label="Idade"
                     type="number"
+                    slotProps={{
+                      input: { readOnly: true }
+                    }}
+                    sx={{ bgcolor: 'action.hover' }}
                     error={!!errors.age}
-                    helperText={errors.age?.message}
+                    helperText={errors.age?.message || "Calculado automaticamente"}
                   />
                 )}
               />
@@ -149,14 +163,9 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
                 name="dateOfBirth"
                 control={control}
                 rules={{ required: 'Data de nascimento é obrigatória' }}
-                render={({ field: { onChange, ...field } }) => (
+                render={({ field }) => (
                   <TextField
                     {...field}
-                    onChange={(e) => {
-                      onChange(e);
-                      const computedAge = calculateAge(e.target.value);
-                      setValue('age', computedAge);
-                    }}
                     fullWidth
                     label="Data de Nascimento"
                     type="date"
