@@ -28,6 +28,7 @@ import { PlayCircle, Clock, Users, TicketCheck, RotateCcw, CheckCircle2 } from '
 import BackButton from '@/components/BackButton';
 import { useTestResult, useAddProtocol } from '@/hooks/useTests';
 import { usePatients } from '@/hooks/usePatients';
+import { translateTestKey, translateTestValue } from '@/utils/test-translations';
 import { useAuthStore } from '@/stores/authStore';
 import type { Patient } from '@/types/schema';
 import { TEST_DEFINITIONS } from '@/constants/test-definitions';
@@ -267,84 +268,9 @@ export default function TestRunnerPage() {
     const renderResult = () => {
         if (!result) return null;
 
-        const getLabel = (key: string) => {
-            const translations: Record<string, string> = {
-                patientName: 'Nome do Paciente',
-                name: 'Nome',
-                age: 'Idade',
-                task1Time: 'Tempo Tarefa 1 (s)',
-                task2Time: 'Tempo Tarefa 2 (s)',
-                task3Time: 'Tempo Tarefa 3 (s)',
-                task1Errors: 'Erros Tarefa 1',
-                task2Errors: 'Erros Tarefa 2',
-                task3Errors: 'Erros Tarefa 3',
-                scores: 'Pontuações',
-                focusedAttention: 'Atenção Focada',
-                sustainedAttention: 'Atenção Sustentada',
-                alternatingAttention: 'Atenção Alternada',
-                answers: 'Respostas',
-                correctAnswers: 'Respostas Corretas',
-                schoolGrade: 'Série Escolar',
-                writingScore: 'Escore Escrita',
-                readingScore: 'Escore Leitura',
-                arithmeticScore: 'Escore Aritmética',
-                interpretation: 'Interpretação',
-                percentile: 'Percentil',
-                result: 'Resultado',
-                score: 'Pontuação',
-                classification: 'Classificação',
-                obs: 'Observações',
-                writing: 'Escrita',
-                reading: 'Leitura',
-                arithmetic: 'Aritmética',
-                overall: 'Geral',
-                status: 'Status',
-                level: 'Nível',
-                inattention: 'Desatenção',
-                inattentionScore: 'Escore de Desatenção',
-                inattentionStatus: 'Status de Desatenção',
-                hyperactivity: 'Hiperatividade',
-                impulsivity: 'Impulsividade',
-                hyperactivityImpulsivity: 'Hiperatividade/Impulsividade',
-                hyperactivityImpulsivityScore: 'Escore Hiper./Impuls.',
-                hyperactivityImpulsivityStatus: 'Status Hiper./Impuls.',
-                oppositionalDefiant: 'Opositor Desafiador',
-                oppositionalDefiantScore: 'Escore Opositor Desafiador',
-                oppositionalDefiantStatus: 'Status Opositor Desafiador',
-                oppositional: 'Opositor',
-                oppositionalScore: 'Escore Opositor',
-                oppositionalStatus: 'Status Opositor',
-                totalScore: 'Escore Total'
-            };
-            return translations[key] || key.replace(/([A-Z])/g, ' $1').trim();
-        };
+        const getLabel = (key: string) => translateTestKey(key);
 
-        const formatValue = (value: any) => {
-            if (typeof value !== 'string') return value;
-            const valueTranslations: Record<string, string> = {
-                'Superior': 'Superior',
-                'Above Average': 'Acima da Média',
-                'Average': 'Média',
-                'Below Average': 'Abaixo da Média',
-                'Low': 'Baixa',
-                'Very Low': 'Muito Baixa',
-                'High': 'Alta',
-                'Very High': 'Muito Alta',
-                'Deficit': 'Déficit',
-                'Normal': 'Normal',
-                'Borderline': 'Limítrofe',
-                'Clinical': 'Clínico',
-                'Non-Clinical': 'Não Clínico',
-                'Non-clinical': 'Não Clínico',
-                'Subclinical': 'Subclínico',
-                'Mild': 'Leve',
-                'Moderate': 'Moderado',
-                'Severe': 'Severo',
-                'Typical': 'Típico',
-                'Atypical': 'Atípico'
-            };
-            return valueTranslations[value] || value;
-        };
+        const formatValue = (value: any) => translateTestValue(value);
 
         const renderMetrics = (data: Record<string, any>) => (
             <Box display="grid" gridTemplateColumns="repeat(auto-fit, minmax(160px, 1fr))" gap={2.5}>
