@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import { CheckCircle2, ClipboardList } from 'lucide-react';
 import { useGetPublicAnamnesis, useSubmitPublicAnamnesis } from '@/hooks/useAnamnesis';
-import AnamneseRenderer from '@/components/anamnese/AnamneseRenderer';
+import AnamnesisRenderer from '@/components/anamnesis/AnamnesisRenderer';
 import { DEFAULT_ANAMNESIS } from '@/constants/defaultAnamnesis';
 
 export default function PublicAnamnesisPage() {
@@ -108,7 +108,19 @@ export default function PublicAnamnesisPage() {
 
         <Card sx={{ mb: 4 }}>
           <CardContent sx={{ p: { xs: 3, md: 5 } }}>
-            <AnamneseRenderer schema={schema} readOnly={isSuccess}>
+            <AnamnesisRenderer 
+              schema={schema} 
+              readOnly={isSuccess}
+              defaultValues={{
+                ident_nome: data.patient?.name || '',
+                ident_idade: data.patient?.age?.toString() || '',
+                ident_sexo: data.patient?.gender || '',
+                ident_data_nascimento: data.patient?.dateOfBirth ? String(data.patient.dateOfBirth).split('T')[0] : '',
+                ident_nome_mae: data.patient?.motherName || '',
+                ident_nome_pai: data.patient?.fatherName || '',
+                ident_serie: data.patient?.schoolYear || ''
+              }}
+            >
               {({ handleSubmit }) => (
                 <Box sx={{ pt: 2, borderTop: 1, borderColor: 'divider', mt: { xs: 4, md: 6 } }}>
                   <Button
@@ -123,7 +135,7 @@ export default function PublicAnamnesisPage() {
                   </Button>
                 </Box>
               )}
-            </AnamneseRenderer>
+            </AnamnesisRenderer>
           </CardContent>
         </Card>
       </Container>

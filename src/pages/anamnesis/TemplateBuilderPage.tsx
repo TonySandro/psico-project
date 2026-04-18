@@ -99,7 +99,7 @@ export default function TemplateBuilderPage() {
             } else {
                 await createTemplate(data);
             }
-            navigate('/app/anamneses/templates');
+            navigate('/app/anamnesis/templates');
         } catch (error) {
             console.error('Error saving template:', error);
         }
@@ -125,7 +125,7 @@ export default function TemplateBuilderPage() {
                 <Button
                     variant="text"
                     startIcon={<ArrowLeft size={18} />}
-                    onClick={() => navigate('/app/anamneses/templates')}
+                    onClick={() => navigate('/app/anamnesis/templates')}
                     sx={{ mb: 1, pl: 0 }}
                 >
                     Voltar aos modelos

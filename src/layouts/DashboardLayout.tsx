@@ -12,7 +12,7 @@ const DRAWER_WIDTH = 240;
 const menuItems = [
   { label: 'Dashboard', path: '/app/dashboard', icon: LayoutDashboard },
   { label: 'Pacientes', path: '/app/patients', icon: Users },
-  { label: 'Anamneses', path: '/app/anamneses/templates', icon: FileText },
+  { label: 'Anamneses', path: '/app/anamnesis/templates', icon: FileText },
   { label: 'Testes', path: '/app/tests', icon: ClipboardList },
   { label: 'Feedback', path: '/app/feedback', icon: MessageSquare },
   { label: 'Perfil', path: '/app/profile', icon: UserCircle }

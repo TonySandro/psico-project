@@ -65,7 +65,7 @@ export default function TemplatesPage() {
           patientId: patientId || undefined 
       });
       setConfirmOpen(false);
-      navigate(`/app/anamneses/respond/${response.id}`);
+      navigate(`/app/anamnesis/respond/${response.id}`);
     } catch {
       alert('Erro ao iniciar anamnese. Tente novamente.');
     }
@@ -104,7 +104,7 @@ export default function TemplatesPage() {
           variant="contained"
           color="primary"
           startIcon={<Play size={20} />}
-          onClick={() => navigate('/app/anamneses/templates/new')}
+          onClick={() => navigate('/app/anamnesis/templates/new')}
         >
           Novo Modelo
         </Button>
@@ -253,7 +253,7 @@ export default function TemplatesPage() {
                     <Button 
                       variant="outlined" 
                       startIcon={<Settings2 size={16} />}
-                      onClick={() => navigate(`/app/anamneses/templates/edit/${template.id}`)}
+                      onClick={() => navigate(`/app/anamnesis/templates/edit/${template.id}`)}
                     >
                       Editar
                     </Button>

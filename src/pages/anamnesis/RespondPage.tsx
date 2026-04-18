@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import { Save, CheckCircle, ArrowLeft, ClipboardCheck } from 'lucide-react';
 import { useAnamnesisResponse, useSaveAnamnesisResponse } from '@/hooks/useAnamnesisV2';
-import AnamneseRenderer from '@/components/anamnese/AnamneseRenderer';
+import AnamnesisRenderer from '@/components/anamnesis/AnamnesisRenderer';
 
 const AUTOSAVE_INTERVAL_MS = 30_000; // 30 s
 
@@ -88,7 +88,7 @@ export default function RespondPage() {
     try {
       await save({ id: responseId, answers: pendingFinalValues.current, status: 'completed' });
       setSnackbar({ open: true, message: 'Anamnese finalizada com sucesso!', severity: 'success' });
-      setTimeout(() => navigate('/app/anamneses/templates'), 1500);
+      setTimeout(() => navigate('/app/anamnesis/templates'), 1500);
     } catch {
       setSnackbar({ open: true, message: 'Erro ao finalizar. Tente novamente.', severity: 'error' });
     }
@@ -124,7 +124,7 @@ export default function RespondPage() {
         <Button
           variant="text"
           startIcon={<ArrowLeft size={18} />}
-          onClick={() => navigate('/app/anamneses/templates')}
+          onClick={() => navigate('/app/anamnesis/templates')}
           sx={{ mb: 1, pl: 0 }}
         >
           Voltar aos modelos
@@ -168,7 +168,7 @@ export default function RespondPage() {
       {/* ── Form Card ─────────────────────────────────────────────────────── */}
       <Card variant="outlined">
         <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-          <AnamneseRenderer
+          <AnamnesisRenderer
             schema={schema}
             defaultValues={response.answers as Record<string, unknown>}
             readOnly={isCompleted}
@@ -211,7 +211,7 @@ export default function RespondPage() {
                 </Box>
               ) : null
             }
-          </AnamneseRenderer>
+          </AnamnesisRenderer>
         </CardContent>
       </Card>
 

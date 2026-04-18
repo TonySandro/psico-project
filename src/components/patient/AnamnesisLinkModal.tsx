@@ -47,7 +47,7 @@ export default function AnamnesisLinkModal({ open, onClose, patientId }: Anamnes
     }
   };
 
-  const fullUrl = data?.token ? `${window.location.origin}/anamnese/responder/${data.token}` : '';
+  const fullUrl = data?.token ? `${window.location.origin}/anamnesis/responder/${data.token}` : '';
 
   const handleWhatsApp = () => {
     const text = encodeURIComponent(`Olá! Segue o link para preencher a anamnese: ${fullUrl}`);

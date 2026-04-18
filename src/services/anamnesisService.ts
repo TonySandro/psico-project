@@ -4,27 +4,27 @@ import type { AnamnesisTemplate, AnamnesisResponse } from '@/types/anamnesis';
 // ─── Templates ───────────────────────────────────────────────────────────────
 
 export const anamnesisTemplateService = {
-  /** GET /anamnese/templates */
+  /** GET /anamnesis/templates */
   list: async (): Promise<AnamnesisTemplate[]> => {
-    const res = await api.get<AnamnesisTemplate[]>('/anamnese/templates');
+    const res = await api.get<AnamnesisTemplate[]>('/anamnesis/templates');
     return res.data;
   },
 
-  /** GET /anamnese/templates/:id */
+  /** GET /anamnesis/templates/:id */
   getById: async (id: string): Promise<AnamnesisTemplate> => {
-    const res = await api.get<AnamnesisTemplate>(`/anamnese/templates/${id}`);
+    const res = await api.get<AnamnesisTemplate>(`/anamnesis/templates/${id}`);
     return res.data;
   },
 
-  /** POST /anamnese/templates */
+  /** POST /anamnesis/templates */
   create: async (data: Omit<AnamnesisTemplate, 'id' | 'createdAt'>): Promise<AnamnesisTemplate> => {
-    const res = await api.post<AnamnesisTemplate>('/anamnese/templates', data);
+    const res = await api.post<AnamnesisTemplate>('/anamnesis/templates', data);
     return res.data;
   },
 
-  /** PUT /anamnese/templates/:id */
+  /** PUT /anamnesis/templates/:id */
   update: async (id: string, data: Partial<AnamnesisTemplate>): Promise<AnamnesisTemplate> => {
-    const res = await api.put<AnamnesisTemplate>(`/anamnese/templates/${id}`, data);
+    const res = await api.put<AnamnesisTemplate>(`/anamnesis/templates/${id}`, data);
     return res.data;
   },
 };
@@ -32,34 +32,34 @@ export const anamnesisTemplateService = {
 // ─── Responses ────────────────────────────────────────────────────────────────
 
 export const anamnesisResponseService = {
-  /** POST /anamnese/responses  → cria uma nova resposta (draft) */
+  /** POST /anamnesis/responses  → cria uma nova resposta (draft) */
   create: async (templateId: string, patientId?: string): Promise<AnamnesisResponse> => {
-    const res = await api.post<AnamnesisResponse>('/anamnese/responses', {
+    const res = await api.post<AnamnesisResponse>('/anamnesis/responses', {
       templateId,
       patientId,
     });
     return res.data;
   },
 
-  /** GET /anamnese/responses/:id */
+  /** GET /anamnesis/responses/:id */
   getById: async (id: string): Promise<AnamnesisResponse> => {
-    const res = await api.get<AnamnesisResponse>(`/anamnese/responses/${id}`);
+    const res = await api.get<AnamnesisResponse>(`/anamnesis/responses/${id}`);
     return res.data;
   },
 
-  /** GET /anamnese/patients/:patientId/responses */
+  /** GET /anamnesis/patients/:patientId/responses */
   listByPatient: async (patientId: string): Promise<AnamnesisResponse[]> => {
-    const res = await api.get<AnamnesisResponse[]>(`/anamnese/patients/${patientId}/responses`);
+    const res = await api.get<AnamnesisResponse[]>(`/anamnesis/patients/${patientId}/responses`);
     return res.data;
   },
 
-  /** PUT /anamnese/responses/:id  → salva rascunho/completo */
+  /** PUT /anamnesis/responses/:id  → salva rascunho/completo */
   update: async (
     id: string,
     answers: Record<string, unknown>,
     status?: 'draft' | 'completed',
   ): Promise<AnamnesisResponse> => {
-    const res = await api.put<AnamnesisResponse>(`/anamnese/responses/${id}`, {
+    const res = await api.put<AnamnesisResponse>(`/anamnesis/responses/${id}`, {
       answers,
       ...(status ? { status } : {}),
     });

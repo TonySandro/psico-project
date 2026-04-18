@@ -4,7 +4,7 @@ import { useForm, type FieldValues } from 'react-hook-form';
 import type { AnamnesisSchema } from '@/types/anamnesis';
 import SectionRenderer from './SectionRenderer';
 
-interface AnamneseRendererProps {
+interface AnamnesisRendererProps {
   schema: AnamnesisSchema;
   defaultValues?: Record<string, unknown>;
   readOnly?: boolean;
@@ -25,13 +25,13 @@ interface AnamneseRendererProps {
  * Walks sections → fields and delegates all MUI+RHF logic to child components.
  * This component owns the `useForm` instance so the parent only needs to wire the submit handler.
  */
-export default function AnamneseRenderer({
+export default function AnamnesisRenderer({
   schema,
   defaultValues = {},
   readOnly = false,
   onValuesChange,
   children,
-}: AnamneseRendererProps) {
+}: AnamnesisRendererProps) {
   const {
     control,
     handleSubmit,

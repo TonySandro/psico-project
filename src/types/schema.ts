@@ -119,8 +119,8 @@ export interface PublicAnamnesisQuestion {
 }
 
 export interface PublicAnamnesisData {
-  patientId: string;
-  patientName: string;
+  patient?: Partial<Patient>;
+  patientName?: string;
   title: string;
   questions: PublicAnamnesisQuestion[];
 }

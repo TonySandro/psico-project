@@ -42,12 +42,12 @@ export default function AnamnesisCard({ patientId }: AnamnesisCardProps) {
                 targetTemplateId = templates[0].id;
             } else {
                 // Multiple templates exist, go to selector page
-                navigate(`/app/anamneses/templates?patientId=${patientId}`);
+                navigate(`/app/anamnesis/templates?patientId=${patientId}`);
                 return;
             }
 
             const response = await createResponse({ templateId: targetTemplateId, patientId });
-            navigate(`/app/anamneses/respond/${response.id}`);
+            navigate(`/app/anamnesis/respond/${response.id}`);
         } catch (error) {
             console.error("Error starting anamnesis:", error);
             alert("Erro ao iniciar anamnese.");
@@ -123,7 +123,7 @@ export default function AnamnesisCard({ patientId }: AnamnesisCardProps) {
                                 <Button
                                     size="small"
                                     variant="outlined"
-                                    onClick={() => navigate(`/app/anamneses/respond/${resp.id}`)}
+                                    onClick={() => navigate(`/app/anamnesis/respond/${resp.id}`)}
                                 >
                                     {resp.status === 'completed' ? 'Visualizar' : 'Continuar'}
                                 </Button>
