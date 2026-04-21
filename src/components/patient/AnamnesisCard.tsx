@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Card, CardContent, Typography, Button, Stack, Box, CircularProgress } from '@mui/material';
+import { Card, CardContent, Typography, Button, Stack, Box, CircularProgress, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { FileText, Link as LinkIcon, Plus, FileEdit, CheckCircle2 } from 'lucide-react';
+import { FileText, Link as LinkIcon, Plus, FileEdit, CheckCircle2, Trash2 } from 'lucide-react';
 import AnamnesisLinkModal from './AnamnesisLinkModal';
 import { useGetAnamnesis } from '@/hooks/useAnamnesis';
-import { usePatientAnamnesisResponses, useAnamnesisTemplates, useCreateAnamnesisTemplate, useCreateAnamnesisResponse } from '@/hooks/useAnamnesisV2';
+import { usePatientAnamnesisResponses, useAnamnesisTemplates, useCreateAnamnesisTemplate, useCreateAnamnesisResponse, useDeleteAnamnesisResponse } from '@/hooks/useAnamnesisV2';
 import { DEFAULT_ANAMNESIS } from '@/constants/defaultAnamnesis';
 import { formatDate } from '@/utils/formatters';
 
@@ -23,6 +23,9 @@ export default function AnamnesisCard({ patientId }: AnamnesisCardProps) {
     const { mutateAsync: createResponse, isPending: isCreatingResponse } = useCreateAnamnesisResponse();
     
     const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
+    const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+
+    const { mutate: deleteResponse, isPending: isDeleting } = useDeleteAnamnesisResponse(patientId);
 
     const hasNewAnamnesis = responses && responses.length > 0;
     const isCreatingAnamnesis = isCreatingTemplate || isCreatingResponse;
@@ -120,13 +123,24 @@ export default function AnamnesisCard({ patientId }: AnamnesisCardProps) {
                                     </Stack>
                                 </Stack>
 
-                                <Button
-                                    size="small"
-                                    variant="outlined"
-                                    onClick={() => navigate(`/app/anamnesis/respond/${resp.id}`)}
-                                >
-                                    {resp.status === 'completed' ? 'Visualizar' : 'Continuar'}
-                                </Button>
+                                <Stack direction="row" spacing={1}>
+                                    <Button
+                                        size="small"
+                                        variant="outlined"
+                                        onClick={() => navigate(`/app/anamnesis/respond/${resp.id}`)}
+                                    >
+                                        {resp.status === 'completed' ? 'Visualizar' : 'Continuar'}
+                                    </Button>
+                                    <Button
+                                        size="small"
+                                        variant="outlined"
+                                        color="error"
+                                        onClick={() => setDeleteTarget(resp.id)}
+                                        sx={{ minWidth: 0, px: 1 }}
+                                    >
+                                        <Trash2 size={16} />
+                                    </Button>
+                                </Stack>
                             </Box>
                         ))
                     ) : !legacyAnamnesis && (
@@ -186,6 +200,40 @@ export default function AnamnesisCard({ patientId }: AnamnesisCardProps) {
                     onClose={() => setIsLinkModalOpen(false)}
                     patientId={patientId}
                 />
+
+                {/* Delete Confirmation Dialog */}
+                <Dialog
+                    open={!!deleteTarget}
+                    onClose={() => setDeleteTarget(null)}
+                    maxWidth="xs"
+                    fullWidth
+                >
+                    <DialogTitle>Deletar Anamnese</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Tem certeza que deseja deletar esta anamnese? Esta ação não pode ser desfeita.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setDeleteTarget(null)} disabled={isDeleting}>
+                            Cancelar
+                        </Button>
+                        <Button
+                            color="error"
+                            variant="contained"
+                            disabled={isDeleting}
+                            onClick={() => {
+                                if (deleteTarget) {
+                                    deleteResponse(deleteTarget, {
+                                        onSuccess: () => setDeleteTarget(null),
+                                    });
+                                }
+                            }}
+                        >
+                            {isDeleting ? <CircularProgress size={18} color="inherit" /> : 'Deletar'}
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </CardContent>
         </Card>
     );

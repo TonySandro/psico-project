@@ -85,3 +85,13 @@ export const useSaveAnamnesisResponse = () => {
     },
   });
 };
+
+export const useDeleteAnamnesisResponse = (patientId: string) => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => anamnesisResponseService.deleteResponse(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['patient-anamnesis-responses', patientId] });
+    },
+  });
+};

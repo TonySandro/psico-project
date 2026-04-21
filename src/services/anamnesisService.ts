@@ -65,4 +65,9 @@ export const anamnesisResponseService = {
     });
     return res.data;
   },
+
+  /** DELETE /anamnesis/responses/:id */
+  deleteResponse: async (id: string): Promise<void> => {
+    await api.delete(`/anamnesis/responses/${id}`);
+  },
 };
