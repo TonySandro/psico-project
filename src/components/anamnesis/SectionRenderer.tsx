@@ -9,6 +9,7 @@ interface SectionRendererProps {
   control: Control<Record<string, unknown>>;
   errors: Record<string, { message?: string } | undefined>;
   readOnly?: boolean;
+  lockedFieldIds?: Set<string>;
 }
 
 export default function SectionRenderer({
@@ -16,6 +17,7 @@ export default function SectionRenderer({
   control,
   errors,
   readOnly,
+  lockedFieldIds,
 }: SectionRendererProps) {
   return (
     <Box component="section" sx={{ mb: 5 }}>
@@ -37,7 +39,7 @@ export default function SectionRenderer({
             field={field}
             control={control}
             errors={errors}
-            readOnly={readOnly}
+            readOnly={readOnly || lockedFieldIds?.has(field.id)}
           />
         ))}
       </Stack>

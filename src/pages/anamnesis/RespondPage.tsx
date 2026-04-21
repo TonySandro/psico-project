@@ -173,6 +173,7 @@ export default function RespondPage() {
             defaultValues={response.answers as Record<string, unknown>}
             readOnly={isCompleted}
             onValuesChange={scheduleAutosave}
+            lockPreFilledFields={true}
           >
             {({ handleSubmit, isDirty }) =>
               !isCompleted ? (

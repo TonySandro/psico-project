@@ -18,6 +18,8 @@ interface AnamnesisRendererProps {
     isValid: boolean;
     isDirty: boolean;
   }) => React.ReactNode;
+  /** If true, fields that have a value in defaultValues will be locked (readOnly) */
+  lockPreFilledFields?: boolean;
 }
 
 /**
@@ -31,6 +33,7 @@ export default function AnamnesisRenderer({
   readOnly = false,
   onValuesChange,
   children,
+  lockPreFilledFields = false,
 }: AnamnesisRendererProps) {
   const {
     control,
@@ -59,6 +62,16 @@ export default function AnamnesisRenderer({
     }).length;
     return Math.round((answeredCount / allFields.length) * 100);
   }, [allFields, formValues]);
+
+  const lockedFieldIds = useMemo(() => {
+    if (!lockPreFilledFields) return new Set<string>();
+    return new Set(
+      Object.keys(defaultValues).filter((key) => {
+        const val = defaultValues[key];
+        return val !== undefined && val !== '' && val !== null;
+      }),
+    );
+  }, [lockPreFilledFields, defaultValues]);
 
   // ── Notify parent of changes (autosave) via subscription, not inline ────
   useEffect(() => {
@@ -98,6 +111,7 @@ export default function AnamnesisRenderer({
             control={control as unknown as import('react-hook-form').Control<Record<string, unknown>>}
             errors={errors as Record<string, { message?: string } | undefined>}
             readOnly={readOnly}
+            lockedFieldIds={lockedFieldIds}
           />
         ))}
       </Box>

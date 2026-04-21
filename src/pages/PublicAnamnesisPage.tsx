@@ -111,6 +111,7 @@ export default function PublicAnamnesisPage() {
             <AnamnesisRenderer 
               schema={schema} 
               readOnly={isSuccess}
+              lockPreFilledFields={true}
               defaultValues={{
                 ident_nome: data.patient?.name || '',
                 ident_idade: data.patient?.age?.toString() || '',
