@@ -3,9 +3,8 @@ import { Card, CardContent, Typography, Button, Stack, Box, CircularProgress, Di
 import { useNavigate } from 'react-router-dom';
 import { FileText, Link as LinkIcon, Plus, FileEdit, CheckCircle2, Trash2 } from 'lucide-react';
 import AnamnesisLinkModal from './AnamnesisLinkModal';
-import { useGetAnamnesis } from '@/hooks/useAnamnesis';
-import { usePatientAnamnesisResponses, useAnamnesisTemplates, useCreateAnamnesisTemplate, useCreateAnamnesisResponse, useDeleteAnamnesisResponse } from '@/hooks/useAnamnesisV2';
-import { DEFAULT_ANAMNESIS } from '@/constants/defaultAnamnesis';
+import { useGetAnamnesis, useGenerateAnamnesisLink } from '@/hooks/useAnamnesis';
+import { usePatientAnamnesisResponses, useDeleteAnamnesisResponse } from '@/hooks/useAnamnesisV2';
 import { formatDate } from '@/utils/formatters';
 
 interface AnamnesisCardProps {
@@ -18,9 +17,7 @@ export default function AnamnesisCard({ patientId }: AnamnesisCardProps) {
     const { data: responses, isLoading: responsesLoading } = usePatientAnamnesisResponses(patientId);
     
     // Hooks for auto-creation logic
-    const { data: templates } = useAnamnesisTemplates();
-    const { mutateAsync: createTemplate, isPending: isCreatingTemplate } = useCreateAnamnesisTemplate();
-    const { mutateAsync: createResponse, isPending: isCreatingResponse } = useCreateAnamnesisResponse();
+    const { mutateAsync: generateLink, isPending: isGeneratingLink } = useGenerateAnamnesisLink();
     
     const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
     const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
@@ -28,29 +25,13 @@ export default function AnamnesisCard({ patientId }: AnamnesisCardProps) {
     const { mutate: deleteResponse, isPending: isDeleting } = useDeleteAnamnesisResponse(patientId);
 
     const hasNewAnamnesis = responses && responses.length > 0;
-    const isCreatingAnamnesis = isCreatingTemplate || isCreatingResponse;
+    const isCreatingAnamnesis = isGeneratingLink;
 
     const handleStartAnamnesis = async () => {
         try {
-            if (!templates) return;
-
-            let targetTemplateId = '';
-            
-            if (templates.length === 0) {
-                // Creates default if none
-                const newTemplate = await createTemplate(DEFAULT_ANAMNESIS);
-                targetTemplateId = newTemplate.id;
-            } else if (templates.length === 1) {
-                // Use the only template they have
-                targetTemplateId = templates[0].id;
-            } else {
-                // Multiple templates exist, go to selector page
-                navigate(`/app/anamnesis/templates?patientId=${patientId}`);
-                return;
-            }
-
-            const response = await createResponse({ templateId: targetTemplateId, patientId });
-            navigate(`/app/anamnesis/respond/${response.id}`);
+            const data = await generateLink(patientId);
+            const fullUrl = `${window.location.origin}/anamnesis/responder/${data.token}`;
+            window.open(fullUrl, '_blank');
         } catch (error) {
             console.error("Error starting anamnesis:", error);
             alert("Erro ao iniciar anamnese.");
@@ -145,17 +126,9 @@ export default function AnamnesisCard({ patientId }: AnamnesisCardProps) {
                         ))
                     ) : !legacyAnamnesis && (
                         <Box sx={{ bgcolor: 'grey.50', p: 3, borderRadius: 2, textAlign: 'center', border: '1px dashed', borderColor: 'grey.300' }}>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                            <Typography variant="body2" color="text.secondary">
                                 Nenhuma anamnese registrada para este paciente.
                             </Typography>
-                            <Button
-                                variant="contained"
-                                disabled={isCreatingAnamnesis}
-                                startIcon={isCreatingAnamnesis ? <CircularProgress size={16} color="inherit" /> : <Plus size={18} />}
-                                onClick={handleStartAnamnesis}
-                            >
-                                Iniciar do Zero
-                            </Button>
                         </Box>
                     )}
 
