@@ -32,7 +32,8 @@ export default function HomePage() {
     'Anamnese digital estruturada',
     'Relatórios automáticos',
     'Estatísticas em tempo real',
-    'Acesso seguro em qualquer lugar'
+    'Conformidade integral com a LGPD',
+    'Criptografia de dados de saúde'
   ];
 
   return (
@@ -62,7 +63,7 @@ export default function HomePage() {
               <HeartPulse size={24} color="white" />
             </Box>
             <Typography variant="h6" fontWeight={700} sx={{ display: { xs: 'none', sm: 'block' } }}>
-              NPPAvalia
+              NeuroPPAvalia
             </Typography>
           </Stack>
 
@@ -323,7 +324,7 @@ export default function HomePage() {
       >
         <Container maxWidth="lg">
           <Grid container spacing={4}>
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
                 <Box
                   sx={{
@@ -339,18 +340,35 @@ export default function HomePage() {
                   <HeartPulse size={24} color="white" />
                 </Box>
                 <Typography variant="h6" fontWeight={700}>
-                  NPPAvalia
+                  NeuroPPAvalia
                 </Typography>
               </Stack>
-              <Typography variant="body2" sx={{ opacity: 0.8 }}>
+              <Typography variant="body2" sx={{ opacity: 0.8, mb: 1 }}>
                 Sistema profissional de gestão clínica para psicopedagogos e neuropsicopedagogos.
+              </Typography>
+              <Typography variant="caption" sx={{ color: 'success.light', display: 'block' }}>
+                ✓ Ambiente em conformidade com a LGPD e criptografia ativa.
               </Typography>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <Stack spacing={2}>
-                <Typography variant="h6" fontWeight={600}>
-                  Contato
+                <Typography variant="subtitle1" fontWeight={600}>
+                  Institucional
+                </Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  <Button onClick={() => navigate('/quem-somos')} sx={{ color: 'grey.300', justifyContent: 'flex-start', p: 0, textTransform: 'none', '&:hover': { color: 'white' } }}>Quem Somos</Button>
+                  <Button onClick={() => navigate('/politica-de-privacidade')} sx={{ color: 'grey.300', justifyContent: 'flex-start', p: 0, textTransform: 'none', '&:hover': { color: 'white' } }}>Política de Privacidade</Button>
+                  <Button onClick={() => navigate('/termos-de-uso')} sx={{ color: 'grey.300', justifyContent: 'flex-start', p: 0, textTransform: 'none', '&:hover': { color: 'white' } }}>Termos de Uso</Button>
+                  <Button onClick={() => navigate('/politica-de-cookies')} sx={{ color: 'grey.300', justifyContent: 'flex-start', p: 0, textTransform: 'none', '&:hover': { color: 'white' } }}>Política de Cookies</Button>
+                </Box>
+              </Stack>
+            </Grid>
+
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Stack spacing={2}>
+                <Typography variant="subtitle1" fontWeight={600}>
+                  Contato & Suporte
                 </Typography>
                 <Typography variant="body2" sx={{ opacity: 0.8 }}>
                   suporte@nppavalia.com.br
@@ -361,7 +379,7 @@ export default function HomePage() {
 
           <Box sx={{ mt: 6, pt: 4, borderTop: '1px solid rgba(255,255,255,0.1)', textAlign: 'center' }}>
             <Typography variant="body2" sx={{ opacity: 0.6 }}>
-              © {new Date().getFullYear()} NPPAvalia. Todos os direitos reservados.
+              © {new Date().getFullYear()} NeuroPPAvalia. Todos os direitos reservados.
             </Typography>
           </Box>
         </Container>

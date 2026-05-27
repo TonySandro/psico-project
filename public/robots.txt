@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Allow: /quem-somos
+Allow: /politica-de-privacidade
+Allow: /termos-de-uso
+Allow: /politica-de-cookies
+
+# Bloquear indexação da aplicação protegida e fluxos sensíveis
+Disallow: /app/
+Disallow: /login
+Disallow: /signup
+Disallow: /confirm
+Disallow: /payment/
+Disallow: /anamnesis/responder/
+
+# Sitemap Link
+Sitemap: https://nppavalia.com.br/sitemap.xml

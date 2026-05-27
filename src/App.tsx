@@ -21,6 +21,10 @@ import ReportEditorPage from './pages/ReportEditorPage';
 import PaymentSuccessPage from './pages/payment/SuccessPage';
 import PaymentFailurePage from './pages/payment/FailurePage';
 import PaymentPendingPage from './pages/payment/PendingPage';
+import AboutUsPage from './pages/AboutUsPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsPage from './pages/TermsPage';
+import CookiesPage from './pages/CookiesPage';
 
 function App() {
   // useEffect(() => {
@@ -43,6 +47,10 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/confirm" element={<ConfirmEmailPage />} />
+        <Route path="/quem-somos" element={<AboutUsPage />} />
+        <Route path="/politica-de-privacidade" element={<PrivacyPolicyPage />} />
+        <Route path="/termos-de-uso" element={<TermsPage />} />
+        <Route path="/politica-de-cookies" element={<CookiesPage />} />
         <Route path="/anamnesis/responder/:token" element={<PublicAnamnesisPage />} />
 
         <Route path="/payment/success" element={<PaymentSuccessPage />} />
