@@ -22,7 +22,8 @@ import {
     ListItemIcon,
     ListItemText,
     Container,
-    Collapse
+    Collapse,
+    MenuItem
 } from '@mui/material';
 import { PlayCircle, Clock, Users, TicketCheck, RotateCcw, CheckCircle2 } from 'lucide-react';
 import BackButton from '@/components/BackButton';
@@ -138,6 +139,25 @@ export default function TestRunnerPage() {
                     name: patientName,
                     age: Number(age),
                     correctAnswers: Number(formData.correctAnswers ?? 0)
+                };
+            } else if (type === 'tde2') {
+                const total = Number(formData.totalQuestions || 0);
+                const correct = Number(formData.correctAnswers || 0);
+                const omissions = Number(formData.omissions || 0);
+
+                const responses = Array.from({ length: total }, (_, i) => {
+                    if (i < correct) return { question: i + 1, correct: true };
+                    if (i >= total - omissions) return { question: i + 1, correct: false, omitted: true };
+                    return { question: i + 1, correct: false };
+                });
+
+                data = {
+                    patientName: patientName,
+                    schoolGrade: String(formData.schoolGrade || "1"),
+                    subtest: formData.subtest || "writing",
+                    responses,
+                    minutes: Number(formData.minutes || 0),
+                    seconds: Number(formData.seconds || 0)
                 };
             }
 
@@ -255,6 +275,57 @@ export default function TestRunnerPage() {
                     <Stack spacing={2}>
                         <Typography variant="subtitle1" fontWeight={600}>Resultado Final</Typography>
                         {renderInput("Total de Respostas Corretas", "correctAnswers")}
+                    </Stack>
+                );
+            case 'tde2':
+                return (
+                    <Stack spacing={3}>
+                        <Box>
+                            <Typography variant="subtitle1" fontWeight={600} gutterBottom>Configuração do Teste</Typography>
+                            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                                <TextField
+                                    select
+                                    label="Subteste"
+                                    fullWidth
+                                    required
+                                    value={formData.subtest || ''}
+                                    onChange={(e) => handleInputChange('subtest', e.target.value)}
+                                >
+                                    <MenuItem value="writing">Escrita</MenuItem>
+                                    <MenuItem value="reading">Leitura</MenuItem>
+                                    <MenuItem value="arithmetic">Aritmética</MenuItem>
+                                </TextField>
+                                <TextField
+                                    select
+                                    label="Ano Escolar"
+                                    fullWidth
+                                    required
+                                    value={formData.schoolGrade || ''}
+                                    onChange={(e) => handleInputChange('schoolGrade', e.target.value)}
+                                >
+                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((grade) => (
+                                        <MenuItem key={grade} value={String(grade)}>{grade}º Ano</MenuItem>
+                                    ))}
+                                </TextField>
+                            </Stack>
+                        </Box>
+                        
+                        <Box>
+                            <Typography variant="subtitle1" fontWeight={600} gutterBottom>Resultados Obtidos</Typography>
+                            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                                {renderInput("Total de Questões", "totalQuestions")}
+                                {renderInput("Total de Acertos", "correctAnswers")}
+                                {renderInput("Total de Omissões", "omissions")}
+                            </Stack>
+                        </Box>
+
+                        <Box>
+                            <Typography variant="subtitle1" fontWeight={600} gutterBottom>Tempo de Execução</Typography>
+                            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                                {renderInput("Minutos", "minutes")}
+                                {renderInput("Segundos", "seconds")}
+                            </Stack>
+                        </Box>
                     </Stack>
                 );
 

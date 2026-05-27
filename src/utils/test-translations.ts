@@ -53,7 +53,18 @@ export const TEST_KEY_TRANSLATIONS: Record<string, string> = {
     hyperactivityMean: 'Média de Hiperatividade',
     oppositionalMean: 'Média de Oposicionismo',
     globalMean: 'Média Global',
-    clinicalFlag: 'Indicativo Clínico'
+    clinicalFlag: 'Indicativo Clínico',
+    subtest: 'Subteste',
+    gradeGroup: 'Grupo Escolar',
+    totalQuestions: 'Total de Questões',
+    errors: 'Erros',
+    omissions: 'Omissões',
+    minutes: 'Minutos',
+    seconds: 'Segundos',
+    totalTimeSeconds: 'Tempo Total (s)',
+    decimalTimeMinutes: 'Tempo Decimal (min)',
+    efficiency: 'Eficiência',
+    accuracyPercentage: 'Precisão (%)'
 };
 
 export const TEST_VALUE_TRANSLATIONS: Record<string, string> = {

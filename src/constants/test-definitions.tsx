@@ -1,4 +1,4 @@
-import { Brain, Palette, Target, Activity, MessageCircle } from 'lucide-react';
+import { Brain, Palette, Target, Activity, MessageCircle, BookOpen } from 'lucide-react';
 
 export interface TestDefinition {
     id: string;
@@ -100,5 +100,21 @@ export const TEST_DEFINITIONS: Record<string, TestDefinition> = {
         timeEstimate: '10-15 min',
         targetAge: '3-12 anos'
     },
-
+    'tde2': {
+        id: 'tde2',
+        name: 'TDE-II',
+        fullName: 'Teste de Desempenho Escolar (Segunda Edição)',
+        description: 'Avalia o desempenho escolar em leitura, escrita e aritmética de forma padronizada.',
+        instructions: [
+            'Selecione o subteste aplicado: Escrita, Leitura ou Aritmética.',
+            'Informe o ano escolar do paciente (1º ao 9º ano).',
+            'Preencha o total de questões, acertos e omissões.',
+            'Informe o tempo gasto em minutos e segundos.',
+            'O sistema calculará automaticamente o tempo decimal, eficiência e precisão.'
+        ],
+        icon: BookOpen,
+        color: '#3B82F6',
+        timeEstimate: '10-20 min',
+        targetAge: '1º ao 9º ano'
+    },
 };
