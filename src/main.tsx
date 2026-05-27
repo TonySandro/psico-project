@@ -9,6 +9,7 @@ import createCache from '@emotion/cache';
 import App from './App';
 import theme from './theme';
 import './index.css';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,6 +37,7 @@ createRoot(document.getElementById('root')!).render(
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <App />
+          <SpeedInsights />
         </ThemeProvider>
       </CacheProvider>
       <ReactQueryDevtools initialIsOpen={false} />
