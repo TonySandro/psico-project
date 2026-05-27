@@ -43,7 +43,8 @@ export const formatTestType = (type: TestType): string => {
     Stroop: 'Stroop - Teste de Cores e Palavras',
     ATA: 'ATA - Avaliação de Atenção',
     SNAP: 'SNAP - Escala de TDAH',
-    Token: 'Token - Teste de Compreensão'
+    Token: 'Token - Teste de Compreensão',
+    TDE2: 'TDE2 - Teste de Desempenho Escolar'
   };
   return typeMap[type] || type;
 };
