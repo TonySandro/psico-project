@@ -22,10 +22,25 @@ export default function BackButton({ to, label = 'Voltar', onClick, sx, ...props
 
     return (
         <Button
-            variant="outlined"
+            variant="text"
             startIcon={<ArrowLeft size={20} />}
             onClick={handleClick}
-            sx={{ ...sx }}
+            sx={{
+                width: 'fit-content',
+                color: 'text.secondary',
+                textTransform: 'none',
+                fontWeight: 600,
+                px: 2,
+                py: 1,
+                borderRadius: 2,
+                transition: 'all 0.2s',
+                '&:hover': {
+                    bgcolor: 'action.hover',
+                    color: 'primary.main',
+                    transform: 'translateX(-4px)'
+                },
+                ...sx
+            }}
             {...props}
         >
             {label}
