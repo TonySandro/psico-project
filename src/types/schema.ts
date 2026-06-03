@@ -8,6 +8,7 @@ export interface Account {
   accessToken?: string;
   subscriptionStatus?: 'active' | 'inactive' | 'pending';
   subscriptionEndsAt?: string;
+  createdAt?: string;
 }
 
 export interface Patient {

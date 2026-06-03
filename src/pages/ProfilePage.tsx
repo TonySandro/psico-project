@@ -185,13 +185,9 @@ export default function ProfilePage() {
                   sx={{ color: 'text.secondary', fontSize: '0.875rem' }}
                 >
                   <Calendar size={14} />
-                  <span>Membro desde Janeiro de 2024</span>
+                  <span>Membro desde {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('pt-BR') : ''}</span>
                 </Stack>
               </Box>
-
-              <Button variant="outlined" sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 600 }}>
-                Ver Perfil Público
-              </Button>
             </Stack>
           </CardContent>
         </Card>
