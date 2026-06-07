@@ -15,10 +15,10 @@ export default function AnamnesisCard({ patientId }: AnamnesisCardProps) {
     const navigate = useNavigate();
     const { data: legacyAnamnesis } = useGetAnamnesis(patientId);
     const { data: responses, isLoading: responsesLoading } = usePatientAnamnesisResponses(patientId);
-    
+
     // Hooks for auto-creation logic
     const { mutateAsync: generateLink, isPending: isGeneratingLink } = useGenerateAnamnesisLink();
-    
+
     const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
     const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
@@ -85,7 +85,7 @@ export default function AnamnesisCard({ patientId }: AnamnesisCardProps) {
                             >
                                 <Stack spacing={0.5}>
                                     <Typography variant="subtitle2" fontWeight={700}>
-                                        {resp.templateName || 'Formulário Sem Nome'}
+                                        {resp.templateName || 'Formulário Respondido'}
                                     </Typography>
                                     <Stack direction="row" spacing={2} alignItems="center">
                                         <Stack direction="row" alignItems="center" spacing={0.5}>
