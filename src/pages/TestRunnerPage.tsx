@@ -15,7 +15,6 @@ import {
     Checkbox,
     FormControlLabel,
     CircularProgress,
-    Chip,
     Divider,
     List,
     ListItem,
@@ -25,11 +24,11 @@ import {
     Collapse,
     MenuItem
 } from '@mui/material';
-import { PlayCircle, Clock, Users, TicketCheck, RotateCcw, CheckCircle2 } from 'lucide-react';
+import { PlayCircle, Clock, Users, TicketCheck } from 'lucide-react';
 import BackButton from '@/components/BackButton';
+import TestResultDisplay from '@/components/TestResultDisplay';
 import { useTestResult, useAddProtocol } from '@/hooks/useTests';
 import { usePatients } from '@/hooks/usePatients';
-import { translateTestKey, translateTestValue } from '@/utils/test-translations';
 import { useAuthStore } from '@/stores/authStore';
 import type { Patient } from '@/types/schema';
 import { TEST_DEFINITIONS } from '@/constants/test-definitions';
@@ -309,7 +308,7 @@ export default function TestRunnerPage() {
                                 </TextField>
                             </Stack>
                         </Box>
-                        
+
                         <Box>
                             <Typography variant="subtitle1" fontWeight={600} gutterBottom>Resultados Obtidos</Typography>
                             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
@@ -336,171 +335,7 @@ export default function TestRunnerPage() {
         }
     };
 
-    const renderResult = () => {
-        if (!result) return null;
 
-        const getLabel = (key: string) => translateTestKey(key);
-
-        const formatValue = (value: any) => translateTestValue(value);
-
-        const renderMetrics = (data: Record<string, any>) => (
-            <Box display="grid" gridTemplateColumns="repeat(auto-fit, minmax(160px, 1fr))" gap={2.5}>
-                {Object.entries(data).map(([key, value]) => {
-                    if (typeof value === 'object') return null;
-                    return (
-                        <Paper
-                            key={key}
-                            elevation={0}
-                            sx={{
-                                p: 2.5,
-                                bgcolor: 'white',
-                                borderRadius: 2,
-                                border: '2px solid',
-                                borderColor: 'grey.200',
-                                transition: 'all 0.2s',
-                                '&:hover': {
-                                    borderColor: 'primary.main',
-                                    transform: 'translateY(-2px)',
-                                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                                }
-                            }}
-                        >
-                            <Typography
-                                variant="caption"
-                                color="text.secondary"
-                                sx={{
-                                    textTransform: 'uppercase',
-                                    letterSpacing: 0.5,
-                                    fontWeight: 600,
-                                    display: 'block',
-                                    mb: 0.5
-                                }}
-                            >
-                                {getLabel(key)}
-                            </Typography>
-                            <Typography variant="h5" fontWeight="bold" color="primary.main">
-                                {formatValue(value)}
-                            </Typography>
-                        </Paper>
-                    )
-                })}
-            </Box>
-        );
-
-        return (
-            <Card
-                sx={{
-                    borderTop: 4,
-                    borderColor: 'success.main',
-                    background: 'linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)'
-                }}
-                elevation={4}
-            >
-                <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                    <Stack spacing={4}>
-                        <Stack direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'flex-start', sm: 'center' }} justifyContent="space-between" gap={2}>
-                            <Stack direction="row" spacing={2} alignItems="center">
-                                <Box
-                                    sx={{
-                                        width: 48,
-                                        height: 48,
-                                        borderRadius: '12px',
-                                        bgcolor: 'success.main',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        color: 'white',
-                                        boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
-                                    }}
-                                >
-                                    <CheckCircle2 size={28} />
-                                </Box>
-                                <Box>
-                                    <Typography variant="overline" fontWeight={600} color="success.dark" sx={{ letterSpacing: 1 }}>
-                                        Avaliação Concluída
-                                    </Typography>
-                                    <Typography variant="h5" fontWeight="bold" color="text.primary">
-                                        Resultado da {testDef.name}
-                                    </Typography>
-                                </Box>
-                            </Stack>
-                            <Chip
-                                icon={<CheckCircle2 size={18} />}
-                                label="Processado"
-                                color="success"
-                                variant="filled"
-                                sx={{ px: 1, fontWeight: 600 }}
-                            />
-                        </Stack>
-
-                        {selectedPatient && (
-                            <Alert
-                                severity={isSaved ? "success" : isSaving ? "info" : "warning"}
-                                sx={{ borderRadius: 2 }}
-                            >
-                                {isSaving ? "Salvando no cadastro do paciente..." :
-                                    isSaved ? "✓ Resultado salvo no cadastro do paciente!" :
-                                        "⚠️ Resultado gerado (Não salvo automaticamente)"}
-                            </Alert>
-                        )}
-
-                        <Divider />
-
-                        <Box>{renderMetrics(result)}</Box>
-
-                        {Object.entries(result).map(([key, value]) => {
-                            if (Array.isArray(value)) return null;
-                            if (typeof value === 'object' && value !== null) {
-                                return (
-                                    <Box key={key}>
-                                        <Typography
-                                            variant="subtitle1"
-                                            fontWeight={700}
-                                            gutterBottom
-                                            sx={{
-                                                textTransform: 'uppercase',
-                                                color: 'text.primary',
-                                                mt: 2,
-                                                mb: 2,
-                                                letterSpacing: 0.5
-                                            }}
-                                        >
-                                            {getLabel(key)}
-                                        </Typography>
-                                        {renderMetrics(value)}
-                                    </Box>
-                                )
-                            }
-                            return null;
-                        })}
-
-                        <Divider sx={{ my: 2 }} />
-
-                        <Box display="flex" justifyContent="flex-end" gap={2}>
-                            <Button
-                                variant="outlined"
-                                startIcon={<RotateCcw size={18} />}
-                                onClick={handleNewTest}
-                                sx={{
-                                    px: 3,
-                                    py: 1.5,
-                                    borderRadius: 2,
-                                    textTransform: 'none',
-                                    fontWeight: 600,
-                                    borderWidth: 2,
-                                    '&:hover': {
-                                        borderWidth: 2
-                                    }
-                                }}
-                            >
-                                Novo Teste
-                            </Button>
-                        </Box>
-                    </Stack>
-                </CardContent>
-            </Card>
-        );
-    };
 
     return (
         <Container maxWidth="xl" sx={{ pb: 4 }}>
@@ -743,7 +578,14 @@ export default function TestRunnerPage() {
                         }
                     }}
                 >
-                    {renderResult()}
+                    <TestResultDisplay
+                        testName={testDef.name}
+                        resultData={result}
+                        isSaved={isSaved}
+                        isSaving={isSaving}
+                        hasPatient={!!selectedPatient}
+                        onNewTest={handleNewTest}
+                    />
                 </Box>
             )}
         </Container>
