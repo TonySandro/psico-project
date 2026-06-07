@@ -122,20 +122,48 @@ export default function PublicAnamnesisPage() {
                 ident_serie: data.patient?.schoolYear || ''
               }}
             >
-              {({ handleSubmit }) => (
-                <Box sx={{ pt: 2, borderTop: 1, borderColor: 'divider', mt: { xs: 4, md: 6 } }}>
-                  <Button
-                    variant="contained"
-                    size="large"
-                    fullWidth
-                    disabled={isSubmitting}
-                    onClick={handleSubmit(handleRequestSubmit)}
-                    startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : <ClipboardList size={20} />}
-                  >
-                    {isSubmitting ? 'Enviando...' : 'Enviar respostas'}
-                  </Button>
-                </Box>
-              )}
+              {({ handleSubmit, errors }) => {
+                const getFieldLabel = (fieldId: string) => {
+                  for (const section of schema.sections) {
+                    const field = section.fields.find((f: any) => f.id === fieldId);
+                    if (field) return field.label;
+                  }
+                  return fieldId;
+                };
+
+                const hasErrors = Object.keys(errors || {}).length > 0;
+
+                return (
+                  <Box sx={{ pt: 2, borderTop: 1, borderColor: 'divider', mt: { xs: 4, md: 6 } }}>
+                    {hasErrors && (
+                      <Alert severity="warning" sx={{ mb: 3 }}>
+                        <Typography variant="subtitle2" fontWeight={600} gutterBottom>
+                          Atenção: Os seguintes campos precisam ser preenchidos:
+                        </Typography>
+                        <Box component="ul" sx={{ m: 0, pl: 2, typography: 'body2' }}>
+                          {Object.keys(errors).map(fieldId => (
+                            <li key={fieldId}>{getFieldLabel(fieldId)}</li>
+                          ))}
+                        </Box>
+                      </Alert>
+                    )}
+                    <Button
+                      variant="contained"
+                      size="large"
+                      fullWidth
+                      disabled={isSubmitting}
+                      onClick={(e) => {
+                        handleSubmit(handleRequestSubmit, () => {
+                          // Scroll to the warning alert naturally after trying to submit
+                        })(e);
+                      }}
+                      startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : <ClipboardList size={20} />}
+                    >
+                      {isSubmitting ? 'Enviando...' : 'Enviar respostas'}
+                    </Button>
+                  </Box>
+                );
+              }}
             </AnamnesisRenderer>
           </CardContent>
         </Card>

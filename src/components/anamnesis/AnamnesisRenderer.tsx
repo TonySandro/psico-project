@@ -8,25 +8,19 @@ interface AnamnesisRendererProps {
   schema: AnamnesisSchema;
   defaultValues?: Record<string, unknown>;
   readOnly?: boolean;
-  /** Called whenever the form values change (for autosave). Receives current form values. */
   onValuesChange?: (values: Record<string, unknown>) => void;
-  /** Render prop: children receive { handleSubmit, isValid, isDirty } so the parent can place the submit button */
   children?: (bag: {
     handleSubmit: (
       onValid: (values: Record<string, unknown>) => void,
+      onInvalid?: (errors: Record<string, any>) => void
     ) => (e?: React.BaseSyntheticEvent) => Promise<void>;
     isValid: boolean;
     isDirty: boolean;
+    errors: Record<string, any>;
   }) => React.ReactNode;
-  /** If true, fields that have a value in defaultValues will be locked (readOnly) */
   lockPreFilledFields?: boolean;
 }
 
-/**
- * Core schema-driven form renderer.
- * Walks sections → fields and delegates all MUI+RHF logic to child components.
- * This component owns the `useForm` instance so the parent only needs to wire the submit handler.
- */
 export default function AnamnesisRenderer({
   schema,
   defaultValues = {},
@@ -45,7 +39,6 @@ export default function AnamnesisRenderer({
     mode: 'onChange',
   });
 
-  // ── Progress calculation ─────────────────────────────────────────────────
   const allFields = useMemo(
     () => schema.sections.flatMap((s) => s.fields),
     [schema],
@@ -73,7 +66,6 @@ export default function AnamnesisRenderer({
     );
   }, [lockPreFilledFields, defaultValues]);
 
-  // ── Notify parent of changes (autosave) via subscription, not inline ────
   useEffect(() => {
     if (!onValuesChange) return;
     const subscription = watch((values) => {
@@ -84,7 +76,6 @@ export default function AnamnesisRenderer({
 
   return (
     <>
-      {/* Progress bar */}
       <Box sx={{ mb: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
           <Typography variant="caption" color="text.secondary">
@@ -101,7 +92,6 @@ export default function AnamnesisRenderer({
         />
       </Box>
 
-      {/* Sections */}
       <Box>
         {schema.sections.map((section, idx) => (
           <SectionRenderer
@@ -115,9 +105,7 @@ export default function AnamnesisRenderer({
           />
         ))}
       </Box>
-
-      {/* Submit slot via render props */}
-      {children?.({ handleSubmit, isValid, isDirty })}
+      {children?.({ handleSubmit, isValid, isDirty, errors })}
     </>
   );
 }
