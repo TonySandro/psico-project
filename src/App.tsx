@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import SignupPage from './pages/SignupPage';
 import ConfirmEmailPage from './pages/ConfirmEmailPage';
 import DashboardPage from './pages/DashboardPage';
@@ -25,26 +26,31 @@ import AboutUsPage from './pages/AboutUsPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsPage from './pages/TermsPage';
 import CookiesPage from './pages/CookiesPage';
+import { useAuthStore } from './stores/authStore';
+import { useEffect } from 'react';
+import { api } from './services/api';
+import type { Account } from './types/schema';
 
 function App() {
-  // useEffect(() => {
-  //   api.get<Account>('/auth')
-  //     .then((response) => {
-  //       const token = useAuthStore.getState().token;
-  //       if (token && response.data) {
-  //         useAuthStore.getState().setUser(response.data, token);
-  //       }
-  //     })
-  //     .catch(() => {
-  //       // console.error('Error validating session:', error);
-  //     });
-  // }, []);
+  useEffect(() => {
+    api.get<Account>('/auth')
+      .then((response) => {
+        const token = useAuthStore.getState().token;
+        if (token && response.data) {
+          useAuthStore.getState().setUser(response.data, token);
+        }
+      })
+      .catch(() => {
+        console.error('Error validating session');
+      });
+  }, []);
 
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/confirm" element={<ConfirmEmailPage />} />
         <Route path="/quem-somos" element={<AboutUsPage />} />

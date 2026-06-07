@@ -8,6 +8,9 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isRecoverPassword, setIsRecoverPassword] = useState(false);
+  const [recoverEmail, setRecoverEmail] = useState('');
+  const [recoverStatus, setRecoverStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const { mutate: login, isPending, error } = useLogin();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -17,6 +20,23 @@ export default function LoginPage() {
         navigate('/app/dashboard');
       }
     });
+  };
+
+  const handleRecoverPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setRecoverStatus('loading');
+    try {
+      const { api } = await import('@/services/api');
+      await api.post(`/request-password-reset`, { email: recoverEmail });
+      setRecoverStatus('success');
+      setTimeout(() => {
+        setIsRecoverPassword(false);
+        setRecoverStatus('idle');
+        setRecoverEmail('');
+      }, 4000);
+    } catch (err) {
+      setRecoverStatus('error');
+    }
   };
 
   return (
@@ -75,14 +95,16 @@ export default function LoginPage() {
                 <h2 className="text-xl font-bold leading-tight tracking-[-0.015em] text-text-main">NeuroPPAvalia</h2>
               </div>
               <h1 className="text-3xl font-black leading-tight tracking-tight text-text-main sm:text-4xl">
-                Acesso Profissional
+                {isRecoverPassword ? 'Recuperar Senha' : 'Acesso Profissional'}
               </h1>
               <p className="text-base text-gray-500 font-normal">
-                Faça login para acessar avaliações, testes e relatórios clínicos.
+                {isRecoverPassword
+                  ? 'Informe seu e-mail e enviaremos um link para recuperar a sua senha.'
+                  : 'Faça login para acessar avaliações, testes e relatórios clínicos.'}
               </p>
             </div>
 
-            {error && (
+            {!isRecoverPassword && error && (
               <div className="bg-red-50 text-red-500 p-3 rounded-lg text-sm text-center">
                 {(() => {
                   const err = error as any;
@@ -96,63 +118,122 @@ export default function LoginPage() {
               </div>
             )}
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-              {/* Email Field */}
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium leading-normal text-text-main" htmlFor="email">E-mail profissional cadastrado</label>
-                <div className="relative flex items-center">
-                  <span className="material-symbols-outlined absolute left-4 text-[#664c9a] z-10 pointer-events-none">mail</span>
-                  <input
-                    className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#d7cfe7] bg-white h-12 pl-12 pr-4 text-base font-normal leading-normal placeholder:text-[#664c9a]/60 transition-all"
-                    id="email"
-                    placeholder="exemplo@email.com"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
+            {isRecoverPassword && recoverStatus === 'error' && (
+              <div className="bg-red-50 text-red-500 p-3 rounded-lg text-sm text-center">
+                Erro ao tentar enviar o link de recuperação. Verifique o e-mail e tente novamente.
               </div>
+            )}
 
-              {/* Password Field */}
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium leading-normal text-text-main" htmlFor="password">Senha de acesso à conta clínica</label>
+            {isRecoverPassword && recoverStatus === 'success' && (
+              <div className="bg-green-50 text-green-600 p-3 rounded-lg text-sm text-center">
+                Link de recuperação enviado com sucesso! Verifique sua caixa de entrada.
+              </div>
+            )}
+
+            {/* Form */}
+            {isRecoverPassword ? (
+              <form onSubmit={handleRecoverPassword} className="flex flex-col gap-5">
+                {/* Email Field */}
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm font-medium leading-normal text-text-main" htmlFor="recoverEmail">E-mail da conta</label>
+                  <div className="relative flex items-center">
+                    <span className="material-symbols-outlined absolute left-4 text-[#664c9a] z-10 pointer-events-none">mail</span>
+                    <input
+                      className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#d7cfe7] bg-white h-12 pl-12 pr-4 text-base font-normal leading-normal placeholder:text-[#664c9a]/60 transition-all"
+                      id="recoverEmail"
+                      placeholder="Seu e-mail"
+                      type="email"
+                      value={recoverEmail}
+                      onChange={(e) => setRecoverEmail(e.target.value)}
+                      required
+                      disabled={recoverStatus === 'loading' || recoverStatus === 'success'}
+                    />
+                  </div>
                 </div>
-                <div className="relative flex items-center">
-                  <span className="material-symbols-outlined absolute left-4 text-[#664c9a] z-10 pointer-events-none">lock</span>
-                  <input
-                    className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#d7cfe7] bg-white h-12 pl-12 pr-12 text-base font-normal leading-normal placeholder:text-[#664c9a]/60 transition-all"
-                    id="password"
-                    placeholder="Digite sua senha"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={recoverStatus === 'loading' || recoverStatus === 'success'}
+                  className="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary hover:bg-primary/90 text-white text-base font-bold leading-normal tracking-[0.015em] transition-all shadow-md hover:shadow-lg mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {recoverStatus === 'loading' ? 'Enviando...' : 'Enviar Link de Recuperação'}
+                </button>
+
+                <div className="flex justify-center mt-2">
                   <button
-                    className="absolute right-0 top-0 h-full px-4 flex items-center justify-center text-[#664c9a] hover:text-primary transition-colors focus:outline-none cursor-pointer"
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
+                    onClick={() => setIsRecoverPassword(false)}
+                    className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
                   >
-                    <span className="material-symbols-outlined">{showPassword ? 'visibility_off' : 'visibility'}</span>
+                    Voltar para o Login
                   </button>
                 </div>
-                {/* <div className="flex justify-end mt-1">
-                  <a className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors" href="#">Esqueceu sua senha?</a>
-                </div> */}
-              </div>
+              </form>
+            ) : (
+              <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                {/* Email Field */}
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm font-medium leading-normal text-text-main" htmlFor="email">E-mail cadastrado</label>
+                  <div className="relative flex items-center">
+                    <span className="material-symbols-outlined absolute left-4 text-[#664c9a] z-10 pointer-events-none">mail</span>
+                    <input
+                      className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#d7cfe7] bg-white h-12 pl-12 pr-4 text-base font-normal leading-normal placeholder:text-[#664c9a]/60 transition-all"
+                      id="email"
+                      placeholder="exemplo@email.com"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
 
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={isPending}
-                className="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary hover:bg-primary/90 text-white text-base font-bold leading-normal tracking-[0.015em] transition-all shadow-md hover:shadow-lg mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                {isPending ? 'Entrando...' : 'Entrar'}
-              </button>
-            </form>
+                {/* Password Field */}
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium leading-normal text-text-main" htmlFor="password">Senha</label>
+                  </div>
+                  <div className="relative flex items-center">
+                    <span className="material-symbols-outlined absolute left-4 text-[#664c9a] z-10 pointer-events-none">lock</span>
+                    <input
+                      className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-main focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-[#d7cfe7] bg-white h-12 pl-12 pr-12 text-base font-normal leading-normal placeholder:text-[#664c9a]/60 transition-all"
+                      id="password"
+                      placeholder="Digite sua senha"
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                    <button
+                      className="absolute right-0 top-0 h-full px-4 flex items-center justify-center text-[#664c9a] hover:text-primary transition-colors focus:outline-none cursor-pointer"
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      <span className="material-symbols-outlined">{showPassword ? 'visibility_off' : 'visibility'}</span>
+                    </button>
+                  </div>
+                  <div className="flex justify-end mt-1">
+                    <button
+                      type="button"
+                      onClick={() => setIsRecoverPassword(true)}
+                      className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+                    >
+                      Esqueceu sua senha?
+                    </button>
+                  </div>
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={isPending}
+                  className="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary hover:bg-primary/90 text-white text-base font-bold leading-normal tracking-[0.015em] transition-all shadow-md hover:shadow-lg mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {isPending ? 'Entrando...' : 'Entrar'}
+                </button>
+              </form>
+            )}
 
             {/* Footer */}
             <div className="flex flex-col items-center gap-4">
