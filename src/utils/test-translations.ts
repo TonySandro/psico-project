@@ -64,7 +64,19 @@ export const TEST_KEY_TRANSLATIONS: Record<string, string> = {
     totalTimeSeconds: 'Tempo Total (s)',
     decimalTimeMinutes: 'Tempo Decimal (min)',
     efficiency: 'Eficiência',
-    accuracyPercentage: 'Precisão (%)'
+    accuracyPercentage: 'Precisão (%)',
+    // TDE-II (campos reformulados)
+    nomePaciente: 'Nome do Paciente',
+    anoEscolar: 'Ano Escolar',
+    subteste: 'Subteste',
+    pontuacaoTotal: 'Pontuação Total',
+    tempoTotal: 'Tempo Total',
+    unidadeTempo: 'Unidade de Tempo',
+    naoSabe: 'Não Sabe',
+    acertos: 'Acertos',
+    erros: 'Erros',
+    tempoTotalEmSegundos: 'Tempo Total (segundos)',
+    resultados: 'Resultados',
 };
 
 export const TEST_VALUE_TRANSLATIONS: Record<string, string> = {

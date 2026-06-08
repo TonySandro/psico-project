@@ -27,7 +27,9 @@ import {
 import { PlayCircle, Clock, Users, TicketCheck } from 'lucide-react';
 import BackButton from '@/components/BackButton';
 import TestResultDisplay from '@/components/TestResultDisplay';
+import Tde2ResultDisplay from '@/components/Tde2ResultDisplay';
 import { useTestResult, useAddProtocol } from '@/hooks/useTests';
+import { useTde2Calculate, type Tde2ResultModel } from '@/hooks/useTde2';
 import { usePatients } from '@/hooks/usePatients';
 import { useAuthStore } from '@/stores/authStore';
 import type { Patient } from '@/types/schema';
@@ -38,6 +40,9 @@ export default function TestRunnerPage() {
     const user = useAuthStore((state) => state.user);
     const { mutate: processTest, isPending, data: result, error, reset: resetResult } = useTestResult();
     const { mutate: addProtocol, isPending: isSaving, isSuccess: isSaved } = useAddProtocol();
+
+    // TDE-II — fluxo próprio de dois estágios
+    const { mutate: calcularTde2, isPending: isPendingTde2, data: resultTde2, error: errorTde2, reset: resetTde2 } = useTde2Calculate();
 
     // Verify if test exists
     const testDef = type ? TEST_DEFINITIONS[type] : undefined;
@@ -67,7 +72,7 @@ export default function TestRunnerPage() {
         }
     }, [isAnonymous]);
 
-    // Scroll to results when they appear
+    // Scroll to results when they appear (generic tests)
     useEffect(() => {
         if (result && resultsSectionRef.current) {
             setTimeout(() => {
@@ -78,6 +83,18 @@ export default function TestRunnerPage() {
             }, 100);
         }
     }, [result]);
+
+    // Scroll to results when TDE-II result appears
+    useEffect(() => {
+        if (resultTde2 && resultsSectionRef.current) {
+            setTimeout(() => {
+                resultsSectionRef.current?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 100);
+        }
+    }, [resultTde2]);
 
     if (!testDef) {
         return <Navigate to="/app/tests" />;
@@ -140,24 +157,36 @@ export default function TestRunnerPage() {
                     correctAnswers: Number(formData.correctAnswers ?? 0)
                 };
             } else if (type === 'tde2') {
-                const total = Number(formData.totalQuestions || 0);
-                const correct = Number(formData.correctAnswers || 0);
-                const omissions = Number(formData.omissions || 0);
-
-                const responses = Array.from({ length: total }, (_, i) => {
-                    if (i < correct) return { question: i + 1, correct: true };
-                    if (i >= total - omissions) return { question: i + 1, correct: false, omitted: true };
-                    return { question: i + 1, correct: false };
-                });
-
-                data = {
-                    patientName: patientName,
-                    schoolGrade: String(formData.schoolGrade || "1"),
-                    subtest: formData.subtest || "writing",
-                    responses,
-                    minutes: Number(formData.minutes || 0),
-                    seconds: Number(formData.seconds || 0)
+                // TDE-II usa fluxo próprio — calcularTde2 em vez de processTest
+                const payload = {
+                    nomePaciente: patientName,
+                    anoEscolar: String(formData.anoEscolar || '1º ano'),
+                    subteste: (formData.subteste || 'ESCRITA') as 'ESCRITA' | 'LEITURA' | 'ARITMETICA',
+                    pontuacaoTotal: Number(formData.pontuacaoTotal ?? 0),
+                    tempoTotal: Number(formData.tempoTotal ?? 0),
+                    unidadeTempo: (formData.unidadeTempo || 'minutos') as 'minutos' | 'segundos',
+                    naoSabe: Number(formData.naoSabe ?? 0),
+                    acertos: Number(formData.acertos ?? 0),
+                    erros: Number(formData.erros ?? 0),
                 };
+
+                calcularTde2(payload, {
+                    onSuccess: (tde2Result) => {
+                        setShowForm(false);
+                        if (selectedPatient && user?.id) {
+                            addProtocol({
+                                patientId: selectedPatient.id,
+                                accountId: user.id,
+                                data: {
+                                    name: testDef!.name,
+                                    type: type,
+                                    data: tde2Result
+                                }
+                            });
+                        }
+                    }
+                });
+                return; // early return — não continua para processTest
             }
 
             processTest({ testType: type, data }, {
@@ -181,6 +210,7 @@ export default function TestRunnerPage() {
 
     const handleNewTest = () => {
         resetResult();
+        resetTde2();
         setPatientName('');
         setAge('');
         setSelectedPatient(null);
@@ -279,50 +309,72 @@ export default function TestRunnerPage() {
             case 'tde2':
                 return (
                     <Stack spacing={3}>
+                        {/* Configuração */}
                         <Box>
-                            <Typography variant="subtitle1" fontWeight={600} gutterBottom>Configuração do Teste</Typography>
+                            <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+                                Configuração do Teste
+                            </Typography>
                             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                                 <TextField
                                     select
                                     label="Subteste"
                                     fullWidth
                                     required
-                                    value={formData.subtest || ''}
-                                    onChange={(e) => handleInputChange('subtest', e.target.value)}
+                                    value={formData.subteste || ''}
+                                    onChange={(e) => handleInputChange('subteste', e.target.value)}
                                 >
-                                    <MenuItem value="writing">Escrita</MenuItem>
-                                    <MenuItem value="reading">Leitura</MenuItem>
-                                    <MenuItem value="arithmetic">Aritmética</MenuItem>
+                                    <MenuItem value="ESCRITA">Escrita</MenuItem>
+                                    <MenuItem value="LEITURA">Leitura</MenuItem>
+                                    <MenuItem value="ARITMETICA">Aritmética</MenuItem>
                                 </TextField>
                                 <TextField
                                     select
                                     label="Ano Escolar"
                                     fullWidth
                                     required
-                                    value={formData.schoolGrade || ''}
-                                    onChange={(e) => handleInputChange('schoolGrade', e.target.value)}
+                                    value={formData.anoEscolar || ''}
+                                    onChange={(e) => handleInputChange('anoEscolar', e.target.value)}
                                 >
-                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((grade) => (
-                                        <MenuItem key={grade} value={String(grade)}>{grade}º Ano</MenuItem>
+                                    {[1,2,3,4,5,6,7,8,9].map((g) => (
+                                        <MenuItem key={g} value={`${g}º ano`}>{g}º Ano</MenuItem>
                                     ))}
                                 </TextField>
                             </Stack>
                         </Box>
 
+                        {/* Resultados brutos */}
                         <Box>
-                            <Typography variant="subtitle1" fontWeight={600} gutterBottom>Resultados Obtidos</Typography>
+                            <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+                                Resultados Obtidos
+                            </Typography>
                             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                                {renderInput("Total de Questões", "totalQuestions")}
-                                {renderInput("Total de Acertos", "correctAnswers")}
-                                {renderInput("Total de Omissões", "omissions")}
+                                {renderInput('Pontuação Total', 'pontuacaoTotal')}
+                                {renderInput('Acertos', 'acertos')}
+                                {renderInput('Erros', 'erros')}
                             </Stack>
+                            <Box mt={2}>
+                                {renderInput('Não Sabe (omissões)', 'naoSabe')}
+                            </Box>
                         </Box>
 
+                        {/* Tempo */}
                         <Box>
-                            <Typography variant="subtitle1" fontWeight={600} gutterBottom>Tempo de Execução</Typography>
+                            <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+                                Tempo de Execução
+                            </Typography>
                             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                                {renderInput("Minutos", "minutes")}
-                                {renderInput("Segundos", "seconds")}
+                                {renderInput('Tempo Total', 'tempoTotal')}
+                                <TextField
+                                    select
+                                    label="Unidade"
+                                    fullWidth
+                                    required
+                                    value={formData.unidadeTempo || 'minutos'}
+                                    onChange={(e) => handleInputChange('unidadeTempo', e.target.value)}
+                                >
+                                    <MenuItem value="minutos">Minutos</MenuItem>
+                                    <MenuItem value="segundos">Segundos</MenuItem>
+                                </TextField>
                             </Stack>
                         </Box>
                     </Stack>
@@ -529,9 +581,9 @@ export default function TestRunnerPage() {
                                         {renderSpecificFields()}
                                     </Box>
 
-                                    {error && (
+                                    {(error || errorTde2) && (
                                         <Alert severity="error" sx={{ borderRadius: 2 }}>
-                                            Erro ao processar teste: {(error as Error).message}
+                                            Erro ao processar teste: {((error || errorTde2) as Error).message}
                                         </Alert>
                                     )}
 
@@ -541,8 +593,8 @@ export default function TestRunnerPage() {
                                             onClick={handleSubmit}
                                             variant="contained"
                                             size="large"
-                                            disabled={isPending || isSaving}
-                                            startIcon={isPending ? <CircularProgress size={20} color="inherit" /> : <PlayCircle />}
+                                            disabled={isPending || isPendingTde2 || isSaving}
+                                            startIcon={(isPending || isPendingTde2) ? <CircularProgress size={20} color="inherit" /> : <PlayCircle />}
                                             sx={{
                                                 px: 4,
                                                 py: 1.5,
@@ -556,7 +608,7 @@ export default function TestRunnerPage() {
                                                 }
                                             }}
                                         >
-                                            {isPending ? 'Processando...' : 'Gerar Resultado'}
+                                            {(isPending || isPendingTde2) ? 'Processando...' : 'Gerar Resultado'}
                                         </Button>
                                     </Box>
                                 </Stack>
@@ -566,8 +618,30 @@ export default function TestRunnerPage() {
                 </Box>
             </Collapse>
 
-            {/* Results Section - Full Width */}
-            {result && (
+            {/* Results Section — TDE-II (fluxo próprio de dois estágios) */}
+            {type === 'tde2' && resultTde2 && (
+                <Box
+                    ref={resultsSectionRef}
+                    sx={{
+                        animation: 'fadeIn 0.6s ease-in-out',
+                        '@keyframes fadeIn': {
+                            '0%': { opacity: 0, transform: 'translateY(20px)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' }
+                        }
+                    }}
+                >
+                    <Tde2ResultDisplay
+                        resultData={resultTde2 as Tde2ResultModel}
+                        isSaved={isSaved}
+                        isSaving={isSaving}
+                        hasPatient={!!selectedPatient}
+                        onNewTest={handleNewTest}
+                    />
+                </Box>
+            )}
+
+            {/* Results Section — demais testes (genérico) */}
+            {type !== 'tde2' && result && (
                 <Box
                     ref={resultsSectionRef}
                     sx={{
