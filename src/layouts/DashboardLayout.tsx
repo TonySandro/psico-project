@@ -1,6 +1,6 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Avatar, Menu, MenuItem, Divider, Box } from '@mui/material';
-import { Menu as MenuIcon, LayoutDashboard, Users, ClipboardList, MessageSquare, UserCircle, LogOut, FileText } from 'lucide-react';
+import { AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Avatar, Menu, MenuItem, Divider, Box, Dialog, DialogContent, Button } from '@mui/material';
+import { Menu as MenuIcon, LayoutDashboard, Users, ClipboardList, MessageSquare, UserCircle, LogOut, FileText, X, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
@@ -26,6 +26,9 @@ export default function DashboardLayout() {
   const { user } = useAuthStore();
   const { mutate: logout } = useLogout();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [showBetaModal, setShowBetaModal] = useState(() => {
+    return !localStorage.getItem('npp_seen_free_test_notice');
+  });
 
   const handleUserMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -187,6 +190,146 @@ export default function DashboardLayout() {
           </ErrorBoundary>
         </Box>
       </Box>
+
+      {/* Aviso de Fase de Testes / Gratuito */}
+      <Dialog
+        open={showBetaModal}
+        onClose={() => {
+          localStorage.setItem('npp_seen_free_test_notice', 'true');
+          setShowBetaModal(false);
+        }}
+        maxWidth="xs"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            backgroundImage: 'none',
+            bgcolor: '#ffffff',
+            overflow: 'hidden'
+          }
+        }}
+      >
+        {/* Banner com Gradiente e Ícone */}
+        <Box
+          sx={{
+            height: '140px',
+            background: 'linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%)',
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#ffffff'
+          }}
+        >
+          {/* Botão de Fechar no Canto Superior Direito */}
+          <IconButton
+            onClick={() => {
+              localStorage.setItem('npp_seen_free_test_notice', 'true');
+              setShowBetaModal(false);
+            }}
+            sx={{
+              position: 'absolute',
+              top: 12,
+              right: 12,
+              color: 'rgba(255, 255, 255, 0.8)',
+              '&:hover': {
+                color: '#ffffff',
+                bgcolor: 'rgba(255, 255, 255, 0.1)'
+              }
+            }}
+          >
+            <X size={20} />
+          </IconButton>
+          
+          <Stack spacing={1} alignItems="center" sx={{ mt: 2 }}>
+            <Box
+              sx={{
+                p: 1.5,
+                bgcolor: 'rgba(255, 255, 255, 0.2)',
+                borderRadius: '50%',
+                backdropFilter: 'blur(4px)',
+                display: 'flex',
+                boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
+                animation: 'pulse 2s infinite ease-in-out',
+                '@keyframes pulse': {
+                  '0%': { transform: 'scale(1)', boxShadow: '0 0 0 0 rgba(255, 255, 255, 0.4)' },
+                  '70%': { transform: 'scale(1.05)', boxShadow: '0 0 0 10px rgba(255, 255, 255, 0)' },
+                  '100%': { transform: 'scale(1)', boxShadow: '0 0 0 0 rgba(255, 255, 255, 0)' }
+                }
+              }}
+            >
+              <Sparkles size={32} className="text-white" />
+            </Box>
+          </Stack>
+        </Box>
+
+        <DialogContent sx={{ p: 4, textAlign: 'center' }}>
+          <Typography variant="h5" sx={{ fontWeight: 800, color: '#1F2937', mb: 1.5, letterSpacing: '-0.5px' }}>
+            Acesso Gratuito & Fase de Testes
+          </Typography>
+          
+          <Typography variant="body2" sx={{ color: '#4B5563', mb: 3, lineHeight: 1.6, fontSize: '0.95rem' }}>
+            Olá! O <strong>NeuroPPAvalia</strong> está atualmente em <strong>fase de testes (Beta)</strong> e disponível <strong>totalmente de graça</strong> para você.
+            <br /><br />
+            Como a plataforma está em constante evolução, o seu feedback é extremamente importante para nós! Se encontrar algum erro ou quiser sugerir alguma melhoria, por favor envie através da aba <strong>Feedback</strong> no menu lateral.
+          </Typography>
+
+          <Stack spacing={1.5} direction="column" width="100%">
+            <Button
+              onClick={() => {
+                localStorage.setItem('npp_seen_free_test_notice', 'true');
+                setShowBetaModal(false);
+                navigate('/app/feedback');
+              }}
+              variant="contained"
+              disableElevation
+              sx={{
+                py: 1.5,
+                borderRadius: 2.5,
+                bgcolor: '#3B82F6',
+                color: '#ffffff',
+                fontWeight: 700,
+                fontSize: '0.9rem',
+                textTransform: 'none',
+                transition: 'all 0.2s',
+                '&:hover': {
+                  bgcolor: '#2563EB',
+                  transform: 'translateY(-1px)',
+                  boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+                }
+              }}
+            >
+              Ir para Feedback
+            </Button>
+            
+            <Button
+              onClick={() => {
+                localStorage.setItem('npp_seen_free_test_notice', 'true');
+                setShowBetaModal(false);
+              }}
+              variant="outlined"
+              sx={{
+                py: 1.2,
+                borderRadius: 2.5,
+                borderColor: '#D1D5DB',
+                color: '#4B5563',
+                fontWeight: 600,
+                fontSize: '0.9rem',
+                textTransform: 'none',
+                transition: 'all 0.2s',
+                '&:hover': {
+                  borderColor: '#9CA3AF',
+                  bgcolor: '#F9FAFB',
+                  transform: 'translateY(-1px)'
+                }
+              }}
+            >
+              Começar a usar
+            </Button>
+          </Stack>
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 }

@@ -36,6 +36,7 @@ export const useAuthStore = create<AuthState>()(
       logout: () => {
         set({ user: null, token: null, isAuthenticated: false });
         localStorage.removeItem('auth-storage');
+        localStorage.removeItem('npp_seen_free_test_notice');
       }
     }),
     {
