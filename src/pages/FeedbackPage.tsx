@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { Typography, Stack, Card, TextField, Button, MenuItem, Box, Fade, Avatar, Alert } from '@mui/material';
 import { MessageSquare, Lightbulb, Bug, Send, Sparkles, CheckCircle, HelpCircle, ThumbsUp, MoreHorizontal } from 'lucide-react';
 import { api } from '@/services/api';
+import { useAuthStore } from '@/stores/authStore';
 
 type FeedbackType = 'bug' | 'sugestao' | 'duvida' | 'elogio' | 'outro';
 
 export default function FeedbackPage() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const user = useAuthStore((state) => state.user);
   const [type, setType] = useState<FeedbackType>('sugestao');
   const [message, setMessage] = useState('');
   
@@ -19,12 +19,15 @@ export default function FeedbackPage() {
     setStatus('loading');
     
     try {
-      await api.post('/feedback', { name, email, type, message });
+      await api.post('/feedback', { 
+        name: user?.name || 'Usuário Anônimo', 
+        email: user?.email || 'Sem email', 
+        type, 
+        message 
+      });
       setStatus('success');
       setTimeout(() => {
         setStatus('idle');
-        setName('');
-        setEmail('');
         setType('sugestao');
         setMessage('');
       }, 4000);
@@ -171,27 +174,6 @@ export default function FeedbackPage() {
                       <Alert severity="error">Não foi possível enviar o feedback.</Alert>
                     )}
                     
-                    <TextField
-                      label="Nome"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                      fullWidth
-                      variant="outlined"
-                      sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-                    />
-
-                    <TextField
-                      label="Email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      fullWidth
-                      variant="outlined"
-                      sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-                    />
-
                     <TextField
                       select
                       label="Tipo de Feedback"
