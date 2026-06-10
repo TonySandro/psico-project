@@ -1,6 +1,16 @@
 // ─── Field Types ────────────────────────────────────────────────────────────
 
-export type FieldType = 'text' | 'textarea' | 'radio' | 'checkbox' | 'select' | 'date';
+export type FieldType =
+  | 'text'
+  | 'textarea'
+  | 'radio'
+  | 'checkbox'
+  | 'select'
+  | 'date'
+  | 'single_choice'
+  | 'multiple_choice'
+  | 'multiple_choice_with_other'
+  | 'boolean';
 
 export interface SchemaField {
   id: string;

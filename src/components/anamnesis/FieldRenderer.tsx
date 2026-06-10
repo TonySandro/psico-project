@@ -113,6 +113,7 @@ export default function FieldRenderer({ field, control, errors, readOnly }: Fiel
 
     // ── Radio ──────────────────────────────────────────────────────────────
     case 'radio':
+    case 'single_choice':
       return (
         <FormControl component="fieldset" error={!!error} required={field.required} fullWidth>
           <FormLabel component="legend" sx={{ mb: 1, fontWeight: 500 }}>
@@ -143,6 +144,7 @@ export default function FieldRenderer({ field, control, errors, readOnly }: Fiel
 
     // ── Checkbox ───────────────────────────────────────────────────────────
     case 'checkbox':
+    case 'multiple_choice':
       return (
         <FormControl component="fieldset" error={!!error} required={field.required} fullWidth>
           <FormLabel component="legend" sx={{ mb: 1, fontWeight: 500 }}>
@@ -188,6 +190,126 @@ export default function FieldRenderer({ field, control, errors, readOnly }: Fiel
               />
             ))}
           </FormGroup>
+          {error && <FormHelperText>{String(error.message)}</FormHelperText>}
+        </FormControl>
+      );
+
+    case 'multiple_choice_with_other':
+      return (
+        <FormControl component="fieldset" error={!!error} required={field.required} fullWidth>
+          <FormLabel component="legend" sx={{ mb: 1, fontWeight: 500 }}>
+            {field.label}
+          </FormLabel>
+          <Controller
+            name={field.id}
+            control={control}
+            defaultValue={{ selected: [], other: '' }}
+            rules={{
+              validate: (value) => {
+                const selected = Array.isArray((value as { selected?: unknown[] })?.selected)
+                  ? (value as { selected: unknown[] }).selected
+                  : Array.isArray(value)
+                    ? value
+                    : [];
+                const other = String((value as { other?: unknown })?.other ?? '').trim();
+                if (field.required && selected.length === 0 && !other) {
+                  return 'Selecione pelo menos uma opção';
+                }
+                return true;
+              },
+            }}
+            render={({ field: f, fieldState }) => {
+              const selected = Array.isArray((f.value as { selected?: unknown[] })?.selected)
+                ? (f.value as { selected: string[] }).selected
+                : Array.isArray(f.value)
+                  ? (f.value as string[])
+                  : [];
+              const other = String((f.value as { other?: unknown })?.other ?? '');
+              const updateValue = (nextSelected: string[], nextOther = other) => {
+                f.onChange({ selected: nextSelected, other: nextOther });
+              };
+
+              return (
+                <>
+                  <FormGroup>
+                    {(field.options ?? []).map((opt) => (
+                      <FormControlLabel
+                        key={opt}
+                        control={
+                          <Checkbox
+                            size="small"
+                            checked={selected.includes(opt)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                updateValue([...selected, opt]);
+                              } else {
+                                updateValue(selected.filter((v) => v !== opt));
+                              }
+                            }}
+                            disabled={readOnly}
+                          />
+                        }
+                        label={opt}
+                      />
+                    ))}
+                  </FormGroup>
+                  <TextField
+                    value={other}
+                    onChange={(e) => updateValue(selected, e.target.value)}
+                    fullWidth
+                    size="small"
+                    label="Outro"
+                    placeholder="Informe outra opção"
+                    disabled={readOnly}
+                    error={!!fieldState.error}
+                    sx={{ ...inputSx, mt: 1 }}
+                  />
+                  {fieldState.error && <FormHelperText>{fieldState.error.message}</FormHelperText>}
+                </>
+              );
+            }}
+          />
+        </FormControl>
+      );
+
+    case 'boolean':
+      return (
+        <FormControl component="fieldset" error={!!error} required={field.required} fullWidth>
+          <FormLabel component="legend" sx={{ mb: 1, fontWeight: 500 }}>
+            {field.label}
+          </FormLabel>
+          <Controller
+            name={field.id}
+            control={control}
+            defaultValue={null}
+            rules={{
+              validate: (value) => {
+                if (field.required && value !== true && value !== false) {
+                  return 'Selecione uma opção';
+                }
+                return true;
+              },
+            }}
+            render={({ field: f }) => (
+              <RadioGroup
+                value={f.value === true ? 'true' : f.value === false ? 'false' : ''}
+                onChange={(e) => f.onChange(e.target.value === 'true')}
+              >
+                <FormControlLabel
+                  value="true"
+                  disabled={readOnly}
+                  control={<Radio size="small" />}
+                  label="Sim"
+                />
+                <FormControlLabel
+                  value="false"
+                  disabled={readOnly}
+                  control={<Radio size="small" />}
+                  label="Não"
+                />
+              </RadioGroup>
+            )}
+          />
           {error && <FormHelperText>{String(error.message)}</FormHelperText>}
         </FormControl>
       );

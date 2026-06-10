@@ -7,6 +7,7 @@ import { usePatient } from '@/hooks/usePatients';
 import PatientForm from '@/components/PatientForm';
 import PatientProfileCard from '@/components/patient/PatientProfileCard';
 import AnamnesisCard from '@/components/patient/AnamnesisCard';
+import TeacherReportCard from '@/components/patient/TeacherReportCard';
 import AssessmentListCard from '@/components/patient/AssessmentListCard';
 import ReportListCard from '@/components/patient/ReportListCard';
 
@@ -81,6 +82,7 @@ export default function PatientDetailPage() {
         <Grid size={{ xs: 12, lg: 8 }}>
           <Stack spacing={3}>
             <AnamnesisCard patientId={patient.id} />
+            <TeacherReportCard patientId={patient.id} />
             <AssessmentListCard protocols={patient.protocols} />
             <ReportListCard patientId={patient.id} report={patient.report} />
           </Stack>

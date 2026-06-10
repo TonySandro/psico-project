@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { Box, LinearProgress, Typography } from '@mui/material';
-import { useForm, type FieldValues } from 'react-hook-form';
+import { useForm, type FieldErrors, type FieldValues } from 'react-hook-form';
 import type { AnamnesisSchema } from '@/types/anamnesis';
 import SectionRenderer from './SectionRenderer';
 
@@ -12,11 +12,11 @@ interface AnamnesisRendererProps {
   children?: (bag: {
     handleSubmit: (
       onValid: (values: Record<string, unknown>) => void,
-      onInvalid?: (errors: Record<string, any>) => void
+      onInvalid?: (errors: FieldErrors<Record<string, unknown>>) => void
     ) => (e?: React.BaseSyntheticEvent) => Promise<void>;
     isValid: boolean;
     isDirty: boolean;
-    errors: Record<string, any>;
+    errors: FieldErrors<Record<string, unknown>>;
   }) => React.ReactNode;
   lockPreFilledFields?: boolean;
 }
@@ -51,6 +51,13 @@ export default function AnamnesisRenderer({
     const answeredCount = allFields.filter((f) => {
       const val = formValues[f.id];
       if (Array.isArray(val)) return val.length > 0;
+      if (typeof val === 'object' && val !== null && 'selected' in val) {
+        const selected = Array.isArray((val as { selected?: unknown }).selected)
+          ? (val as { selected: unknown[] }).selected
+          : [];
+        const other = String((val as { other?: unknown }).other ?? '').trim();
+        return selected.length > 0 || other.length > 0;
+      }
       return val !== undefined && val !== '' && val !== null;
     }).length;
     return Math.round((answeredCount / allFields.length) * 100);

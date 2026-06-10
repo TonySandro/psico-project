@@ -15,6 +15,10 @@ import PublicAnamnesisPage from './pages/PublicAnamnesisPage';
 import TemplatesPage from './pages/anamnesis/TemplatesPage';
 import RespondPage from './pages/anamnesis/RespondPage';
 import TemplateBuilderPage from './pages/anamnesis/TemplateBuilderPage';
+import PublicTeacherReportPage from './pages/PublicTeacherReportPage';
+import TeacherReportTemplatesPage from './pages/teacher-report/TemplatesPage';
+import TeacherReportRespondPage from './pages/teacher-report/RespondPage';
+import TeacherReportTemplateBuilderPage from './pages/teacher-report/TemplateBuilderPage';
 import TestRunnerPage from './pages/TestRunnerPage'
 import DashboardLayout from './layouts/DashboardLayout';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -58,6 +62,7 @@ function App() {
         <Route path="/termos-de-uso" element={<TermsPage />} />
         <Route path="/politica-de-cookies" element={<CookiesPage />} />
         <Route path="/anamnesis/responder/:token" element={<PublicAnamnesisPage />} />
+        <Route path="/teacher-report/responder/:token" element={<PublicTeacherReportPage />} />
 
         <Route path="/payment/success" element={<PaymentSuccessPage />} />
         <Route path="/payment/failure" element={<PaymentFailurePage />} />
@@ -81,6 +86,10 @@ function App() {
           <Route path="anamnesis/templates/new" element={<TemplateBuilderPage />} />
           <Route path="anamnesis/templates/edit/:id" element={<TemplateBuilderPage />} />
           <Route path="anamnesis/respond/:responseId" element={<RespondPage />} />
+          <Route path="teacher-report/templates" element={<TeacherReportTemplatesPage />} />
+          <Route path="teacher-report/templates/new" element={<TeacherReportTemplateBuilderPage />} />
+          <Route path="teacher-report/templates/:id" element={<TeacherReportTemplateBuilderPage />} />
+          <Route path="teacher-report/respond/:responseId" element={<TeacherReportRespondPage />} />
           <Route path="reports/:reportId/edit" element={<ReportEditorPage />} />
           <Route path="tests" element={<TestsPage />} />
           <Route path="tests/:type/run" element={<TestRunnerPage />} />
