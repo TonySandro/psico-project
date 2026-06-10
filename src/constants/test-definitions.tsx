@@ -67,16 +67,16 @@ export const TEST_DEFINITIONS: Record<string, TestDefinition> = {
     'snap': {
         id: 'snap',
         name: 'SNAP-IV',
-        fullName: 'Escala de Avaliação de TDAH',
-        description: 'Questionário para identificar sintomas de desatenção e hiperatividade/impulsividade.',
+        fullName: 'Escala de Avaliação de TDAH e TOD',
+        description: 'Questionário para identificar sintomas de desatenção, hiperatividade/impulsividade e transtorno opositivo-desafiador (TOD).',
         instructions: [
             'O questionário deve ser preenchido pelos pais ou professores.',
-            'Para cada item, marque a frequência do comportamento observado.',
+            'Para cada comportamento abaixo, selecione o nível de frequência observado.',
             '0 = Nem um pouco.',
             '1 = Só um pouco.',
             '2 = Bastante.',
             '3 = Demais.',
-            'Calcule a média para cada subescala.'
+            'O sistema calculará automaticamente o indicativo clínico para cada subescala.'
         ],
         icon: Activity,
         color: '#10B981',

@@ -22,7 +22,14 @@ import {
     ListItemText,
     Container,
     Collapse,
-    MenuItem
+    MenuItem,
+    TableContainer,
+    Table,
+    TableHead,
+    TableRow,
+    TableCell,
+    TableBody,
+    Radio
 } from '@mui/material';
 import { PlayCircle, Clock, Users, TicketCheck } from 'lucide-react';
 import BackButton from '@/components/BackButton';
@@ -34,6 +41,7 @@ import { usePatients } from '@/hooks/usePatients';
 import { useAuthStore } from '@/stores/authStore';
 import type { Patient } from '@/types/schema';
 import { TEST_DEFINITIONS } from '@/constants/test-definitions';
+import { SNAP_QUESTIONS } from '@/constants/snap-questions';
 
 export default function TestRunnerPage() {
     const { type } = useParams<{ type: string }>();
@@ -282,21 +290,48 @@ export default function TestRunnerPage() {
                 );
             case 'snap':
                 return (
-                    <Stack spacing={2}>
-                        <Typography variant="subtitle1" fontWeight={600}>Respostas do Questionário (0-3)</Typography>
-                        <Box display="grid" gridTemplateColumns="repeat(auto-fill, minmax(70px, 1fr))" gap={2}>
-                            {Array.from({ length: 26 }, (_, i) => (
-                                <TextField
-                                    key={i}
-                                    label={`Q${i + 1}`}
-                                    type="number"
-                                    size="small"
-                                    inputProps={{ min: 0, max: 3 }}
-                                    value={formData[`answer_${i}`] ?? ''}
-                                    onChange={(e) => handleInputChange(`answer_${i}`, e.target.value === '' ? '' : Number(e.target.value))}
-                                />
-                            ))}
-                        </Box>
+                    <Stack spacing={3}>
+                        <Typography variant="subtitle1" fontWeight={600} color="text.secondary">
+                            Marque uma opção para cada comportamento abaixo:
+                        </Typography>
+                        <TableContainer component={Paper} variant="outlined" sx={{ borderRadius: 2, overflow: 'hidden' }}>
+                            <Table size="small">
+                                <TableHead sx={{ bgcolor: 'action.hover' }}>
+                                    <TableRow>
+                                        <TableCell sx={{ fontWeight: 'bold', width: '50%', py: 1.5 }}>Comportamento / Item</TableCell>
+                                        <TableCell align="center" sx={{ fontWeight: 'bold', width: '12.5%' }}>Nem um pouco (0)</TableCell>
+                                        <TableCell align="center" sx={{ fontWeight: 'bold', width: '12.5%' }}>Só um pouco (1)</TableCell>
+                                        <TableCell align="center" sx={{ fontWeight: 'bold', width: '12.5%' }}>Bastante (2)</TableCell>
+                                        <TableCell align="center" sx={{ fontWeight: 'bold', width: '12.5%' }}>Demais (3)</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {SNAP_QUESTIONS.map((questionText, i) => (
+                                        <TableRow key={i} hover sx={{ '&:nth-of-type(odd)': { bgcolor: 'action.hover' } }}>
+                                            <TableCell sx={{ py: 1.5, fontSize: '0.95rem' }}>{questionText}</TableCell>
+                                            {[0, 1, 2, 3].map((val) => (
+                                                <TableCell key={val} align="center" sx={{ py: 1 }}>
+                                                    <Radio
+                                                        checked={formData[`answer_${i}`] === val}
+                                                        onChange={() => handleInputChange(`answer_${i}`, val)}
+                                                        name={`snap_question_${i}`}
+                                                        value={val}
+                                                        size="medium"
+                                                        required
+                                                        sx={{
+                                                            color: 'divider',
+                                                            '&.Mui-checked': {
+                                                                color: 'primary.main',
+                                                            }
+                                                        }}
+                                                    />
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
                     </Stack>
                 );
             case 'token':

@@ -11,7 +11,7 @@ import {
   Chip,
   Divider,
 } from '@mui/material';
-import { CheckCircle2, RotateCcw, Sparkles } from 'lucide-react';
+import { CheckCircle2, RotateCcw, Sparkles, AlertCircle } from 'lucide-react';
 import { translateTestKey, translateTestValue } from '@/utils/test-translations';
 
 export interface TestResultDisplayProps {
@@ -35,6 +35,33 @@ export default function TestResultDisplay({
 
   const getLabel = (key: string) => translateTestKey(key);
   const formatValue = (value: any) => translateTestValue(value);
+
+  const isSnap = testName.toUpperCase().includes('SNAP') || (resultData.inattention !== undefined && resultData.hyperactivity !== undefined);
+  const isSuggestiveAny = isSnap && (
+    !!resultData.inattention?.isSuggestive ||
+    !!resultData.hyperactivity?.isSuggestive ||
+    !!resultData.oppositionalDefiant?.isSuggestive
+  );
+
+  const bannerBackground = isSnap
+    ? (isSuggestiveAny 
+        ? 'linear-gradient(135deg, #f59e0b 0%, #e11d48 100%)' 
+        : 'linear-gradient(135deg, #10b981 0%, #059669 100%)')
+    : 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+    
+  const cardBorderColor = isSnap
+    ? (isSuggestiveAny ? 'warning.light' : 'success.light')
+    : 'success.light';
+    
+  const cardBoxShadow = isSnap
+    ? (isSuggestiveAny 
+        ? '0 10px 40px -10px rgba(245, 158, 11, 0.2)' 
+        : '0 10px 40px -10px rgba(16, 185, 129, 0.15)')
+    : '0 10px 40px -10px rgba(16, 185, 129, 0.15)';
+
+  const chipLabel = isSnap
+    ? (isSuggestiveAny ? 'Investigação Clínica Sugerida' : 'Não Sugestivo')
+    : 'Processado com Sucesso';
 
   const renderMetrics = (data: Record<string, any>) => (
     <Box display="grid" gridTemplateColumns="repeat(auto-fit, minmax(200px, 1fr))" gap={3}>
@@ -127,26 +154,160 @@ export default function TestResultDisplay({
     </Box>
   );
 
+  const renderSnapResults = (data: any) => {
+    const hasOppositional = !!data.oppositionalDefiant;
+    
+    const subscaleConfigs = [
+      {
+        key: 'inattention',
+        title: 'Subescala de Desatenção',
+        maxSymptoms: 9,
+        color: '#3b82f6',
+        suggestiveText: 'Sugestivo para Investigação Clínica de TDAH (Desatenção)',
+        description: 'Reflete dificuldades em manter a atenção, seguir instruções detalhadas e organizar atividades.'
+      },
+      {
+        key: 'hyperactivity',
+        title: 'Subescala de Hiperatividade / Impulsividade',
+        maxSymptoms: 9,
+        color: '#f59e0b',
+        suggestiveText: 'Sugestivo para Investigação Clínica de TDAH (Hiperatividade/Impulsividade)',
+        description: 'Reflete comportamentos de inquietação motora, impulsividade verbal e dificuldade em aguardar a vez.'
+      },
+      {
+        key: 'oppositionalDefiant',
+        title: 'Transtorno Opositivo-Desafiador (TOD)',
+        maxSymptoms: 8,
+        color: '#ef4444',
+        suggestiveText: 'Sugestivo para Investigação Clínica de TOD',
+        description: 'Reflete comportamentos de desafio a regras de adultos, discussões frequentes e irritabilidade.'
+      }
+    ];
+
+    return (
+      <Box display="grid" gridTemplateColumns={{ xs: '1fr', md: hasOppositional ? '1fr 1fr 1fr' : '1fr 1fr' }} gap={3}>
+        {subscaleConfigs.map((config) => {
+          const subData = data[config.key];
+          if (!subData) return null;
+
+          const isSuggestive = subData.isSuggestive;
+          
+          return (
+            <Paper
+              key={config.key}
+              elevation={0}
+              sx={{
+                p: 3.5,
+                borderRadius: 4,
+                border: '1px solid',
+                borderColor: isSuggestive ? 'error.light' : 'success.light',
+                background: isSuggestive 
+                  ? 'linear-gradient(145deg, #fffafb 0%, #fff1f2 100%)' 
+                  : 'linear-gradient(145deg, #fcfdfa 0%, #f7fee7 100%)',
+                boxShadow: isSuggestive 
+                  ? '0 10px 30px -10px rgba(239, 68, 68, 0.08)' 
+                  : '0 10px 30px -10px rgba(132, 204, 22, 0.08)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  borderColor: isSuggestive ? 'error.main' : 'success.main',
+                  boxShadow: isSuggestive 
+                    ? '0 20px 40px -15px rgba(239, 68, 68, 0.15)' 
+                    : '0 20px 40px -15px rgba(132, 204, 22, 0.15)',
+                }
+              }}
+            >
+              {/* Header */}
+              <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 2 }}>
+                <Box sx={{ width: 4, height: 24, bgcolor: config.color, borderRadius: 2 }} />
+                <Typography variant="subtitle1" fontWeight={800} color="text.primary">
+                  {config.title}
+                </Typography>
+              </Stack>
+
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 3, minHeight: '40px', lineHeight: 1.5 }}>
+                {config.description}
+              </Typography>
+
+              {/* Status Section */}
+              <Box sx={{ mb: 3 }}>
+                <Chip
+                  icon={isSuggestive ? <AlertCircle size={14} /> : <CheckCircle2 size={14} />}
+                  label={isSuggestive ? 'Sugestivo' : 'Não Sugestivo'}
+                  color={isSuggestive ? 'error' : 'success'}
+                  size="small"
+                  sx={{ fontWeight: 700, mb: 1, '& .MuiChip-icon': { color: 'inherit' } }}
+                />
+                <Typography 
+                  variant="body1" 
+                  fontWeight={800} 
+                  color={isSuggestive ? 'error.main' : 'success.main'}
+                  sx={{ lineHeight: 1.3 }}
+                >
+                  {isSuggestive ? config.suggestiveText : 'Dentro do esperado (Não Sugestivo)'}
+                </Typography>
+              </Box>
+
+              <Divider sx={{ my: 2, borderStyle: 'dashed' }} />
+
+              {/* Details Metrics */}
+              <Stack spacing={2}>
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                  <Typography variant="body2" fontWeight={600} color="text.secondary">
+                    Sintomas Ativados
+                  </Typography>
+                  <Typography variant="body1" fontWeight={800} color="text.primary">
+                    {subData.symptomsCount} de {config.maxSymptoms}
+                  </Typography>
+                </Box>
+                
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                  <Typography variant="body2" fontWeight={600} color="text.secondary">
+                    Média de Pontuação
+                  </Typography>
+                  <Typography variant="body1" fontWeight={800} color="text.primary">
+                    {subData.meanScore?.toFixed(2) ?? '0.00'}
+                  </Typography>
+                </Box>
+
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                  <Typography variant="body2" fontWeight={600} color="text.secondary">
+                    Pontuação Total
+                  </Typography>
+                  <Typography variant="body1" fontWeight={800} color="text.primary">
+                    {subData.totalScore}
+                  </Typography>
+                </Box>
+              </Stack>
+            </Paper>
+          );
+        })}
+      </Box>
+    );
+  };
+
   return (
     <Card
       elevation={0}
       sx={{
         borderRadius: 4,
         border: '1px solid',
-        borderColor: 'success.light',
+        borderColor: cardBorderColor,
         overflow: 'hidden',
-        boxShadow: '0 10px 40px -10px rgba(16, 185, 129, 0.15)',
+        boxShadow: cardBoxShadow,
         position: 'relative',
+        transition: 'all 0.3s ease',
       }}
     >
       {/* Premium Header Banner */}
       <Box 
         sx={{ 
-          background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+          background: bannerBackground,
           px: { xs: 3, md: 5 },
           py: 4,
           position: 'relative',
           overflow: 'hidden',
+          transition: 'background 0.3s ease',
         }}
       >
         {/* Abstract shapes for premium feel */}
@@ -169,7 +330,7 @@ export default function TestResultDisplay({
                 border: '1px solid rgba(255, 255, 255, 0.3)',
               }}
             >
-              <CheckCircle2 size={32} />
+              {isSnap && isSuggestiveAny ? <AlertCircle size={32} /> : <CheckCircle2 size={32} />}
             </Box>
             <Box>
               <Typography variant="overline" fontWeight={700} sx={{ color: 'rgba(255, 255, 255, 0.8)', letterSpacing: 1.5 }}>
@@ -181,8 +342,8 @@ export default function TestResultDisplay({
             </Box>
           </Stack>
           <Chip
-            icon={<Sparkles size={16} />}
-            label="Processado com Sucesso"
+            icon={isSnap && isSuggestiveAny ? <AlertCircle size={16} /> : <Sparkles size={16} />}
+            label={chipLabel}
             sx={{ 
               px: 1, 
               fontWeight: 700, 
@@ -219,42 +380,48 @@ export default function TestResultDisplay({
             </Alert>
           )}
 
-          <Box>{renderMetrics(resultData)}</Box>
+          {isSnap ? (
+            renderSnapResults(resultData)
+          ) : (
+            <>
+              <Box>{renderMetrics(resultData)}</Box>
 
-          {/* Render nested objects recursively if present */}
-          {Object.entries(resultData).map(([key, value]) => {
-            if (Array.isArray(value)) return null;
-            if (typeof value === 'object' && value !== null) {
-              return (
-                <Box key={key} sx={{ mt: 2 }}>
-                  <Typography
-                    variant="h6"
-                    fontWeight={800}
-                    gutterBottom
-                    sx={{
-                      color: 'text.primary',
-                      mb: 3,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1.5,
-                      '&::before': {
-                        content: '""',
-                        display: 'block',
-                        width: 4,
-                        height: 24,
-                        bgcolor: 'primary.main',
-                        borderRadius: 2
-                      }
-                    }}
-                  >
-                    {getLabel(key)}
-                  </Typography>
-                  {renderMetrics(value)}
-                </Box>
-              );
-            }
-            return null;
-          })}
+              {/* Render nested objects recursively if present */}
+              {Object.entries(resultData).map(([key, value]) => {
+                if (Array.isArray(value)) return null;
+                if (typeof value === 'object' && value !== null) {
+                  return (
+                    <Box key={key} sx={{ mt: 2 }}>
+                      <Typography
+                        variant="h6"
+                        fontWeight={800}
+                        gutterBottom
+                        sx={{
+                          color: 'text.primary',
+                          mb: 3,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1.5,
+                          '&::before': {
+                            content: '""',
+                            display: 'block',
+                            width: 4,
+                            height: 24,
+                            bgcolor: 'primary.main',
+                            borderRadius: 2
+                          }
+                        }}
+                      >
+                        {getLabel(key)}
+                      </Typography>
+                      {renderMetrics(value)}
+                    </Box>
+                  );
+                }
+                return null;
+              })}
+            </>
+          )}
 
           <Divider sx={{ my: 2, borderStyle: 'dashed' }} />
 
