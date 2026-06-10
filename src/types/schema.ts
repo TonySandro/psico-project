@@ -124,4 +124,26 @@ export interface PublicAnamnesisData {
   patientName?: string;
   title: string;
   questions: PublicAnamnesisQuestion[];
-}
+}
+
+export interface PublicTeacherReportLink {
+  link?: string;
+  token?: string;
+  expiresAt: string;
+  status?: 'PENDING' | 'ANSWERED';
+}
+
+export interface PublicTeacherReportQuestion {
+  id: string;
+  type: 'text' | 'textarea' | 'select' | 'radio' | 'checkbox';
+  label: string;
+  options?: string[];
+  required?: boolean;
+}
+
+export interface PublicTeacherReportData {
+  patient?: Partial<Patient>;
+  patientName?: string;
+  title: string;
+  questions: PublicTeacherReportQuestion[];
+}

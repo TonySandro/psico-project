@@ -45,20 +45,22 @@ import {
   Trash2,
   type LucideIcon,
 } from 'lucide-react';
-import { useCreateTeacherReportTemplate, useTeacherReportTemplate } from '@/hooks/useTeacherReport';
-import type { TeacherReportQuestionType, TeacherReportTemplateForm } from '@/types/teacherReport';
+import { useCreateTeacherReportTemplate, useTeacherReportTemplate } from '@/hooks/useTeacherReportV2';
+import type { FieldType, TeacherReportTemplate } from '@/types/teacherReport';
 import {
   DEFAULT_TEACHER_REPORT_TEMPLATE,
   getTeacherReportSchema,
 } from '@/utils/teacherReportSchema';
 
-const FIELD_TYPES: { type: TeacherReportQuestionType; label: string; icon: LucideIcon }[] = [
+const FIELD_TYPES: { type: FieldType; label: string; icon: LucideIcon }[] = [
   { type: 'textarea', label: 'Texto longo', icon: AlignLeft },
   { type: 'single_choice', label: 'Escolha única', icon: CircleDot },
   { type: 'multiple_choice', label: 'Múltipla escolha', icon: CheckSquare },
   { type: 'multiple_choice_with_other', label: 'Múltipla escolha com outro', icon: CheckSquare },
   { type: 'boolean', label: 'Sim / Não', icon: HelpCircle },
 ];
+
+type TemplateForm = Omit<TeacherReportTemplate, 'id' | 'createdAt'>;
 
 export default function TeacherReportTemplateBuilderPage() {
   const { id } = useParams<{ id: string }>();
@@ -70,7 +72,7 @@ export default function TeacherReportTemplateBuilderPage() {
 
   const [isDefaultConfirmOpen, setIsDefaultConfirmOpen] = useState(false);
 
-  const { control, handleSubmit, reset, register, watch } = useForm<TeacherReportTemplateForm>({
+  const { control, handleSubmit, reset, register, watch } = useForm<TemplateForm>({
     defaultValues: DEFAULT_TEACHER_REPORT_TEMPLATE,
   });
 
@@ -85,11 +87,11 @@ export default function TeacherReportTemplateBuilderPage() {
         name: template.name,
         description: template.description,
         schema: getTeacherReportSchema(template),
-      } as TeacherReportTemplateForm);
+      } as TemplateForm);
     }
   }, [template, reset]);
 
-  const onSave = async (data: TeacherReportTemplateForm) => {
+  const onSave = async (data: TemplateForm) => {
     try {
       await createTemplate(data);
       navigate('/app/teacher-report/templates');

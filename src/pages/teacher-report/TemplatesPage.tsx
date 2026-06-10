@@ -21,7 +21,7 @@ import {
   Typography,
 } from '@mui/material';
 import { ClipboardList, FileText, Play, Search, Settings2 } from 'lucide-react';
-import { useCreateTeacherReportResponse, useTeacherReportTemplates } from '@/hooks/useTeacherReport';
+import { useCreateTeacherReportResponse, useTeacherReportTemplates } from '@/hooks/useTeacherReportV2';
 import type { TeacherReportTemplate } from '@/types/teacherReport';
 import { countTeacherReportFields } from '@/utils/teacherReportSchema';
 
@@ -38,7 +38,7 @@ export default function TeacherReportTemplatesPage() {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const filtered = (templates ?? []).filter(
-    (template) =>
+    (template: TeacherReportTemplate) =>
       template.name.toLowerCase().includes(search.toLowerCase()) ||
       (template.description ?? '').toLowerCase().includes(search.toLowerCase()),
   );
@@ -133,7 +133,7 @@ export default function TeacherReportTemplatesPage() {
         </Box>
       ) : (
         <Grid container spacing={3}>
-          {filtered.map((template) => {
+          {filtered.map((template: TeacherReportTemplate) => {
             const { sectionCount, fieldCount } = countTeacherReportFields(template);
 
             return (

@@ -1,110 +1,71 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  teacherReportPublicService,
-  teacherReportResponseService,
-  teacherReportTemplateService,
-} from '@/services/teacherReportService';
+import { api } from '@/services/api';
+import { useAuthStore } from '@/stores/authStore';
+import type { PublicTeacherReportLink, PublicTeacherReportData } from '@/types/schema';
 import type { TeacherReportResponse } from '@/types/teacherReport';
 
-export const useTeacherReportTemplates = () =>
-  useQuery({
-    queryKey: ['teacher-report-templates'],
-    queryFn: teacherReportTemplateService.list,
-  });
+// Usamos TeacherReportResponse como o equivalente a Anamnesis para o endpoint legado/V1.
+type CreateTeacherReportDTO = Omit<TeacherReportResponse, 'id' | 'createdAt'>;
 
-export const useTeacherReportTemplate = (id: string) =>
-  useQuery({
-    queryKey: ['teacher-report-template', id],
-    queryFn: () => teacherReportTemplateService.getById(id),
-    enabled: !!id,
-  });
+export const useCreateTeacherReport = () => {
+    const queryClient = useQueryClient();
 
-export const useCreateTeacherReportTemplate = () => {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: teacherReportTemplateService.create,
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['teacher-report-templates'] });
-    },
-  });
+    return useMutation({
+        mutationFn: async (data: CreateTeacherReportDTO) => {
+            const response = await api.post<TeacherReportResponse>('/create-teacher-report', data);
+            return response.data;
+        },
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({ queryKey: ['patient', variables.patientId] });
+            queryClient.invalidateQueries({ queryKey: ['teacher-report', variables.patientId] });
+        }
+    });
 };
 
-export const useCreateTeacherReportResponse = () => {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: ({ templateId, patientId }: { templateId: string; patientId?: string }) =>
-      teacherReportResponseService.create(templateId, patientId),
-    onSuccess: (_, variables) => {
-      qc.invalidateQueries({ queryKey: ['teacher-report-responses'] });
-      if (variables.patientId) {
-        qc.invalidateQueries({ queryKey: ['patient-teacher-report-responses', variables.patientId] });
-      }
-    },
-  });
+export const useGetTeacherReport = (patientId: string) => {
+    return useQuery({
+        queryKey: ['teacher-report', patientId],
+        queryFn: async () => {
+            try {
+                const response = await api.get<TeacherReportResponse>(`/get-teacher-report-by-patient/${patientId}`);
+                return response.data;
+            } catch (_) { // eslint-disable-line @typescript-eslint/no-unused-vars
+                return null;
+            }
+        },
+        enabled: !!patientId,
+        retry: false
+    });
 };
 
-export const useTeacherReportResponse = (id: string) =>
-  useQuery({
-    queryKey: ['teacher-report-response', id],
-    queryFn: () => teacherReportResponseService.getById(id),
-    enabled: !!id,
-    retry: 1,
-  });
-
-export const usePatientTeacherReportResponses = (patientId: string) =>
-  useQuery({
-    queryKey: ['patient-teacher-report-responses', patientId],
-    queryFn: () => teacherReportResponseService.listByPatient(patientId),
-    enabled: !!patientId,
-  });
-
-export const useSaveTeacherReportResponse = () => {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: ({
-      id,
-      answers,
-      status,
-    }: {
-      id: string;
-      answers: Record<string, unknown>;
-      status?: TeacherReportResponse['status'];
-    }) => teacherReportResponseService.update(id, answers, status),
-    onSuccess: (data) => {
-      qc.invalidateQueries({ queryKey: ['teacher-report-response', data.id] });
-      if (data.patientId) {
-        qc.invalidateQueries({ queryKey: ['patient-teacher-report-responses', data.patientId] });
-      }
-    },
-  });
+export const useGenerateTeacherReportLink = () => {
+    return useMutation({
+        mutationFn: async (patientId: string) => {
+            const accountId = useAuthStore.getState().user?.id;
+            const response = await api.post<PublicTeacherReportLink>('/teacher-report/generate-link', { patientId, accountId });
+            return response.data;
+        }
+    });
 };
 
-export const useDeleteTeacherReportResponse = (patientId: string) => {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (id: string) => teacherReportResponseService.deleteResponse(id),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['patient-teacher-report-responses', patientId] });
-    },
-  });
+export const useGetPublicTeacherReport = (token: string) => {
+    return useQuery({
+        queryKey: ['public-teacher-report', token],
+        queryFn: async () => {
+            const response = await api.get<PublicTeacherReportData>(`/teacher-report/public/${token}`);
+            return response.data;
+        },
+        enabled: !!token,
+        retry: false
+    });
 };
 
-export const useGenerateTeacherReportLink = () =>
-  useMutation({
-    mutationFn: ({ patientId, templateId }: { patientId: string; templateId?: string }) =>
-      teacherReportPublicService.generateLink(patientId, templateId),
-  });
+export const useSubmitPublicTeacherReport = () => {
+    return useMutation({
+        mutationFn: async ({ token, answers }: { token: string, answers: Record<string, any> }) => {
+            const response = await api.post(`/teacher-report/public/${token}/answer`, { answers });
+            return response.data;
+        }
+    });
+};
 
-export const useGetPublicTeacherReport = (token: string) =>
-  useQuery({
-    queryKey: ['public-teacher-report', token],
-    queryFn: () => teacherReportPublicService.getByToken(token),
-    enabled: !!token,
-    retry: false,
-  });
-
-export const useSubmitPublicTeacherReport = () =>
-  useMutation({
-    mutationFn: ({ token, answers }: { token: string; answers: Record<string, unknown> }) =>
-      teacherReportPublicService.submit(token, answers),
-  });

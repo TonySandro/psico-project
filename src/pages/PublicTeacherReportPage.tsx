@@ -1,32 +1,32 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
-  Alert,
+  Container,
   Box,
-  Button,
+  Typography,
   Card,
   CardContent,
   CircularProgress,
-  Container,
+  Alert,
+  Button,
+  Stack,
   Dialog,
-  DialogActions,
+  DialogTitle,
   DialogContent,
   DialogContentText,
-  DialogTitle,
-  Stack,
-  Typography,
+  DialogActions,
 } from '@mui/material';
 import { CheckCircle2, ClipboardList } from 'lucide-react';
-import AnamnesisRenderer from '@/components/anamnesis/AnamnesisRenderer';
 import { useGetPublicTeacherReport, useSubmitPublicTeacherReport } from '@/hooks/useTeacherReport';
-import { getTeacherReportSchema } from '@/utils/teacherReportSchema';
+import TeacherReportRenderer from '@/components/teacher-report/TeacherReportRenderer';
+import { DEFAULT_TEACHER_REPORT } from '@/constants/defaultTeacherReport';
 
 export default function PublicTeacherReportPage() {
   const { token } = useParams<{ token: string }>();
-
+  
   const { data, isLoading, isError, error } = useGetPublicTeacherReport(token || '');
   const { mutateAsync: submitAnswers, isPending: isSubmitting } = useSubmitPublicTeacherReport();
-
+  
   const [isSuccess, setIsSuccess] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingValues, setPendingValues] = useState<Record<string, unknown>>({});
@@ -43,14 +43,11 @@ export default function PublicTeacherReportPage() {
   }
 
   if (isError || !data) {
-    const message =
-      (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-      'Link inválido ou expirado. Por favor, solicite um novo link ao profissional.';
-
     return (
       <Container maxWidth="sm" sx={{ py: 8 }}>
         <Alert severity="error" variant="filled">
-          {message}
+           {/* @ts-ignore */}
+          {error?.response?.data?.message || "Link inválido ou expirado. Por favor, solicite um novo link ao profissional."}
         </Alert>
       </Container>
     );
@@ -66,15 +63,13 @@ export default function PublicTeacherReportPage() {
               Relatório enviado com sucesso!
             </Typography>
             <Typography color="text.secondary">
-              Agradecemos pelo preenchimento. As informações já foram enviadas ao profissional responsável.
+              Agradecemos pelo preenchimento. As informações já foram enviadas para o profissional responsável.
             </Typography>
           </Stack>
         </Card>
       </Container>
     );
   }
-
-  const schema = getTeacherReportSchema(data);
 
   const handleRequestSubmit = (values: Record<string, unknown>) => {
     setPendingValues(values);
@@ -84,23 +79,26 @@ export default function PublicTeacherReportPage() {
   const handleConfirmSubmit = async () => {
     if (!token) return;
     setConfirmOpen(false);
-
+    
     try {
       await submitAnswers({ token, answers: pendingValues });
       setIsSuccess(true);
-    } catch {
+    } catch (err) {
       alert('Erro ao enviar as respostas. Tente novamente mais tarde.');
     }
   };
+
+  // Resolve o schema do modelo padrão dinâmico se a API antiga retornar vazio
+  const schema = (data as any).schema || DEFAULT_TEACHER_REPORT.schema;
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'grey.50', py: { xs: 4, md: 8 } }}>
       <Container maxWidth="md">
         <Typography variant="overline" color="primary" fontWeight={700}>
-          RELATÓRIO DO PROFESSOR
+          FORMULÁRIO DE AVALIAÇÃO
         </Typography>
         <Typography variant="h4" fontWeight={800} sx={{ mb: 1 }}>
-          {data.title || data.templateName || 'Relatório do Professor'}
+          {data.title || "Relatório do Professor"}
         </Typography>
         {data.patientName && (
           <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 4 }}>
@@ -110,11 +108,24 @@ export default function PublicTeacherReportPage() {
 
         <Card sx={{ mb: 4 }}>
           <CardContent sx={{ p: { xs: 3, md: 5 } }}>
-            <AnamnesisRenderer schema={schema} readOnly={isSuccess}>
+            <TeacherReportRenderer 
+              schema={schema} 
+              readOnly={isSuccess}
+              lockPreFilledFields={true}
+              defaultValues={{
+                ident_nome: data.patient?.name || '',
+                ident_idade: data.patient?.age?.toString() || '',
+                ident_sexo: data.patient?.gender || '',
+                ident_data_nascimento: data.patient?.dateOfBirth ? String(data.patient.dateOfBirth).split('T')[0] : '',
+                ident_nome_mae: data.patient?.motherName || '',
+                ident_nome_pai: data.patient?.fatherName || '',
+                ident_serie: data.patient?.schoolYear || ''
+              }}
+            >
               {({ handleSubmit, errors }) => {
                 const getFieldLabel = (fieldId: string) => {
                   for (const section of schema.sections) {
-                    const field = section.fields.find((item) => item.id === fieldId);
+                    const field = section.fields.find((f: any) => f.id === fieldId);
                     if (field) return field.label;
                   }
                   return fieldId;
@@ -127,10 +138,10 @@ export default function PublicTeacherReportPage() {
                     {hasErrors && (
                       <Alert severity="warning" sx={{ mb: 3 }}>
                         <Typography variant="subtitle2" fontWeight={600} gutterBottom>
-                          Atenção: os seguintes campos precisam ser preenchidos:
+                          Atenção: Os seguintes campos precisam ser preenchidos:
                         </Typography>
                         <Box component="ul" sx={{ m: 0, pl: 2, typography: 'body2' }}>
-                          {Object.keys(errors).map((fieldId) => (
+                          {Object.keys(errors).map(fieldId => (
                             <li key={fieldId}>{getFieldLabel(fieldId)}</li>
                           ))}
                         </Box>
@@ -141,8 +152,10 @@ export default function PublicTeacherReportPage() {
                       size="large"
                       fullWidth
                       disabled={isSubmitting}
-                      onClick={(event) => {
-                        handleSubmit(handleRequestSubmit)(event);
+                      onClick={(e) => {
+                        handleSubmit(handleRequestSubmit, () => {
+                          // Scroll to the warning alert naturally after trying to submit
+                        })(e);
                       }}
                       startIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : <ClipboardList size={20} />}
                     >
@@ -151,11 +164,12 @@ export default function PublicTeacherReportPage() {
                   </Box>
                 );
               }}
-            </AnamnesisRenderer>
+            </TeacherReportRenderer>
           </CardContent>
         </Card>
       </Container>
 
+      {/* ── Confirm Submit Dialog ─────────────────────────────────────────── */}
       <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)} maxWidth="xs" fullWidth>
         <DialogTitle fontWeight={700}>Deseja enviar as respostas?</DialogTitle>
         <DialogContent>

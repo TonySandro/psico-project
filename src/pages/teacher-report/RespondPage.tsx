@@ -18,8 +18,8 @@ import {
   Typography,
 } from '@mui/material';
 import { ArrowLeft, CheckCircle, ClipboardCheck, Save } from 'lucide-react';
-import AnamnesisRenderer from '@/components/anamnesis/AnamnesisRenderer';
-import { useSaveTeacherReportResponse, useTeacherReportResponse } from '@/hooks/useTeacherReport';
+import TeacherReportRenderer from '@/components/teacher-report/TeacherReportRenderer';
+import { useSaveTeacherReportResponse, useTeacherReportResponse } from '@/hooks/useTeacherReportV2';
 import { getTeacherReportSchema } from '@/utils/teacherReportSchema';
 
 const AUTOSAVE_INTERVAL_MS = 30_000;
@@ -161,7 +161,7 @@ export default function TeacherReportRespondPage() {
 
       <Card variant="outlined">
         <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-          <AnamnesisRenderer
+          <TeacherReportRenderer
             schema={schema}
             defaultValues={response.answers as Record<string, unknown>}
             readOnly={isCompleted}
@@ -200,7 +200,7 @@ export default function TeacherReportRespondPage() {
                 </Box>
               ) : null
             }
-          </AnamnesisRenderer>
+          </TeacherReportRenderer>
         </CardContent>
       </Card>
 

@@ -1,32 +1,51 @@
-import type { AnamnesisSchema, SchemaField } from './anamnesis';
-import type { Patient } from './schema';
+// ─── Field Types ────────────────────────────────────────────────────────────
 
-export type TeacherReportQuestionType =
+export type FieldType =
+  | 'text'
   | 'textarea'
+  | 'radio'
+  | 'checkbox'
+  | 'select'
+  | 'date'
   | 'single_choice'
   | 'multiple_choice'
   | 'multiple_choice_with_other'
   | 'boolean';
 
-export interface TeacherReportQuestion {
+export interface SchemaField {
   id: string;
-  type: TeacherReportQuestionType;
+  type: FieldType;
   label: string;
-  question?: string;
   placeholder?: string;
   required?: boolean;
-  options?: string[];
-  rows?: number;
+  options?: string[]; // for radio, checkbox, select
+  rows?: number;      // for textarea
 }
+
+// ─── Section ────────────────────────────────────────────────────────────────
+
+export interface SchemaSection {
+  title: string;
+  fields: SchemaField[];
+}
+
+// ─── Template Schema ─────────────────────────────────────────────────────────
+
+export interface TeacherReportSchema {
+  sections: SchemaSection[];
+}
+
+// ─── Template (from API) ─────────────────────────────────────────────────────
 
 export interface TeacherReportTemplate {
   id: string;
   name: string;
   description?: string;
-  questions?: TeacherReportQuestion[];
-  schema?: AnamnesisSchema;
+  schema: TeacherReportSchema;
   createdAt?: string;
 }
+
+// ─── Response (from API) ─────────────────────────────────────────────────────
 
 export type TeacherReportResponseStatus = 'draft' | 'completed';
 
@@ -36,36 +55,8 @@ export interface TeacherReportResponse {
   patientId?: string;
   status: TeacherReportResponseStatus;
   answers: Record<string, unknown>;
-  questions?: TeacherReportQuestion[];
-  schema?: AnamnesisSchema;
+  schema: TeacherReportSchema; // embedded schema at creation time
   templateName?: string;
   createdAt?: string;
   updatedAt?: string;
 }
-
-export interface PublicTeacherReportLink {
-  link?: string;
-  token?: string;
-  expiresAt?: string;
-  status?: 'PENDING' | 'ANSWERED';
-}
-
-export interface PublicTeacherReportData {
-  title?: string;
-  templateName?: string;
-  patient?: Partial<Patient>;
-  patientName?: string;
-  questions?: TeacherReportQuestion[];
-  schema?: AnamnesisSchema;
-}
-
-export type TeacherReportTemplateForm = {
-  name: string;
-  description?: string;
-  schema: {
-    sections: Array<{
-      title: string;
-      fields: Array<SchemaField & { type: TeacherReportQuestionType }>;
-    }>;
-  };
-};
