@@ -51,18 +51,21 @@ export const TEST_DEFINITIONS: Record<string, TestDefinition> = {
     'ata': {
         id: 'ata',
         name: 'ATA',
-        fullName: 'Avaliação de Atenção', // Assuming generic name based on context
-        description: 'Bateria para avaliação detalhada dos processos de atenção.',
+        fullName: 'Escala de Avaliação de Traços Autísticos',
+        description: 'Escala de rastreio para a identificação de comportamentos e traços associados ao transtorno do espectro autista.',
         instructions: [
-            'Realize os subtestes de atenção focada, sustentada e alternada.',
-            'Certifique-se de que o paciente compreendeu as instruções de cada etapa.',
-            'Registre os acertos, erros e o tempo total de execução quando aplicável.',
-            'Compare os resultados com a tabela normativa adequada.'
+            'Consulte o material original da ATA fora do sistema.',
+            'Para cada uma das 23 subescalas (S01 a S23), atribua a pontuação correspondente de 0 a 2.',
+            '0 = Ausente.',
+            '1 = Presença de um indicador.',
+            '2 = Presença de dois ou mais indicadores.',
+            'Informe a data da aplicação, informante e idade em anos.',
+            'Preencha as observações clínicas (opcional) e salve para obter o resultado.'
         ],
         icon: Target,
         color: '#EF4444',
-        timeEstimate: '15-20 min',
-        targetAge: '6-12 anos'
+        timeEstimate: '10-15 min',
+        targetAge: '2+ anos'
     },
     'snap': {
         id: 'snap',

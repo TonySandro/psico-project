@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Dialog, DialogContent, Button, Typography, Box, Grid, Chip, Stack } from '@mui/material';
 import { ClipboardCheck } from 'lucide-react';
 import type { Protocol } from '@/types/schema';
@@ -64,18 +65,66 @@ const StroopResultView = ({ data }: { data: any }) => (
 );
 
 const ATAResultView = ({ data }: { data: any }) => {
-    const scores = data.scores || {};
+    const isAboveCutoff = data.result === 'ABOVE_CUTOFF';
+    const resultText = isAboveCutoff ? 'Acima do ponto de corte' : 'Abaixo do ponto de corte';
+    
     return (
         <Grid container spacing={2.5}>
             <Grid size={{ xs: 12 }}>
                 <Typography variant="subtitle1" sx={{ color: '#334155', fontWeight: 700, mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Box component="span" sx={{ width: 4, height: 16, bgcolor: '#8b5cf6', borderRadius: 1 }} />
-                    Pontuações de Atenção
+                    <Box component="span" sx={{ width: 4, height: 16, bgcolor: '#EF4444', borderRadius: 1 }} />
+                    Resultado da Avaliação ATA
                 </Typography>
             </Grid>
-            <Grid size={{ xs: 12, sm: 4 }}><LabelValue label="Focada" value={scores.focusedAttention} /></Grid>
-            <Grid size={{ xs: 12, sm: 4 }}><LabelValue label="Sustentada" value={scores.sustainedAttention} /></Grid>
-            <Grid size={{ xs: 12, sm: 4 }}><LabelValue label="Alternada" value={scores.alternatingAttention} /></Grid>
+            
+            <Grid size={{ xs: 12, sm: 4 }}>
+                <LabelValue label="Pontuação Total" value={`${data.totalScore ?? 0} / ${data.maxScore ?? 46}`} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 4 }}>
+                <LabelValue label="Ponto de Corte" value={data.cutoff ?? 15} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 4 }}>
+                <LabelValue 
+                    label="Resultado" 
+                    value={
+                        <Box component="span" sx={{ color: isAboveCutoff ? '#ef4444' : '#10b981', fontWeight: 700 }}>
+                            {resultText}
+                        </Box>
+                    } 
+                />
+            </Grid>
+            
+            <Grid size={{ xs: 12, sm: 6 }}>
+                <LabelValue label="Informante" value={data.informant || '-'} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+                <LabelValue label="Idade de Aplicação" value={data.ageInYears !== undefined ? `${data.ageInYears} anos` : '-'} />
+            </Grid>
+            
+            {data.clinicalObservations && (
+                <Grid size={{ xs: 12 }}>
+                    <LabelValue label="Observações Clínicas" value={data.clinicalObservations} />
+                </Grid>
+            )}
+            
+            {data.interpretation && (
+                <Grid size={{ xs: 12 }}>
+                    <LabelValue label="Interpretação" value={data.interpretation} />
+                </Grid>
+            )}
+
+            {data.reportText && (
+                <Grid size={{ xs: 12 }}>
+                    <LabelValue 
+                        label="Texto para Relatório" 
+                        value={
+                            <Typography variant="body2" sx={{ fontStyle: 'italic', color: '#475569', whiteSpace: 'pre-wrap', fontWeight: 500, lineHeight: 1.6 }}>
+                                {data.reportText}
+                            </Typography>
+                        } 
+                    />
+                </Grid>
+            )}
         </Grid>
     );
 };

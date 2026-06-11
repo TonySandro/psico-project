@@ -13,14 +13,28 @@ export interface StroopResult {
     task3Errors: number;
 }
 
+export interface ATASubscale {
+    code: string;
+    score: number;
+}
+
 export interface ATAResult {
-    patientName: string;
-    age: number;
-    scores: {
-        focusedAttention: number;
-        sustainedAttention: number;
-        alternatingAttention: number;
-    };
+    id?: string;
+    protocol: string;
+    protocolVersion: string;
+    patientId: string;
+    applicationDate: string;
+    informant: string;
+    ageInYears: number;
+    totalScore: number;
+    maxScore: number;
+    cutoff: number;
+    result: 'ABOVE_CUTOFF' | 'BELOW_CUTOFF';
+    interpretation: string;
+    reportText: string;
+    subscales: ATASubscale[];
+    clinicalObservations?: string;
+    createdAt?: string;
 }
 
 export interface CARSResult {

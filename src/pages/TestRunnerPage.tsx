@@ -29,7 +29,8 @@ import {
     TableRow,
     TableCell,
     TableBody,
-    Radio
+    Radio,
+    Chip
 } from '@mui/material';
 import { PlayCircle, Clock, Users, TicketCheck } from 'lucide-react';
 import BackButton from '@/components/BackButton';
@@ -49,13 +50,10 @@ export default function TestRunnerPage() {
     const { mutate: processTest, isPending, data: result, error, reset: resetResult } = useTestResult();
     const { mutate: addProtocol, isPending: isSaving, isSuccess: isSaved } = useAddProtocol();
 
-    // TDE-II — fluxo próprio de dois estágios
     const { mutate: calcularTde2, isPending: isPendingTde2, data: resultTde2, error: errorTde2, reset: resetTde2 } = useTde2Calculate();
 
-    // Verify if test exists
     const testDef = type ? TEST_DEFINITIONS[type] : undefined;
 
-    // Fetch patients
     const { data: patients, isLoading: isLoadingPatients } = usePatients(user?.id || '');
 
     const [patientName, setPatientName] = useState('');
@@ -64,11 +62,10 @@ export default function TestRunnerPage() {
     const [isAnonymous, setIsAnonymous] = useState(false);
     const [formData, setFormData] = useState<Record<string, any>>({});
     const [showForm, setShowForm] = useState(true);
+    const [validationError, setValidationError] = useState<string | null>(null);
 
-    // Ref for scrolling to results
     const resultsSectionRef = useRef<HTMLDivElement>(null);
 
-    // Effect to handle Anonymous toggle
     useEffect(() => {
         if (isAnonymous) {
             setPatientName('Não informado');
@@ -80,7 +77,10 @@ export default function TestRunnerPage() {
         }
     }, [isAnonymous]);
 
-    // Scroll to results when they appear (generic tests)
+    useEffect(() => {
+        setValidationError(null);
+    }, [type]);
+
     useEffect(() => {
         if (result && resultsSectionRef.current) {
             setTimeout(() => {
@@ -92,7 +92,6 @@ export default function TestRunnerPage() {
         }
     }, [result]);
 
-    // Scroll to results when TDE-II result appears
     useEffect(() => {
         if (resultTde2 && resultsSectionRef.current) {
             setTimeout(() => {
@@ -111,6 +110,7 @@ export default function TestRunnerPage() {
     const TestIcon = testDef.icon;
 
     const handlePatientChange = (_: any, newValue: Patient | null) => {
+        setValidationError(null);
         setSelectedPatient(newValue);
         if (newValue) {
             setPatientName(newValue.name);
@@ -122,12 +122,29 @@ export default function TestRunnerPage() {
     };
 
     const handleInputChange = (field: string, value: any) => {
+        setValidationError(null);
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        setValidationError(null);
         if (type) {
+            if (type === 'ata') {
+                if (!isAnonymous && !selectedPatient) {
+                    setValidationError('Por favor, selecione um paciente cadastrado ou ative a opção de Teste Anônimo.');
+                    return;
+                }
+                if (!formData.informant) {
+                    setValidationError('Por favor, selecione o informante da aplicação.');
+                    return;
+                }
+                if (!age) {
+                    setValidationError('A idade do paciente é obrigatória.');
+                    return;
+                }
+            }
+
             let data: Record<string, any> = {
                 patientName,
                 age: Number(age),
@@ -142,14 +159,20 @@ export default function TestRunnerPage() {
                     scores
                 };
             } else if (type === 'ata') {
+                const subscales = Array.from({ length: 23 }, (_, i) => {
+                    const code = `S${String(i + 1).padStart(2, '0')}`;
+                    return {
+                        code,
+                        score: Number(formData[`subscale_${code}`] ?? 0)
+                    };
+                });
                 data = {
-                    patientName,
-                    age: Number(age),
-                    scores: {
-                        focusedAttention: Number(formData.focusedAttention ?? 0),
-                        sustainedAttention: Number(formData.sustainedAttention ?? 0),
-                        alternatingAttention: Number(formData.alternatingAttention ?? 0)
-                    }
+                    patientId: isAnonymous ? 'anonymous' : (selectedPatient?.id || ''),
+                    applicationDate: formData.applicationDate || new Date().toISOString().split('T')[0],
+                    informant: formData.informant || '',
+                    ageInYears: Number(age),
+                    subscales,
+                    clinicalObservations: formData.clinicalObservations || ''
                 };
             } else if (type === 'snap') {
                 const answers = Array.from({ length: 26 }, (_, i) => Number(formData[`answer_${i}`] ?? 0));
@@ -165,7 +188,6 @@ export default function TestRunnerPage() {
                     correctAnswers: Number(formData.correctAnswers ?? 0)
                 };
             } else if (type === 'tde2') {
-                // TDE-II usa fluxo próprio — calcularTde2 em vez de processTest
                 const payload = {
                     nomePaciente: patientName,
                     anoEscolar: String(formData.anoEscolar || '1º ano'),
@@ -194,13 +216,13 @@ export default function TestRunnerPage() {
                         }
                     }
                 });
-                return; // early return — não continua para processTest
+                return;
             }
 
             processTest({ testType: type, data }, {
                 onSuccess: (testResult) => {
                     setShowForm(false);
-                    if (selectedPatient && user?.id) {
+                    if (type !== 'ata' && selectedPatient && user?.id) {
                         addProtocol({
                             patientId: selectedPatient.id,
                             accountId: user.id,
@@ -224,6 +246,7 @@ export default function TestRunnerPage() {
         setSelectedPatient(null);
         setIsAnonymous(false);
         setFormData({});
+        setValidationError(null);
         setShowForm(true);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -259,15 +282,147 @@ export default function TestRunnerPage() {
                         </Stack>
                     </Stack>
                 );
-            case 'ata':
+            case 'ata': {
+                const ataPreviewSum = Array.from({ length: 23 }, (_, i) => {
+                    const code = `S${String(i + 1).padStart(2, '0')}`;
+                    return Number(formData[`subscale_${code}`] ?? 0);
+                }).reduce((sum, val) => sum + val, 0);
+
                 return (
-                    <Stack spacing={2}>
-                        <Typography variant="subtitle1" fontWeight={600}>Pontuações Obtidas</Typography>
-                        {renderInput("Atenção Focada", "focusedAttention")}
-                        {renderInput("Atenção Sustentada", "sustainedAttention")}
-                        {renderInput("Atenção Alternada", "alternatingAttention")}
+                    <Stack spacing={4}>
+                        {/* Aviso Informativo */}
+                        <Alert severity="info" sx={{ borderRadius: 2, border: '1px solid #bfdbfe', bgcolor: '#eff6ff', '& .MuiAlert-icon': { color: '#3b82f6' } }}>
+                            <Typography variant="body2" sx={{ color: '#1e3a8a', fontWeight: 500, lineHeight: 1.6 }}>
+                                A plataforma realiza apenas o registro e cálculo da pontuação da ATA. A aplicação, interpretação clínica e conclusão diagnóstica devem ser feitas por profissional habilitado, com base no material original, anamnese, observação clínica e demais instrumentos utilizados.
+                            </Typography>
+                        </Alert>
+
+                        {/* Metadados da Aplicação */}
+                        <Box display="grid" gridTemplateColumns={{ xs: '1fr', sm: '1fr 1fr' }} gap={2}>
+                            <TextField
+                                label="Data da Aplicação"
+                                type="date"
+                                required
+                                value={formData.applicationDate ?? new Date().toISOString().split('T')[0]}
+                                onChange={(e) => handleInputChange('applicationDate', e.target.value)}
+                                slotProps={{
+                                    inputLabel: { shrink: true }
+                                }}
+                            />
+                            <TextField
+                                select
+                                label="Informante"
+                                required
+                                value={formData.informant ?? ''}
+                                onChange={(e) => handleInputChange('informant', e.target.value)}
+                                fullWidth
+                            >
+                                <MenuItem value="Mãe">Mãe</MenuItem>
+                                <MenuItem value="Pai">Pai</MenuItem>
+                                <MenuItem value="Professor">Professor(a)</MenuItem>
+                                <MenuItem value="Responsável">Responsável</MenuItem>
+                                <MenuItem value="Profissional">Profissional</MenuItem>
+                                <MenuItem value="Outro">Outro</MenuItem>
+                            </TextField>
+                        </Box>
+
+                        <TextField
+                            label="Observações Clínicas (Opcional)"
+                            multiline
+                            rows={3}
+                            fullWidth
+                            value={formData.clinicalObservations ?? ''}
+                            onChange={(e) => handleInputChange('clinicalObservations', e.target.value)}
+                            placeholder="Adicione observações clínicas sobre a aplicação ou comportamento do paciente..."
+                        />
+
+                        {/* Lista de Subescalas com Prévia */}
+                        <Stack spacing={2}>
+                            <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ pb: 1, borderBottom: '1px solid', borderColor: 'divider' }}>
+                                <Typography variant="subtitle1" fontWeight={700} color="text.primary">
+                                    Subescalas (S01 a S23)
+                                </Typography>
+                                <Chip
+                                    label={`Soma Prévia: ${ataPreviewSum} / 46`}
+                                    color="primary"
+                                    variant="outlined"
+                                    sx={{ fontWeight: 700, borderRadius: 2 }}
+                                />
+                            </Box>
+
+                            <Box display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr' }} gap={3}>
+                                {Array.from({ length: 23 }, (_, i) => {
+                                    const code = `S${String(i + 1).padStart(2, '0')}`;
+                                    const fieldName = `subscale_${code}`;
+                                    const currentValue = formData[fieldName] ?? 0;
+
+                                    return (
+                                        <Paper
+                                            key={code}
+                                            variant="outlined"
+                                            sx={{
+                                                p: 2,
+                                                borderRadius: 3,
+                                                bgcolor: currentValue > 0 ? 'rgba(59, 130, 246, 0.02)' : 'background.paper',
+                                                borderColor: currentValue > 0 ? 'primary.light' : 'divider',
+                                                transition: 'all 0.2s',
+                                                '&:hover': {
+                                                    borderColor: 'primary.main',
+                                                    boxShadow: '0 4px 12px rgba(0,0,0,0.02)'
+                                                }
+                                            }}
+                                        >
+                                            <Stack spacing={1.5}>
+                                                <Typography variant="body2" fontWeight={700} color="text.secondary">
+                                                    Subescala {code}
+                                                </Typography>
+
+                                                <Stack spacing={1}>
+                                                    {[
+                                                        { val: 0, label: 'Ausente' },
+                                                        { val: 1, label: 'Presença de um indicador' },
+                                                        { val: 2, label: 'Presença de dois ou mais indicadores' }
+                                                    ].map((opt) => (
+                                                        <Box
+                                                            key={opt.val}
+                                                            onClick={() => handleInputChange(fieldName, opt.val)}
+                                                            sx={{
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                px: 2,
+                                                                py: 0.75,
+                                                                borderRadius: 2,
+                                                                border: '1px solid',
+                                                                borderColor: currentValue === opt.val ? 'primary.main' : 'rgba(0, 0, 0, 0.06)',
+                                                                bgcolor: currentValue === opt.val ? 'rgba(59, 130, 246, 0.08)' : 'transparent',
+                                                                cursor: 'pointer',
+                                                                transition: 'all 0.15s',
+                                                                '&:hover': {
+                                                                    bgcolor: currentValue === opt.val ? undefined : 'action.hover',
+                                                                    borderColor: currentValue === opt.val ? 'primary.main' : 'grey.400'
+                                                                }
+                                                            }}
+                                                        >
+                                                            <Radio
+                                                                checked={currentValue === opt.val}
+                                                                size="small"
+                                                                sx={{ p: 0.5, mr: 1 }}
+                                                            />
+                                                            <Typography variant="body2" fontWeight={currentValue === opt.val ? 600 : 400}>
+                                                                [{opt.val}] {opt.label}
+                                                            </Typography>
+                                                        </Box>
+                                                    ))}
+                                                </Stack>
+                                            </Stack>
+                                        </Paper>
+                                    );
+                                })}
+                            </Box>
+                        </Stack>
                     </Stack>
                 );
+            }
             case 'cars':
                 return (
                     <Stack spacing={2}>
@@ -370,7 +525,7 @@ export default function TestRunnerPage() {
                                     value={formData.anoEscolar || ''}
                                     onChange={(e) => handleInputChange('anoEscolar', e.target.value)}
                                 >
-                                    {[1,2,3,4,5,6,7,8,9].map((g) => (
+                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((g) => (
                                         <MenuItem key={g} value={`${g}º ano`}>{g}º Ano</MenuItem>
                                     ))}
                                 </TextField>
@@ -616,9 +771,9 @@ export default function TestRunnerPage() {
                                         {renderSpecificFields()}
                                     </Box>
 
-                                    {(error || errorTde2) && (
+                                    {(error || errorTde2 || validationError) && (
                                         <Alert severity="error" sx={{ borderRadius: 2 }}>
-                                            Erro ao processar teste: {((error || errorTde2) as Error).message}
+                                            {validationError ? validationError : `Erro ao processar teste: ${((error || errorTde2) as any)?.response?.data?.error || ((error || errorTde2) as Error).message}`}
                                         </Alert>
                                     )}
 
@@ -690,8 +845,8 @@ export default function TestRunnerPage() {
                     <TestResultDisplay
                         testName={testDef.name}
                         resultData={result}
-                        isSaved={isSaved}
-                        isSaving={isSaving}
+                        isSaved={type === 'ata' && !isAnonymous ? true : isSaved}
+                        isSaving={type === 'ata' && !isAnonymous ? false : isSaving}
                         hasPatient={!!selectedPatient}
                         onNewTest={handleNewTest}
                     />

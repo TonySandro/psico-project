@@ -43,25 +43,40 @@ export default function TestResultDisplay({
     !!resultData.oppositionalDefiant?.isSuggestive
   );
 
+  const isAta = testName.toUpperCase() === 'ATA' || resultData.protocol === 'ATA';
+  const isAtaAboveCutoff = isAta && resultData.result === 'ABOVE_CUTOFF';
+
   const bannerBackground = isSnap
     ? (isSuggestiveAny 
         ? 'linear-gradient(135deg, #f59e0b 0%, #e11d48 100%)' 
         : 'linear-gradient(135deg, #10b981 0%, #059669 100%)')
-    : 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+    : isAta
+      ? (isAtaAboveCutoff
+          ? 'linear-gradient(135deg, #f59e0b 0%, #e11d48 100%)'
+          : 'linear-gradient(135deg, #10b981 0%, #059669 100%)')
+      : 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
     
   const cardBorderColor = isSnap
     ? (isSuggestiveAny ? 'warning.light' : 'success.light')
-    : 'success.light';
+    : isAta
+      ? (isAtaAboveCutoff ? 'warning.light' : 'success.light')
+      : 'success.light';
     
   const cardBoxShadow = isSnap
     ? (isSuggestiveAny 
         ? '0 10px 40px -10px rgba(245, 158, 11, 0.2)' 
         : '0 10px 40px -10px rgba(16, 185, 129, 0.15)')
-    : '0 10px 40px -10px rgba(16, 185, 129, 0.15)';
+    : isAta
+      ? (isAtaAboveCutoff
+          ? '0 10px 40px -10px rgba(245, 158, 11, 0.2)'
+          : '0 10px 40px -10px rgba(16, 185, 129, 0.15)')
+      : '0 10px 40px -10px rgba(16, 185, 129, 0.15)';
 
   const chipLabel = isSnap
     ? (isSuggestiveAny ? 'Investigação Clínica Sugerida' : 'Não Sugestivo')
-    : 'Processado com Sucesso';
+    : isAta
+      ? (isAtaAboveCutoff ? 'Acima do Ponto de Corte' : 'Abaixo do Ponto de Corte')
+      : 'Processado com Sucesso';
 
   const renderMetrics = (data: Record<string, any>) => (
     <Box display="grid" gridTemplateColumns="repeat(auto-fit, minmax(200px, 1fr))" gap={3}>
@@ -286,6 +301,163 @@ export default function TestResultDisplay({
     );
   };
 
+  const renderAtaResults = (data: any) => {
+    const isAboveCutoff = data.result === 'ABOVE_CUTOFF';
+    
+    return (
+      <Stack spacing={4}>
+        {/* Aviso Informativo */}
+        <Alert severity="info" sx={{ borderRadius: 3, border: '1px solid #bfdbfe', bgcolor: '#eff6ff', '& .MuiAlert-icon': { color: '#3b82f6' } }}>
+          <Typography variant="body2" sx={{ color: '#1e3a8a', fontWeight: 500, lineHeight: 1.6 }}>
+            A plataforma realiza apenas o registro e cálculo da pontuação da ATA. A aplicação, interpretação clínica e conclusão diagnóstica devem ser feitas por profissional habilitado, com base no material original, anamnese, observação clínica e demais instrumentos utilizados.
+          </Typography>
+        </Alert>
+
+        {/* Resumo da Escala */}
+        <Box display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr 1fr' }} gap={3}>
+          {/* Pontuação Total */}
+          <Paper
+            elevation={0}
+            sx={{
+              p: 3,
+              borderRadius: 4,
+              border: '1px solid rgba(0, 0, 0, 0.04)',
+              background: 'linear-gradient(145deg, #ffffff 0%, #fcfcfc 100%)',
+              boxShadow: '0 4px 20px -4px rgba(0,0,0,0.03)',
+            }}
+          >
+            <Typography variant="overline" color="text.secondary" sx={{ display: 'block', fontWeight: 700, letterSpacing: 1.2, mb: 1 }}>
+              Pontuação Total
+            </Typography>
+            <Typography variant="h4" fontWeight="800" sx={{ background: 'linear-gradient(90deg, #1e293b 0%, #334155 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              {data.totalScore} / {data.maxScore}
+            </Typography>
+          </Paper>
+
+          {/* Ponto de Corte */}
+          <Paper
+            elevation={0}
+            sx={{
+              p: 3,
+              borderRadius: 4,
+              border: '1px solid rgba(0, 0, 0, 0.04)',
+              background: 'linear-gradient(145deg, #ffffff 0%, #fcfcfc 100%)',
+              boxShadow: '0 4px 20px -4px rgba(0,0,0,0.03)',
+            }}
+          >
+            <Typography variant="overline" color="text.secondary" sx={{ display: 'block', fontWeight: 700, letterSpacing: 1.2, mb: 1 }}>
+              Ponto de Corte
+            </Typography>
+            <Typography variant="h4" fontWeight="800" sx={{ background: 'linear-gradient(90deg, #1e293b 0%, #334155 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              {data.cutoff}
+            </Typography>
+          </Paper>
+
+          {/* Resultado */}
+          <Paper
+            elevation={0}
+            sx={{
+              p: 3,
+              borderRadius: 4,
+              border: '1px solid',
+              borderColor: isAboveCutoff ? 'error.light' : 'success.light',
+              background: isAboveCutoff ? 'linear-gradient(145deg, #fffafb 0%, #fff1f2 100%)' : 'linear-gradient(145deg, #fcfdfa 0%, #f7fee7 100%)',
+              boxShadow: '0 4px 20px -4px rgba(0,0,0,0.03)',
+            }}
+          >
+            <Typography variant="overline" color={isAboveCutoff ? 'error.main' : 'success.main'} sx={{ display: 'block', fontWeight: 700, letterSpacing: 1.2, mb: 1 }}>
+              Resultado
+            </Typography>
+            <Typography variant="h5" fontWeight="800" color={isAboveCutoff ? 'error.main' : 'success.main'}>
+              {isAboveCutoff ? 'Acima do ponto de corte' : 'Abaixo do ponto de corte'}
+            </Typography>
+          </Paper>
+        </Box>
+
+        {/* Metadados adicionais */}
+        <Paper
+          variant="outlined"
+          sx={{
+            p: 3,
+            borderRadius: 3,
+            borderColor: 'divider',
+            bgcolor: 'action.hover'
+          }}
+        >
+          <Box display="grid" gridTemplateColumns={{ xs: '1fr', sm: '1fr 1fr 1fr' }} gap={2}>
+            <Box>
+              <Typography variant="caption" color="text.secondary" fontWeight={600} sx={{ textTransform: 'uppercase', display: 'block' }}>
+                Informante
+              </Typography>
+              <Typography variant="body1" fontWeight={700}>
+                {data.informant}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography variant="caption" color="text.secondary" fontWeight={600} sx={{ textTransform: 'uppercase', display: 'block' }}>
+                Idade de Aplicação
+              </Typography>
+              <Typography variant="body1" fontWeight={700}>
+                {data.ageInYears} anos
+              </Typography>
+            </Box>
+            <Box>
+              <Typography variant="caption" color="text.secondary" fontWeight={600} sx={{ textTransform: 'uppercase', display: 'block' }}>
+                Data da Aplicação
+              </Typography>
+              <Typography variant="body1" fontWeight={700}>
+                {data.applicationDate ? new Date(data.applicationDate + 'T00:00:00').toLocaleDateString('pt-BR') : '-'}
+              </Typography>
+            </Box>
+          </Box>
+        </Paper>
+
+        {/* Observações Clínicas se existirem */}
+        {data.clinicalObservations && (
+          <Box>
+            <Typography variant="h6" fontWeight={800} gutterBottom sx={{ color: 'text.primary', display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box component="span" sx={{ width: 4, height: 18, bgcolor: 'primary.main', borderRadius: 2 }} />
+              Observações Clínicas
+            </Typography>
+            <Paper elevation={0} variant="outlined" sx={{ p: 2.5, borderRadius: 3, bgcolor: '#fafafa' }}>
+              <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
+                {data.clinicalObservations}
+              </Typography>
+            </Paper>
+          </Box>
+        )}
+
+        {/* Interpretação */}
+        <Box>
+          <Typography variant="h6" fontWeight={800} gutterBottom sx={{ color: 'text.primary', display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box component="span" sx={{ width: 4, height: 18, bgcolor: 'primary.main', borderRadius: 2 }} />
+            Interpretação
+          </Typography>
+          <Paper elevation={0} variant="outlined" sx={{ p: 2.5, borderRadius: 3, bgcolor: '#fafafa' }}>
+            <Typography variant="body1" fontWeight={600} color="text.primary" sx={{ lineHeight: 1.6 }}>
+              {data.interpretation}
+            </Typography>
+          </Paper>
+        </Box>
+
+        {/* Texto para Relatório */}
+        {data.reportText && (
+          <Box>
+            <Typography variant="h6" fontWeight={800} gutterBottom sx={{ color: 'text.primary', display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box component="span" sx={{ width: 4, height: 18, bgcolor: 'primary.main', borderRadius: 2 }} />
+              Texto para Relatório
+            </Typography>
+            <Paper elevation={0} variant="outlined" sx={{ p: 2.5, borderRadius: 3, bgcolor: '#f8fafc', borderStyle: 'dashed' }}>
+              <Typography variant="body2" color="text.primary" sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.6, fontStyle: 'italic' }}>
+                {data.reportText}
+              </Typography>
+            </Paper>
+          </Box>
+        )}
+      </Stack>
+    );
+  };
+
   return (
     <Card
       elevation={0}
@@ -330,7 +502,7 @@ export default function TestResultDisplay({
                 border: '1px solid rgba(255, 255, 255, 0.3)',
               }}
             >
-              {isSnap && isSuggestiveAny ? <AlertCircle size={32} /> : <CheckCircle2 size={32} />}
+              {(isSnap && isSuggestiveAny) || (isAta && isAtaAboveCutoff) ? <AlertCircle size={32} /> : <CheckCircle2 size={32} />}
             </Box>
             <Box>
               <Typography variant="overline" fontWeight={700} sx={{ color: 'rgba(255, 255, 255, 0.8)', letterSpacing: 1.5 }}>
@@ -382,6 +554,8 @@ export default function TestResultDisplay({
 
           {isSnap ? (
             renderSnapResults(resultData)
+          ) : isAta ? (
+            renderAtaResults(resultData)
           ) : (
             <>
               <Box>{renderMetrics(resultData)}</Box>
