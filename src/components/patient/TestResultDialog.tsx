@@ -153,6 +153,43 @@ const SnapResultView = ({ data }: { data: any }) => {
     );
 };
 
+const CarsResultView = ({ data }: { data: any }) => {
+    const isSevere = data.interpretation === 'Autismo severo';
+    const isLeveModerado = data.interpretation === 'Autismo leve a moderado';
+    
+    return (
+        <Grid container spacing={2.5}>
+            <Grid size={{ xs: 12 }}>
+                <Typography variant="subtitle1" sx={{ color: '#334155', fontWeight: 700, mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box component="span" sx={{ width: 4, height: 16, bgcolor: '#3b82f6', borderRadius: 1 }} />
+                    Resultado da Avaliação CARS
+                </Typography>
+            </Grid>
+            
+            <Grid size={{ xs: 12, sm: 6 }}>
+                <LabelValue label="Pontuação Total" value={`${data.totalScore?.toFixed(1) ?? '0.0'} / 60.0`} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+                <LabelValue 
+                    label="Classificação" 
+                    value={
+                        <Box component="span" sx={{ color: isSevere ? '#ef4444' : isLeveModerado ? '#f59e0b' : '#10b981', fontWeight: 700 }}>
+                            {data.interpretation}
+                        </Box>
+                    } 
+                />
+            </Grid>
+            
+            <Grid size={{ xs: 12, sm: 6 }}>
+                <LabelValue label="Paciente" value={data.patient || '-'} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+                <LabelValue label="Idade de Aplicação" value={data.age !== undefined ? `${data.age} anos` : '-'} />
+            </Grid>
+        </Grid>
+    );
+};
+
 const GenericResultView = ({ data }: { data: any }) => {
     return (
         <Grid container spacing={2.5}>
@@ -175,13 +212,16 @@ export default function TestResultDialog({ open, onClose, protocol }: TestResult
     if (!protocol) return null;
 
     const renderContent = () => {
-        switch (protocol.name) {
+        switch (protocol.name as string) {
             case 'Stroop':
                 return <StroopResultView data={protocol.data} />;
             case 'ATA':
                 return <ATAResultView data={protocol.data} />;
             case 'SNAP':
                 return <SnapResultView data={protocol.data} />;
+            case 'CARS':
+            case 'Cars':
+                return <CarsResultView data={protocol.data} />;
             default:
                 return <GenericResultView data={protocol.data} />;
         }

@@ -38,9 +38,10 @@ export interface ATAResult {
 }
 
 export interface CARSResult {
-    patientName: string;
+    patient: string;
     age: number;
-    scores: number[];
+    totalScore: number;
+    interpretation: string;
 }
 
 export interface SNAPResult {

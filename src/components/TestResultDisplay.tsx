@@ -46,44 +46,63 @@ export default function TestResultDisplay({
   const isAta = testName.toUpperCase() === 'ATA' || resultData.protocol === 'ATA';
   const isAtaAboveCutoff = isAta && resultData.result === 'ABOVE_CUTOFF';
 
+  const isCars = testName.toUpperCase() === 'CARS';
+  const isCarsSevere = isCars && resultData.interpretation === 'Autismo severo';
+  const isCarsLeveModerado = isCars && resultData.interpretation === 'Autismo leve a moderado';
+
   const bannerBackground = isSnap
-    ? (isSuggestiveAny 
-        ? 'linear-gradient(135deg, #f59e0b 0%, #e11d48 100%)' 
-        : 'linear-gradient(135deg, #10b981 0%, #059669 100%)')
+    ? (isSuggestiveAny
+      ? 'linear-gradient(135deg, #f59e0b 0%, #e11d48 100%)'
+      : 'linear-gradient(135deg, #10b981 0%, #059669 100%)')
     : isAta
       ? (isAtaAboveCutoff
-          ? 'linear-gradient(135deg, #f59e0b 0%, #e11d48 100%)'
-          : 'linear-gradient(135deg, #10b981 0%, #059669 100%)')
-      : 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-    
+        ? 'linear-gradient(135deg, #f59e0b 0%, #e11d48 100%)'
+        : 'linear-gradient(135deg, #10b981 0%, #059669 100%)')
+      : isCars
+        ? (isCarsSevere
+          ? 'linear-gradient(135deg, #e11d48 0%, #991b1b 100%)'
+          : isCarsLeveModerado
+            ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
+            : 'linear-gradient(135deg, #10b981 0%, #059669 100%)')
+        : 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+
   const cardBorderColor = isSnap
     ? (isSuggestiveAny ? 'warning.light' : 'success.light')
     : isAta
       ? (isAtaAboveCutoff ? 'warning.light' : 'success.light')
-      : 'success.light';
-    
+      : isCars
+        ? (isCarsSevere ? 'error.light' : isCarsLeveModerado ? 'warning.light' : 'success.light')
+        : 'success.light';
+
   const cardBoxShadow = isSnap
-    ? (isSuggestiveAny 
-        ? '0 10px 40px -10px rgba(245, 158, 11, 0.2)' 
-        : '0 10px 40px -10px rgba(16, 185, 129, 0.15)')
+    ? (isSuggestiveAny
+      ? '0 10px 40px -10px rgba(245, 158, 11, 0.2)'
+      : '0 10px 40px -10px rgba(16, 185, 129, 0.15)')
     : isAta
       ? (isAtaAboveCutoff
-          ? '0 10px 40px -10px rgba(245, 158, 11, 0.2)'
-          : '0 10px 40px -10px rgba(16, 185, 129, 0.15)')
-      : '0 10px 40px -10px rgba(16, 185, 129, 0.15)';
+        ? '0 10px 40px -10px rgba(245, 158, 11, 0.2)'
+        : '0 10px 40px -10px rgba(16, 185, 129, 0.15)')
+      : isCars
+        ? (isCarsSevere
+          ? '0 10px 40px -10px rgba(239, 68, 68, 0.2)'
+          : isCarsLeveModerado
+            ? '0 10px 40px -10px rgba(245, 158, 11, 0.2)'
+            : '0 10px 40px -10px rgba(16, 185, 129, 0.15)')
+        : '0 10px 40px -10px rgba(16, 185, 129, 0.15)';
 
   const chipLabel = isSnap
     ? (isSuggestiveAny ? 'Investigação Clínica Sugerida' : 'Não Sugestivo')
     : isAta
       ? (isAtaAboveCutoff ? 'Acima do Ponto de Corte' : 'Abaixo do Ponto de Corte')
-      : 'Processado com Sucesso';
+      : isCars
+        ? resultData.interpretation
+        : 'Processado com Sucesso';
 
   const renderMetrics = (data: Record<string, any>) => (
     <Box display="grid" gridTemplateColumns="repeat(auto-fit, minmax(200px, 1fr))" gap={3}>
       {Object.entries(data).map(([key, value], index) => {
         if (typeof value === 'object') return null;
-        
-        // Simple animation delay based on index
+
         const animationDelay = `${index * 0.1}s`;
 
         return (
@@ -133,7 +152,7 @@ export default function TestResultDisplay({
                 pointerEvents: 'none',
               }}
             />
-            
+
             <Typography
               variant="overline"
               color="text.secondary"
@@ -148,13 +167,13 @@ export default function TestResultDisplay({
             >
               {getLabel(key)}
             </Typography>
-            
-            <Typography 
-              variant="h4" 
-              fontWeight="800" 
+
+            <Typography
+              variant="h4"
+              fontWeight="800"
               color="text.primary"
-              sx={{ 
-                position: 'relative', 
+              sx={{
+                position: 'relative',
                 zIndex: 1,
                 background: 'linear-gradient(90deg, #1e293b 0%, #334155 100%)',
                 WebkitBackgroundClip: 'text',
@@ -171,7 +190,7 @@ export default function TestResultDisplay({
 
   const renderSnapResults = (data: any) => {
     const hasOppositional = !!data.oppositionalDefiant;
-    
+
     const subscaleConfigs = [
       {
         key: 'inattention',
@@ -206,7 +225,7 @@ export default function TestResultDisplay({
           if (!subData) return null;
 
           const isSuggestive = subData.isSuggestive;
-          
+
           return (
             <Paper
               key={config.key}
@@ -216,18 +235,18 @@ export default function TestResultDisplay({
                 borderRadius: 4,
                 border: '1px solid',
                 borderColor: isSuggestive ? 'error.light' : 'success.light',
-                background: isSuggestive 
-                  ? 'linear-gradient(145deg, #fffafb 0%, #fff1f2 100%)' 
+                background: isSuggestive
+                  ? 'linear-gradient(145deg, #fffafb 0%, #fff1f2 100%)'
                   : 'linear-gradient(145deg, #fcfdfa 0%, #f7fee7 100%)',
-                boxShadow: isSuggestive 
-                  ? '0 10px 30px -10px rgba(239, 68, 68, 0.08)' 
+                boxShadow: isSuggestive
+                  ? '0 10px 30px -10px rgba(239, 68, 68, 0.08)'
                   : '0 10px 30px -10px rgba(132, 204, 22, 0.08)',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 '&:hover': {
                   transform: 'translateY(-4px)',
                   borderColor: isSuggestive ? 'error.main' : 'success.main',
-                  boxShadow: isSuggestive 
-                    ? '0 20px 40px -15px rgba(239, 68, 68, 0.15)' 
+                  boxShadow: isSuggestive
+                    ? '0 20px 40px -15px rgba(239, 68, 68, 0.15)'
                     : '0 20px 40px -15px rgba(132, 204, 22, 0.15)',
                 }
               }}
@@ -253,9 +272,9 @@ export default function TestResultDisplay({
                   size="small"
                   sx={{ fontWeight: 700, mb: 1, '& .MuiChip-icon': { color: 'inherit' } }}
                 />
-                <Typography 
-                  variant="body1" 
-                  fontWeight={800} 
+                <Typography
+                  variant="body1"
+                  fontWeight={800}
                   color={isSuggestive ? 'error.main' : 'success.main'}
                   sx={{ lineHeight: 1.3 }}
                 >
@@ -275,7 +294,7 @@ export default function TestResultDisplay({
                     {subData.symptomsCount} de {config.maxSymptoms}
                   </Typography>
                 </Box>
-                
+
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                   <Typography variant="body2" fontWeight={600} color="text.secondary">
                     Média de Pontuação
@@ -303,7 +322,7 @@ export default function TestResultDisplay({
 
   const renderAtaResults = (data: any) => {
     const isAboveCutoff = data.result === 'ABOVE_CUTOFF';
-    
+
     return (
       <Stack spacing={4}>
         {/* Aviso Informativo */}
@@ -458,6 +477,130 @@ export default function TestResultDisplay({
     );
   };
 
+  const renderCarsResults = (data: any) => {
+    const isSevere = data.interpretation === 'Autismo severo';
+    const isLeveModerado = data.interpretation === 'Autismo leve a moderado';
+
+    return (
+      <Stack spacing={4}>
+        <Alert severity="info" sx={{ borderRadius: 3, border: '1px solid #bfdbfe', bgcolor: '#eff6ff', '& .MuiAlert-icon': { color: '#3b82f6' } }}>
+          <Typography variant="body2" sx={{ color: '#1e3a8a', fontWeight: 500, lineHeight: 1.6 }}>
+            A plataforma realiza apenas o registro e cálculo da pontuação do CARS. A aplicação, interpretação clínica e conclusão diagnóstica devem ser feitas por profissional habilitado, com base no material original, anamnese, observação clínica e demais instrumentos utilizados.
+          </Typography>
+        </Alert>
+
+        <Box display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr' }} gap={3}>
+          <Paper
+            elevation={0}
+            sx={{
+              p: 3,
+              borderRadius: 4,
+              border: '1px solid rgba(0, 0, 0, 0.04)',
+              background: 'linear-gradient(145deg, #ffffff 0%, #fcfcfc 100%)',
+              boxShadow: '0 4px 20px -4px rgba(0,0,0,0.03)',
+            }}
+          >
+            <Typography variant="overline" color="text.secondary" sx={{ display: 'block', fontWeight: 700, letterSpacing: 1.2, mb: 1 }}>
+              Pontuação Total
+            </Typography>
+            <Typography variant="h4" fontWeight="800" sx={{ background: 'linear-gradient(90deg, #1e293b 0%, #334155 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              {data.totalScore?.toFixed(1)} / 60.0
+            </Typography>
+          </Paper>
+
+          <Paper
+            elevation={0}
+            sx={{
+              p: 3,
+              borderRadius: 4,
+              border: '1px solid',
+              borderColor: isSevere ? 'error.light' : isLeveModerado ? 'warning.light' : 'success.light',
+              background: isSevere
+                ? 'linear-gradient(145deg, #fffafb 0%, #fff1f2 100%)'
+                : isLeveModerado
+                  ? 'linear-gradient(145deg, #fffbeb 0%, #fef3c7 100%)'
+                  : 'linear-gradient(145deg, #fcfdfa 0%, #f7fee7 100%)',
+              boxShadow: '0 4px 20px -4px rgba(0,0,0,0.03)',
+            }}
+          >
+            <Typography variant="overline" color={isSevere ? 'error.main' : isLeveModerado ? 'warning.main' : 'success.main'} sx={{ display: 'block', fontWeight: 700, letterSpacing: 1.2, mb: 1 }}>
+              Classificação
+            </Typography>
+            <Typography variant="h5" fontWeight="800" color={isSevere ? 'error.main' : isLeveModerado ? 'warning.main' : 'success.main'}>
+              {data.interpretation}
+            </Typography>
+          </Paper>
+        </Box>
+
+        <Paper
+          variant="outlined"
+          sx={{
+            p: 3,
+            borderRadius: 3,
+            borderColor: 'divider',
+            bgcolor: 'action.hover'
+          }}
+        >
+          <Box display="grid" gridTemplateColumns={{ xs: '1fr', sm: '1fr 1fr' }} gap={2}>
+            <Box>
+              <Typography variant="caption" color="text.secondary" fontWeight={600} sx={{ textTransform: 'uppercase', display: 'block' }}>
+                Paciente
+              </Typography>
+              <Typography variant="body1" fontWeight={700}>
+                {data.patient}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography variant="caption" color="text.secondary" fontWeight={600} sx={{ textTransform: 'uppercase', display: 'block' }}>
+                Idade de Aplicação
+              </Typography>
+              <Typography variant="body1" fontWeight={700}>
+                {data.age} anos
+              </Typography>
+            </Box>
+          </Box>
+        </Paper>
+
+        <Box>
+          <Typography variant="h6" fontWeight={800} gutterBottom sx={{ color: 'text.primary', display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box component="span" sx={{ width: 4, height: 18, bgcolor: 'primary.main', borderRadius: 2 }} />
+            Tabela de Referência da Escala CARS
+          </Typography>
+          <Paper elevation={0} variant="outlined" sx={{ p: 2.5, borderRadius: 3, bgcolor: '#fafafa' }}>
+            <Stack spacing={1.5}>
+              <Box display="flex" justifyContent="space-between" alignItems="center">
+                <Typography variant="body2" fontWeight={600} color="success.main">
+                  De 15.0 a 29.5
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Dentro da faixa normal (Sem autismo)
+                </Typography>
+              </Box>
+              <Divider />
+              <Box display="flex" justifyContent="space-between" alignItems="center">
+                <Typography variant="body2" fontWeight={600} color="warning.main">
+                  De 30.0 a 36.5
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Autismo leve a moderado
+                </Typography>
+              </Box>
+              <Divider />
+              <Box display="flex" justifyContent="space-between" alignItems="center">
+                <Typography variant="body2" fontWeight={600} color="error.main">
+                  De 37.0 a 60.0
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Autismo severo
+                </Typography>
+              </Box>
+            </Stack>
+          </Paper>
+        </Box>
+      </Stack>
+    );
+  };
+
   return (
     <Card
       elevation={0}
@@ -471,9 +614,8 @@ export default function TestResultDisplay({
         transition: 'all 0.3s ease',
       }}
     >
-      {/* Premium Header Banner */}
-      <Box 
-        sx={{ 
+      <Box
+        sx={{
           background: bannerBackground,
           px: { xs: 3, md: 5 },
           py: 4,
@@ -482,7 +624,6 @@ export default function TestResultDisplay({
           transition: 'background 0.3s ease',
         }}
       >
-        {/* Abstract shapes for premium feel */}
         <Box sx={{ position: 'absolute', top: '-20%', right: '-5%', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%)', pointerEvents: 'none' }} />
         <Box sx={{ position: 'absolute', bottom: '-40%', left: '10%', width: '200px', height: '200px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)', pointerEvents: 'none' }} />
 
@@ -502,7 +643,7 @@ export default function TestResultDisplay({
                 border: '1px solid rgba(255, 255, 255, 0.3)',
               }}
             >
-              {(isSnap && isSuggestiveAny) || (isAta && isAtaAboveCutoff) ? <AlertCircle size={32} /> : <CheckCircle2 size={32} />}
+              {(isSnap && isSuggestiveAny) || (isAta && isAtaAboveCutoff) || (isCars && (isCarsSevere || isCarsLeveModerado)) ? <AlertCircle size={32} /> : <CheckCircle2 size={32} />}
             </Box>
             <Box>
               <Typography variant="overline" fontWeight={700} sx={{ color: 'rgba(255, 255, 255, 0.8)', letterSpacing: 1.5 }}>
@@ -514,12 +655,12 @@ export default function TestResultDisplay({
             </Box>
           </Stack>
           <Chip
-            icon={isSnap && isSuggestiveAny ? <AlertCircle size={16} /> : <Sparkles size={16} />}
+            icon={(isSnap && isSuggestiveAny) || (isCars && (isCarsSevere || isCarsLeveModerado)) ? <AlertCircle size={16} /> : <Sparkles size={16} />}
             label={chipLabel}
-            sx={{ 
-              px: 1, 
-              fontWeight: 700, 
-              bgcolor: 'rgba(255, 255, 255, 0.2)', 
+            sx={{
+              px: 1,
+              fontWeight: 700,
+              bgcolor: 'rgba(255, 255, 255, 0.2)',
               color: 'white',
               border: '1px solid rgba(255, 255, 255, 0.3)',
               backdropFilter: 'blur(10px)',
@@ -535,10 +676,10 @@ export default function TestResultDisplay({
             <Alert
               icon={isSaving ? undefined : <CheckCircle2 size={20} />}
               severity={isSaved ? "success" : isSaving ? "info" : "warning"}
-              sx={{ 
-                borderRadius: 3, 
-                px: 3, 
-                py: 2, 
+              sx={{
+                borderRadius: 3,
+                px: 3,
+                py: 2,
                 alignItems: 'center',
                 border: '1px solid',
                 borderColor: isSaved ? 'success.light' : isSaving ? 'info.light' : 'warning.light'
@@ -547,7 +688,7 @@ export default function TestResultDisplay({
               <Typography variant="body2" fontWeight={600}>
                 {isSaving ? "Sincronizando resultado no prontuário do paciente..." :
                   isSaved ? "Resultado arquivado e salvo com sucesso no perfil do paciente." :
-                  "Atenção: Resultado gerado sem salvamento automático (Teste Anônimo)."}
+                    "Atenção: Resultado gerado sem salvamento automático (Teste Anônimo)."}
               </Typography>
             </Alert>
           )}
@@ -556,11 +697,12 @@ export default function TestResultDisplay({
             renderSnapResults(resultData)
           ) : isAta ? (
             renderAtaResults(resultData)
+          ) : isCars ? (
+            renderCarsResults(resultData)
           ) : (
             <>
               <Box>{renderMetrics(resultData)}</Box>
 
-              {/* Render nested objects recursively if present */}
               {Object.entries(resultData).map(([key, value]) => {
                 if (Array.isArray(value)) return null;
                 if (typeof value === 'object' && value !== null) {

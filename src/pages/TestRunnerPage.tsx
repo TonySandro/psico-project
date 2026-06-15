@@ -130,17 +130,19 @@ export default function TestRunnerPage() {
         e.preventDefault();
         setValidationError(null);
         if (type) {
-            if (type === 'ata') {
+            if (type === 'ata' || type === 'cars') {
                 if (!isAnonymous && !selectedPatient) {
                     setValidationError('Por favor, selecione um paciente cadastrado ou ative a opção de Teste Anônimo.');
                     return;
                 }
-                if (!formData.informant) {
-                    setValidationError('Por favor, selecione o informante da aplicação.');
-                    return;
-                }
                 if (!age) {
                     setValidationError('A idade do paciente é obrigatória.');
+                    return;
+                }
+            }
+            if (type === 'ata') {
+                if (!formData.informant) {
+                    setValidationError('Por favor, selecione o informante da aplicação.');
                     return;
                 }
             }
@@ -152,9 +154,10 @@ export default function TestRunnerPage() {
             };
 
             if (type === 'cars') {
-                const scores = Array.from({ length: 15 }, (_, i) => Number(formData[`score_${i}`] ?? 0));
+                const scores = Array.from({ length: 15 }, (_, i) => Number(formData[`score_${i}`] ?? 1));
                 data = {
-                    patientName,
+                    patientId: isAnonymous ? 'anonymous' : (selectedPatient?.id || ''),
+                    patientName: isAnonymous ? 'Não informado' : patientName,
                     age: Number(age),
                     scores
                 };
@@ -222,7 +225,7 @@ export default function TestRunnerPage() {
             processTest({ testType: type, data }, {
                 onSuccess: (testResult) => {
                     setShowForm(false);
-                    if (type !== 'ata' && selectedPatient && user?.id) {
+                    if (type !== 'ata' && type !== 'cars' && selectedPatient && user?.id) {
                         addProtocol({
                             patientId: selectedPatient.id,
                             accountId: user.id,
@@ -423,26 +426,139 @@ export default function TestRunnerPage() {
                     </Stack>
                 );
             }
-            case 'cars':
+            case 'cars': {
+                const carsItems = [
+                    'Relações Pessoais',
+                    'Imitação',
+                    'Resposta Emocional',
+                    'Uso Corporal',
+                    'Uso de Objetos',
+                    'Resposta e Adaptação a Mudanças',
+                    'Resposta Visual',
+                    'Resposta Auditiva',
+                    'Resposta e Uso do Paladar, Olfato e Tato',
+                    'Medo ou Nervosismo',
+                    'Comunicação Verbal',
+                    'Comunicação Não-Verbal',
+                    'Nível de Atividade',
+                    'Nível e Consistência da Resposta Intelectual',
+                    'Impressões Gerais'
+                ];
+
+                const getCarsScoreLabel = (score: number) => {
+                    switch (score) {
+                        case 1: return "Normal";
+                        case 1.5: return "Normal a Leve (Intermediário)";
+                        case 2: return "Levemente Anormal";
+                        case 2.5: return "Leve a Moderado (Intermediário)";
+                        case 3: return "Moderadamente Anormal";
+                        case 3.5: return "Moderado a Grave (Intermediário)";
+                        case 4: return "Gravemente Anormal";
+                        default: return "";
+                    }
+                };
+
+                const carsScores = [1, 1.5, 2, 2.5, 3, 3.5, 4];
+
+                const carsPreviewSum = Array.from({ length: 15 }, (_, i) => {
+                    return Number(formData[`score_${i}`] ?? 1);
+                }).reduce((sum, val) => sum + val, 0);
+
                 return (
-                    <Stack spacing={2}>
-                        <Typography variant="subtitle1" fontWeight={600}>Pontuações por Item (1-4)</Typography>
-                        <Box display="grid" gridTemplateColumns="repeat(auto-fill, minmax(80px, 1fr))" gap={2}>
-                            {Array.from({ length: 15 }, (_, i) => (
-                                <TextField
-                                    key={i}
-                                    label={`Item ${i + 1}`}
-                                    type="number"
-                                    size="small"
-                                    required
-                                    inputProps={{ min: 1, max: 4, step: 0.5 }}
-                                    value={formData[`score_${i}`] ?? ''}
-                                    onChange={(e) => handleInputChange(`score_${i}`, e.target.value === '' ? '' : Number(e.target.value))}
-                                />
-                            ))}
+                    <Stack spacing={4}>
+                        {/* Aviso Informativo */}
+                        <Alert severity="info" sx={{ borderRadius: 2, border: '1px solid #bfdbfe', bgcolor: '#eff6ff', '& .MuiAlert-icon': { color: '#3b82f6' } }}>
+                            <Typography variant="body2" sx={{ color: '#1e3a8a', fontWeight: 500, lineHeight: 1.6 }}>
+                                A plataforma realiza apenas o registro e cálculo da pontuação do CARS. A aplicação, interpretação clínica e conclusão diagnóstica devem ser feitas por profissional habilitado, com base no material original, anamnese, observação clínica e demais instrumentos utilizados.
+                            </Typography>
+                        </Alert>
+
+                        {/* Título e Prévia */}
+                        <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ pb: 1, borderBottom: '1px solid', borderColor: 'divider' }}>
+                            <Typography variant="subtitle1" fontWeight={700} color="text.primary">
+                                Itens de Avaliação (1 a 15)
+                            </Typography>
+                            <Chip
+                                label={`Soma Prévia: ${carsPreviewSum} / 60`}
+                                color="primary"
+                                variant="outlined"
+                                sx={{ fontWeight: 700, borderRadius: 2 }}
+                            />
                         </Box>
+
+                        {/* Itens do CARS */}
+                        <Stack spacing={2.5}>
+                            {carsItems.map((itemTitle, index) => {
+                                const fieldName = `score_${index}`;
+                                const currentValue = formData[fieldName] ?? 1;
+
+                                return (
+                                    <Paper
+                                        key={index}
+                                        variant="outlined"
+                                        sx={{
+                                            p: 2.5,
+                                            borderRadius: 3,
+                                            bgcolor: currentValue > 1 ? 'rgba(59, 130, 246, 0.02)' : 'background.paper',
+                                            borderColor: currentValue > 1 ? 'primary.light' : 'divider',
+                                            transition: 'all 0.2s',
+                                            '&:hover': {
+                                                borderColor: 'primary.main',
+                                                boxShadow: '0 4px 12px rgba(0,0,0,0.02)'
+                                            }
+                                        }}
+                                    >
+                                        <Stack spacing={2}>
+                                            <Typography variant="body1" fontWeight={700} color="text.primary">
+                                                Item {String(index + 1).padStart(2, '0')} - {itemTitle}
+                                            </Typography>
+
+                                            <Stack direction={{ xs: 'column', md: 'row' }} alignItems={{ xs: 'flex-start', md: 'center' }} gap={2}>
+                                                {/* Seletores rápidos de pontuação */}
+                                                <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
+                                                    {carsScores.map((scoreValue) => {
+                                                        const isSelected = currentValue === scoreValue;
+                                                        return (
+                                                            <Button
+                                                                key={scoreValue}
+                                                                variant={isSelected ? "contained" : "outlined"}
+                                                                size="small"
+                                                                onClick={() => handleInputChange(fieldName, scoreValue)}
+                                                                sx={{
+                                                                    minWidth: '48px',
+                                                                    borderRadius: 2,
+                                                                    textTransform: 'none',
+                                                                    fontWeight: isSelected ? 700 : 500,
+                                                                    px: 1.5,
+                                                                    py: 0.5
+                                                                }}
+                                                            >
+                                                                {scoreValue.toFixed(1)}
+                                                            </Button>
+                                                        );
+                                                    })}
+                                                </Stack>
+                                                <Chip
+                                                    label={getCarsScoreLabel(currentValue)}
+                                                    color={currentValue > 1 ? "primary" : "default"}
+                                                    variant="outlined"
+                                                    size="small"
+                                                    sx={{
+                                                        fontWeight: 600,
+                                                        borderRadius: 1.5,
+                                                        borderColor: currentValue > 1 ? 'primary.main' : 'divider',
+                                                        bgcolor: currentValue > 1 ? 'rgba(59, 130, 246, 0.04)' : 'transparent'
+                                                    }}
+                                                />
+                                            </Stack>
+                                        </Stack>
+                                    </Paper>
+                                );
+                            })}
+                        </Stack>
                     </Stack>
                 );
+            }
             case 'snap':
                 return (
                     <Stack spacing={3}>
@@ -845,8 +961,8 @@ export default function TestRunnerPage() {
                     <TestResultDisplay
                         testName={testDef.name}
                         resultData={result}
-                        isSaved={type === 'ata' && !isAnonymous ? true : isSaved}
-                        isSaving={type === 'ata' && !isAnonymous ? false : isSaving}
+                        isSaved={(type === 'ata' || type === 'cars') && !isAnonymous ? true : isSaved}
+                        isSaving={(type === 'ata' || type === 'cars') && !isAnonymous ? false : isSaving}
                         hasPatient={!!selectedPatient}
                         onNewTest={handleNewTest}
                     />
