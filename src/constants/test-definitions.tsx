@@ -1,4 +1,4 @@
-import { Brain, Palette, Target, Activity, MessageCircle, BookOpen, Baby } from 'lucide-react';
+import { Brain, Palette, Target, Activity, MessageCircle, BookOpen, Baby, User } from 'lucide-react';
 
 export interface TestDefinition {
     id: string;
@@ -139,5 +139,22 @@ export const TEST_DEFINITIONS: Record<string, TestDefinition> = {
         color: '#8B5CF6',
         timeEstimate: '5-10 min',
         targetAge: '4-11 anos'
+    },
+    'aq10-adult': {
+        id: 'aq10-adult',
+        name: 'AQ-10 Adult',
+        fullName: 'Quociente de Espectro Autista (AQ-10) - Versão Adulto',
+        description: 'Questionário de triagem rápida de traços autísticos para adultos (16 anos ou mais), respondido por autoaplicação ou informante.',
+        instructions: [
+            'O questionário pode ser preenchido pelo próprio paciente (Autoaplicação) ou por um informante.',
+            'Para cada comportamento abaixo, selecione a opção de frequência observada.',
+            'Selecione Concordo Plenamente/Parcialmente ou Discordo Plenamente/Parcialmente.',
+            'Informe o informante e a idade do paciente (deve ser igual ou superior a 16 anos).',
+            'Preencha as observações clínicas (opcional) e salve para obter o resultado.'
+        ],
+        icon: User,
+        color: '#6366F1',
+        timeEstimate: '5-10 min',
+        targetAge: '16+ anos'
     }
 };

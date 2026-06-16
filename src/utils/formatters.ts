@@ -45,7 +45,8 @@ export const formatTestType = (type: TestType): string => {
     SNAP: 'SNAP - Escala de TDAH',
     Token: 'Token - Teste de Compreensão',
     TDE2: 'TDE2 - Teste de Desempenho Escolar',
-    'AQ-10-Child': 'AQ-10 - Rastreamento de Autismo Infantil (4 a 11 anos)'
+    'AQ-10-Child': 'AQ-10 - Rastreamento de Autismo Infantil (4 a 11 anos)',
+    'AQ-10-Adult': 'AQ-10 - Rastreamento de Autismo Adulto (16+ anos)'
   };
   return typeMap[type] || type;
 };

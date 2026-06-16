@@ -44,6 +44,7 @@ import type { Patient } from '@/types/schema';
 import { TEST_DEFINITIONS } from '@/constants/test-definitions';
 import { SNAP_QUESTIONS } from '@/constants/snap-questions';
 import { AQ10_CHILD_QUESTIONS } from '@/constants/aq10-child-questions';
+import { AQ10_ADULT_QUESTIONS } from '@/constants/aq10-adult-questions';
 
 export default function TestRunnerPage() {
     const { type } = useParams<{ type: string }>();
@@ -131,7 +132,7 @@ export default function TestRunnerPage() {
         e.preventDefault();
         setValidationError(null);
         if (type) {
-            if (type === 'ata' || type === 'cars' || type === 'aq10-child') {
+            if (type === 'ata' || type === 'cars' || type === 'aq10-child' || type === 'aq10-adult') {
                 if (!isAnonymous && !selectedPatient) {
                     setValidationError('Por favor, selecione um paciente cadastrado ou ative a opção de Teste Anônimo.');
                     return;
@@ -218,6 +219,40 @@ export default function TestRunnerPage() {
                     responses,
                     clinicalObservations: formData.clinicalObservations || ''
                 };
+            } else if (type === 'aq10-adult') {
+                if (Number(age) < 16) {
+                    setValidationError('O AQ-10 Versão Adulto é validado apenas para indivíduos a partir de 16 anos.');
+                    return;
+                }
+                const informant = formData.informant || 'Autoaplicação';
+                if (!informant) {
+                    setValidationError('Por favor, selecione o informante da aplicação.');
+                    return;
+                }
+                const missingQuestions: number[] = [];
+                const responses = Array.from({ length: 10 }, (_, i) => {
+                    const questionNum = i + 1;
+                    const val = formData[`question_${questionNum}`];
+                    if (val === undefined || val === null) {
+                        missingQuestions.push(questionNum);
+                    }
+                    return {
+                        questionNumber: questionNum,
+                        value: val
+                    };
+                });
+                if (missingQuestions.length > 0) {
+                    setValidationError(`Por favor, responda todas as questões. Questões pendentes: ${missingQuestions.join(', ')}`);
+                    return;
+                }
+                data = {
+                    patientId: isAnonymous ? 'anonymous' : (selectedPatient?.id || ''),
+                    applicationDate: formData.applicationDate || new Date().toISOString().split('T')[0],
+                    informant: informant,
+                    ageInYears: Number(age),
+                    responses,
+                    clinicalObservations: formData.clinicalObservations || ''
+                };
             } else if (type === 'token') {
                 data = {
                     name: patientName,
@@ -259,7 +294,7 @@ export default function TestRunnerPage() {
             processTest({ testType: type, data }, {
                 onSuccess: (testResult) => {
                     setShowForm(false);
-                    if (type !== 'ata' && type !== 'cars' && type !== 'aq10-child' && selectedPatient && user?.id) {
+                    if (type !== 'ata' && type !== 'cars' && type !== 'aq10-child' && type !== 'aq10-adult' && selectedPatient && user?.id) {
                         addProtocol({
                             patientId: selectedPatient.id,
                             accountId: user.id,
@@ -791,6 +826,159 @@ export default function TestRunnerPage() {
                     </Stack>
                 );
             }
+            case 'aq10-adult': {
+                const aq10Options = [
+                    { val: 'concordo_plenamente', label: 'Concordo plenamente' },
+                    { val: 'concordo_parcialmente', label: 'Concordo parcialmente' },
+                    { val: 'discordo_parcialmente', label: 'Discordo parcialmente' },
+                    { val: 'discordo_plenamente', label: 'Discordo plenamente' }
+                ];
+
+                const aq10AnsweredCount = Array.from({ length: 10 }, (_, i) => {
+                    return formData[`question_${i + 1}`] !== undefined;
+                }).filter(Boolean).length;
+
+                return (
+                    <Stack spacing={4}>
+                        {/* Aviso Informativo */}
+                        <Alert severity="info" sx={{ borderRadius: 2, border: '1px solid #c7d2fe', bgcolor: '#e0e7ff', '& .MuiAlert-icon': { color: '#6366f1' } }}>
+                            <Typography variant="body2" sx={{ color: '#312e81', fontWeight: 500, lineHeight: 1.6 }}>
+                                O AQ-10 Versão Adulto é um questionário rápido de triagem para autismo em indivíduos com 16 anos ou mais. Pode ser preenchido por autoaplicação ou por um informante que conheça bem o paciente (cônjuge, pais, etc.).
+                            </Typography>
+                        </Alert>
+
+                        {/* Metadados da Aplicação */}
+                        <Box display="grid" gridTemplateColumns={{ xs: '1fr', sm: '1fr 1fr' }} gap={2}>
+                            <TextField
+                                label="Data da Aplicação"
+                                type="date"
+                                required
+                                value={formData.applicationDate ?? new Date().toISOString().split('T')[0]}
+                                onChange={(e) => handleInputChange('applicationDate', e.target.value)}
+                                slotProps={{
+                                    inputLabel: { shrink: true }
+                                }}
+                            />
+                            <TextField
+                                select
+                                label="Informante"
+                                required
+                                value={formData.informant ?? 'Autoaplicação'}
+                                onChange={(e) => handleInputChange('informant', e.target.value)}
+                                fullWidth
+                            >
+                                <MenuItem value="Autoaplicação">Autoaplicação (Próprio Paciente)</MenuItem>
+                                <MenuItem value="Cônjuge">Cônjuge</MenuItem>
+                                <MenuItem value="Mãe">Mãe</MenuItem>
+                                <MenuItem value="Pai">Pai</MenuItem>
+                                <MenuItem value="Responsável">Responsável</MenuItem>
+                                <MenuItem value="Outro">Outro</MenuItem>
+                            </TextField>
+                        </Box>
+
+                        <TextField
+                            label="Observações Clínicas (Opcional)"
+                            multiline
+                            rows={3}
+                            fullWidth
+                            value={formData.clinicalObservations ?? ''}
+                            onChange={(e) => handleInputChange('clinicalObservations', e.target.value)}
+                            placeholder="Adicione observações clínicas sobre a aplicação ou comportamento do paciente..."
+                        />
+
+                        {/* Lista de Questões com Prévia */}
+                        <Stack spacing={2}>
+                            <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ pb: 1, borderBottom: '1px solid', borderColor: 'divider' }}>
+                                <Typography variant="subtitle1" fontWeight={700} color="text.primary">
+                                    Itens do Questionário
+                                </Typography>
+                                <Chip
+                                    label={`Respondidas: ${aq10AnsweredCount} / 10`}
+                                    color={aq10AnsweredCount === 10 ? "success" : "primary"}
+                                    variant="outlined"
+                                    sx={{ fontWeight: 700, borderRadius: 2 }}
+                                />
+                            </Box>
+
+                            <Stack spacing={2.5}>
+                                {AQ10_ADULT_QUESTIONS.map((questionText, index) => {
+                                    const questionNum = index + 1;
+                                    const fieldName = `question_${questionNum}`;
+                                    const currentValue = formData[fieldName];
+
+                                    return (
+                                        <Paper
+                                            key={questionNum}
+                                            variant="outlined"
+                                            sx={{
+                                                p: 2.5,
+                                                borderRadius: 3,
+                                                bgcolor: currentValue !== undefined ? 'rgba(99, 102, 241, 0.02)' : 'background.paper',
+                                                borderColor: currentValue !== undefined ? 'rgba(99, 102, 241, 0.3)' : 'divider',
+                                                transition: 'all 0.2s',
+                                                '&:hover': {
+                                                    borderColor: '#6366F1',
+                                                    boxShadow: '0 4px 12px rgba(0,0,0,0.02)'
+                                                }
+                                            }}
+                                        >
+                                            <Stack spacing={2}>
+                                                <Typography variant="body1" fontWeight={700} color="text.primary">
+                                                    {questionText}
+                                                </Typography>
+
+                                                <Box display="grid" gridTemplateColumns={{ xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr 1fr' }} gap={2}>
+                                                    {aq10Options.map((opt) => {
+                                                        const isSelected = currentValue === opt.val;
+                                                        return (
+                                                            <Box
+                                                                key={opt.val}
+                                                                onClick={() => handleInputChange(fieldName, opt.val)}
+                                                                sx={{
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    px: 2,
+                                                                    py: 1,
+                                                                    borderRadius: 2,
+                                                                    border: '1px solid',
+                                                                    borderColor: isSelected ? '#6366F1' : 'rgba(0, 0, 0, 0.06)',
+                                                                    bgcolor: isSelected ? 'rgba(99, 102, 241, 0.08)' : 'transparent',
+                                                                    cursor: 'pointer',
+                                                                    transition: 'all 0.15s',
+                                                                    '&:hover': {
+                                                                        bgcolor: isSelected ? undefined : 'action.hover',
+                                                                        borderColor: isSelected ? '#6366F1' : 'grey.400'
+                                                                    }
+                                                                }}
+                                                            >
+                                                                <Radio
+                                                                    checked={isSelected}
+                                                                    size="small"
+                                                                    sx={{
+                                                                        p: 0.5,
+                                                                        mr: 1,
+                                                                        color: isSelected ? '#6366F1' : undefined,
+                                                                        '&.Mui-checked': {
+                                                                            color: '#6366F1'
+                                                                        }
+                                                                    }}
+                                                                />
+                                                                <Typography variant="body2" fontWeight={isSelected ? 600 : 400}>
+                                                                    {opt.label}
+                                                                </Typography>
+                                                            </Box>
+                                                        );
+                                                    })}
+                                                </Box>
+                                            </Stack>
+                                        </Paper>
+                                    );
+                                })}
+                            </Stack>
+                        </Stack>
+                    </Stack>
+                );
+            }
             case 'token':
                 return (
                     <Stack spacing={2}>
@@ -1147,8 +1335,8 @@ export default function TestRunnerPage() {
                     <TestResultDisplay
                         testName={testDef.name}
                         resultData={result}
-                        isSaved={(type === 'ata' || type === 'cars' || type === 'aq10-child') && !isAnonymous ? true : isSaved}
-                        isSaving={(type === 'ata' || type === 'cars' || type === 'aq10-child') && !isAnonymous ? false : isSaving}
+                        isSaved={(type === 'ata' || type === 'cars' || type === 'aq10-child' || type === 'aq10-adult') && !isAnonymous ? true : isSaved}
+                        isSaving={(type === 'ata' || type === 'cars' || type === 'aq10-child' || type === 'aq10-adult') && !isAnonymous ? false : isSaving}
                         hasPatient={!!selectedPatient}
                         onNewTest={handleNewTest}
                     />

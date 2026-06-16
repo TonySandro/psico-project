@@ -193,6 +193,71 @@ const AQ10ChildResultView = ({ data }: { data: any }) => {
     );
 };
 
+const AQ10AdultResultView = ({ data }: { data: any }) => {
+    const isAboveCutoff = data.result === 'ABOVE_CUTOFF';
+    const resultText = isAboveCutoff ? 'Acima do ponto de corte' : 'Abaixo do ponto de corte';
+    
+    return (
+        <Grid container spacing={2.5}>
+            <Grid size={{ xs: 12 }}>
+                <Typography variant="subtitle1" sx={{ color: '#334155', fontWeight: 700, mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box component="span" sx={{ width: 4, height: 16, bgcolor: '#6366F1', borderRadius: 1 }} />
+                    Resultado da Avaliação AQ-10 Adulto
+                </Typography>
+            </Grid>
+            
+            <Grid size={{ xs: 12, sm: 4 }}>
+                <LabelValue label="Pontuação Total" value={`${data.totalScore ?? 0} / ${data.maxScore ?? 10}`} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 4 }}>
+                <LabelValue label="Ponto de Corte" value={data.cutoff ?? 6} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 4 }}>
+                <LabelValue 
+                    label="Resultado" 
+                    value={
+                        <Box component="span" sx={{ color: isAboveCutoff ? '#ef4444' : '#10b981', fontWeight: 700 }}>
+                            {resultText}
+                        </Box>
+                    } 
+                />
+            </Grid>
+            
+            <Grid size={{ xs: 12, sm: 6 }}>
+                <LabelValue label="Informante" value={data.informant || '-'} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+                <LabelValue label="Idade de Aplicação" value={data.ageInYears !== undefined ? `${data.ageInYears} anos` : '-'} />
+            </Grid>
+            
+            {data.clinicalObservations && (
+                <Grid size={{ xs: 12 }}>
+                    <LabelValue label="Observações Clínicas" value={data.clinicalObservations} />
+                </Grid>
+            )}
+            
+            {data.interpretation && (
+                <Grid size={{ xs: 12 }}>
+                    <LabelValue label="Interpretação" value={data.interpretation} />
+                </Grid>
+            )}
+
+            {data.reportText && (
+                <Grid size={{ xs: 12 }}>
+                    <LabelValue 
+                        label="Texto para Relatório" 
+                        value={
+                            <Typography variant="body2" sx={{ fontStyle: 'italic', color: '#475569', whiteSpace: 'pre-wrap', fontWeight: 500, lineHeight: 1.6 }}>
+                                {data.reportText}
+                            </Typography>
+                        } 
+                    />
+                </Grid>
+            )}
+        </Grid>
+    );
+};
+
 const SnapResultView = ({ data }: { data: any }) => {
     return (
         <Grid container spacing={2.5}>
@@ -285,6 +350,10 @@ export default function TestResultDialog({ open, onClose, protocol }: TestResult
             case 'AQ10-Child':
             case 'AQ10_Child':
                 return <AQ10ChildResultView data={protocol.data} />;
+            case 'AQ-10-Adult':
+            case 'AQ10-Adult':
+            case 'AQ10_Adult':
+                return <AQ10AdultResultView data={protocol.data} />;
             case 'SNAP':
                 return <SnapResultView data={protocol.data} />;
             case 'CARS':
