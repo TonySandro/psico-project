@@ -43,6 +43,7 @@ import { useAuthStore } from '@/stores/authStore';
 import type { Patient } from '@/types/schema';
 import { TEST_DEFINITIONS } from '@/constants/test-definitions';
 import { SNAP_QUESTIONS } from '@/constants/snap-questions';
+import { AQ10_CHILD_QUESTIONS } from '@/constants/aq10-child-questions';
 
 export default function TestRunnerPage() {
     const { type } = useParams<{ type: string }>();
@@ -130,7 +131,7 @@ export default function TestRunnerPage() {
         e.preventDefault();
         setValidationError(null);
         if (type) {
-            if (type === 'ata' || type === 'cars') {
+            if (type === 'ata' || type === 'cars' || type === 'aq10-child') {
                 if (!isAnonymous && !selectedPatient) {
                     setValidationError('Por favor, selecione um paciente cadastrado ou ative a opção de Teste Anônimo.');
                     return;
@@ -184,6 +185,39 @@ export default function TestRunnerPage() {
                     age: Number(age),
                     answers
                 };
+            } else if (type === 'aq10-child') {
+                if (Number(age) < 4 || Number(age) > 11) {
+                    setValidationError('O AQ-10 Versão Infantil é validado apenas para crianças de 4 a 11 anos.');
+                    return;
+                }
+                if (!formData.informant) {
+                    setValidationError('Por favor, selecione o informante da aplicação.');
+                    return;
+                }
+                const missingQuestions: number[] = [];
+                const responses = Array.from({ length: 10 }, (_, i) => {
+                    const questionNum = i + 1;
+                    const val = formData[`question_${questionNum}`];
+                    if (val === undefined || val === null) {
+                        missingQuestions.push(questionNum);
+                    }
+                    return {
+                        questionNumber: questionNum,
+                        value: val
+                    };
+                });
+                if (missingQuestions.length > 0) {
+                    setValidationError(`Por favor, responda todas as questões. Questões pendentes: ${missingQuestions.join(', ')}`);
+                    return;
+                }
+                data = {
+                    patientId: isAnonymous ? 'anonymous' : (selectedPatient?.id || ''),
+                    applicationDate: formData.applicationDate || new Date().toISOString().split('T')[0],
+                    informant: formData.informant || '',
+                    ageInYears: Number(age),
+                    responses,
+                    clinicalObservations: formData.clinicalObservations || ''
+                };
             } else if (type === 'token') {
                 data = {
                     name: patientName,
@@ -225,7 +259,7 @@ export default function TestRunnerPage() {
             processTest({ testType: type, data }, {
                 onSuccess: (testResult) => {
                     setShowForm(false);
-                    if (type !== 'ata' && type !== 'cars' && selectedPatient && user?.id) {
+                    if (type !== 'ata' && type !== 'cars' && type !== 'aq10-child' && selectedPatient && user?.id) {
                         addProtocol({
                             patientId: selectedPatient.id,
                             accountId: user.id,
@@ -605,6 +639,158 @@ export default function TestRunnerPage() {
                         </TableContainer>
                     </Stack>
                 );
+            case 'aq10-child': {
+                const aq10Options = [
+                    { val: 'concordo_totalmente', label: 'Concordo totalmente' },
+                    { val: 'concordo_em_parte', label: 'Concordo em parte' },
+                    { val: 'discordo_em_parte', label: 'Discordo em parte' },
+                    { val: 'discordo_totalmente', label: 'Discordo totalmente' }
+                ];
+
+                const aq10AnsweredCount = Array.from({ length: 10 }, (_, i) => {
+                    return formData[`question_${i + 1}`] !== undefined;
+                }).filter(Boolean).length;
+
+                return (
+                    <Stack spacing={4}>
+                        {/* Aviso Informativo */}
+                        <Alert severity="info" sx={{ borderRadius: 2, border: '1px solid #bfdbfe', bgcolor: '#eff6ff', '& .MuiAlert-icon': { color: '#3b82f6' } }}>
+                            <Typography variant="body2" sx={{ color: '#1e3a8a', fontWeight: 500, lineHeight: 1.6 }}>
+                                O AQ-10 Versão Infantil é um questionário rápido de triagem para autismo em crianças de 4 a 11 anos. Deve ser respondido pelo pai, mãe ou outro responsável que conheça bem o comportamento da criança.
+                            </Typography>
+                        </Alert>
+
+                        {/* Metadados da Aplicação */}
+                        <Box display="grid" gridTemplateColumns={{ xs: '1fr', sm: '1fr 1fr' }} gap={2}>
+                            <TextField
+                                label="Data da Aplicação"
+                                type="date"
+                                required
+                                value={formData.applicationDate ?? new Date().toISOString().split('T')[0]}
+                                onChange={(e) => handleInputChange('applicationDate', e.target.value)}
+                                slotProps={{
+                                    inputLabel: { shrink: true }
+                                }}
+                            />
+                            <TextField
+                                select
+                                label="Informante"
+                                required
+                                value={formData.informant ?? ''}
+                                onChange={(e) => handleInputChange('informant', e.target.value)}
+                                fullWidth
+                            >
+                                <MenuItem value="Mãe">Mãe</MenuItem>
+                                <MenuItem value="Pai">Pai</MenuItem>
+                                <MenuItem value="Professor">Professor(a)</MenuItem>
+                                <MenuItem value="Responsável">Responsável</MenuItem>
+                                <MenuItem value="Outro">Outro</MenuItem>
+                            </TextField>
+                        </Box>
+
+                        <TextField
+                            label="Observações Clínicas (Opcional)"
+                            multiline
+                            rows={3}
+                            fullWidth
+                            value={formData.clinicalObservations ?? ''}
+                            onChange={(e) => handleInputChange('clinicalObservations', e.target.value)}
+                            placeholder="Adicione observações clínicas sobre a aplicação ou comportamento do paciente..."
+                        />
+
+                        {/* Lista de Questões com Prévia */}
+                        <Stack spacing={2}>
+                            <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ pb: 1, borderBottom: '1px solid', borderColor: 'divider' }}>
+                                <Typography variant="subtitle1" fontWeight={700} color="text.primary">
+                                    Itens do Questionário
+                                </Typography>
+                                <Chip
+                                    label={`Respondidas: ${aq10AnsweredCount} / 10`}
+                                    color={aq10AnsweredCount === 10 ? "success" : "primary"}
+                                    variant="outlined"
+                                    sx={{ fontWeight: 700, borderRadius: 2 }}
+                                />
+                            </Box>
+
+                            <Stack spacing={2.5}>
+                                {AQ10_CHILD_QUESTIONS.map((questionText, index) => {
+                                    const questionNum = index + 1;
+                                    const fieldName = `question_${questionNum}`;
+                                    const currentValue = formData[fieldName];
+
+                                    return (
+                                        <Paper
+                                            key={questionNum}
+                                            variant="outlined"
+                                            sx={{
+                                                p: 2.5,
+                                                borderRadius: 3,
+                                                bgcolor: currentValue !== undefined ? 'rgba(139, 92, 246, 0.02)' : 'background.paper',
+                                                borderColor: currentValue !== undefined ? 'rgba(139, 92, 246, 0.3)' : 'divider',
+                                                transition: 'all 0.2s',
+                                                '&:hover': {
+                                                    borderColor: '#8B5CF6',
+                                                    boxShadow: '0 4px 12px rgba(0,0,0,0.02)'
+                                                }
+                                            }}
+                                        >
+                                            <Stack spacing={2}>
+                                                <Typography variant="body1" fontWeight={700} color="text.primary">
+                                                    {questionText}
+                                                </Typography>
+
+                                                <Box display="grid" gridTemplateColumns={{ xs: '1fr', sm: '1fr 1fr', md: '1fr 1fr 1fr 1fr' }} gap={2}>
+                                                    {aq10Options.map((opt) => {
+                                                        const isSelected = currentValue === opt.val;
+                                                        return (
+                                                            <Box
+                                                                key={opt.val}
+                                                                onClick={() => handleInputChange(fieldName, opt.val)}
+                                                                sx={{
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    px: 2,
+                                                                    py: 1,
+                                                                    borderRadius: 2,
+                                                                    border: '1px solid',
+                                                                    borderColor: isSelected ? '#8B5CF6' : 'rgba(0, 0, 0, 0.06)',
+                                                                    bgcolor: isSelected ? 'rgba(139, 92, 246, 0.08)' : 'transparent',
+                                                                    cursor: 'pointer',
+                                                                    transition: 'all 0.15s',
+                                                                    '&:hover': {
+                                                                        bgcolor: isSelected ? undefined : 'action.hover',
+                                                                        borderColor: isSelected ? '#8B5CF6' : 'grey.400'
+                                                                    }
+                                                                }}
+                                                            >
+                                                                <Radio
+                                                                    checked={isSelected}
+                                                                    size="small"
+                                                                    sx={{
+                                                                        p: 0.5,
+                                                                        mr: 1,
+                                                                        color: isSelected ? '#8B5CF6' : undefined,
+                                                                        '&.Mui-checked': {
+                                                                            color: '#8B5CF6'
+                                                                        }
+                                                                    }}
+                                                                />
+                                                                <Typography variant="body2" fontWeight={isSelected ? 600 : 400}>
+                                                                    {opt.label}
+                                                                </Typography>
+                                                            </Box>
+                                                        );
+                                                    })}
+                                                </Box>
+                                            </Stack>
+                                        </Paper>
+                                    );
+                                })}
+                            </Stack>
+                        </Stack>
+                    </Stack>
+                );
+            }
             case 'token':
                 return (
                     <Stack spacing={2}>
@@ -961,8 +1147,8 @@ export default function TestRunnerPage() {
                     <TestResultDisplay
                         testName={testDef.name}
                         resultData={result}
-                        isSaved={(type === 'ata' || type === 'cars') && !isAnonymous ? true : isSaved}
-                        isSaving={(type === 'ata' || type === 'cars') && !isAnonymous ? false : isSaving}
+                        isSaved={(type === 'ata' || type === 'cars' || type === 'aq10-child') && !isAnonymous ? true : isSaved}
+                        isSaving={(type === 'ata' || type === 'cars' || type === 'aq10-child') && !isAnonymous ? false : isSaving}
                         hasPatient={!!selectedPatient}
                         onNewTest={handleNewTest}
                     />

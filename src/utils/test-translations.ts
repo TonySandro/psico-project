@@ -80,6 +80,13 @@ export const TEST_KEY_TRANSLATIONS: Record<string, string> = {
     erros: 'Erros',
     tempoTotalEmSegundos: 'Tempo Total (segundos)',
     resultados: 'Resultados',
+    cutoff: 'Ponto de Corte',
+    maxScore: 'Pontuação Máxima',
+    ageInYears: 'Idade de Aplicação',
+    informant: 'Informante',
+    applicationDate: 'Data de Aplicação',
+    clinicalObservations: 'Observações Clínicas',
+    reportText: 'Texto para Relatório',
 };
 
 export const TEST_VALUE_TRANSLATIONS: Record<string, string> = {
@@ -110,7 +117,7 @@ export const translateTestKey = (key: string): string => {
     return TEST_KEY_TRANSLATIONS[key] || key.replace(/([A-Z])/g, ' $1').trim();
 };
 
-export const translateTestValue = (value: any): string => {
+export const translateTestValue = (value: unknown): string => {
     if (typeof value !== 'string') return String(value);
-    return TEST_VALUE_TRANSLATIONS[value] || value;
+    return TEST_VALUE_TRANSLATIONS[value as string] || (value as string);
 };

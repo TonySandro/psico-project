@@ -125,7 +125,7 @@ export default function PrivacyPolicyPage() {
             <Typography variant="body2" component="div">
               <ol>
                 <li><strong>Dados do Profissional (Controlador):</strong> Nome completo, e-mail, senha criptografada, telefone, registro profissional (ex: CBO, CPF ou CNPJ) e dados de cobrança.</li>
-                <li><strong>Dados do Paciente (inseridos pelo Profissional):</strong> Nome, data de nascimento, nome dos responsáveis (para menores), histórico escolar, histórico de saúde familiar, queixas clínicas, anamneses estruturadas, respostas a testes (como CARS, Stroop, ATA, SNAP, Token Test) e laudos de evolução.</li>
+                <li><strong>Dados do Paciente (inseridos pelo Profissional):</strong> Nome, data de nascimento, nome dos responsáveis (para menores), histórico escolar, histórico de saúde familiar, queixas clínicas, anamneses estruturadas, respostas a testes (como CARS, Stroop, ATA, SNAP, Token Test, AQ-10) e laudos de evolução.</li>
               </ol>
             </Typography>
           </Box>

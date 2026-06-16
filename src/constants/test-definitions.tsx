@@ -1,4 +1,4 @@
-import { Brain, Palette, Target, Activity, MessageCircle, BookOpen } from 'lucide-react';
+import { Brain, Palette, Target, Activity, MessageCircle, BookOpen, Baby } from 'lucide-react';
 
 export interface TestDefinition {
     id: string;
@@ -6,6 +6,7 @@ export interface TestDefinition {
     fullName: string;
     description: string;
     instructions: string[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     icon: any;
     color: string;
     timeEstimate: string;
@@ -122,4 +123,21 @@ export const TEST_DEFINITIONS: Record<string, TestDefinition> = {
         timeEstimate: '10-20 min',
         targetAge: '1º ao 9º ano'
     },
+    'aq10-child': {
+        id: 'aq10-child',
+        name: 'AQ-10 Child',
+        fullName: 'Quociente de Espectro Autista (AQ-10) - Versão Infantil',
+        description: 'Questionário de triagem rápida de traços autísticos para crianças de 4 a 11 anos, preenchido pelos pais ou responsáveis.',
+        instructions: [
+            'O questionário deve ser preenchido por um informante (pais ou responsáveis).',
+            'Para cada comportamento abaixo, selecione a opção de frequência observada.',
+            'Selecione Concordo Totalmente/Em parte ou Discordo Totalmente/Em parte.',
+            'Informe o informante e a idade da criança (deve ser entre 4 e 11 anos).',
+            'Preencha as observações clínicas (opcional) e salve para obter o resultado.'
+        ],
+        icon: Baby,
+        color: '#8B5CF6',
+        timeEstimate: '5-10 min',
+        targetAge: '4-11 anos'
+    }
 };

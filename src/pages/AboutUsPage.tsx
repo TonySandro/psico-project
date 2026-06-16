@@ -196,7 +196,7 @@ export default function AboutUsPage() {
                         Psicopedagoga e Neuropsicopedagoga com mais de 20 anos de atuação clínica no diagnóstico, 
                         intervenção e assessoria de dificuldades e transtornos de aprendizagem. Ana Paula é a mente 
                         por trás da validação científica do NeuroPPAvalia, garantindo que cada ferramenta de triagem, 
-                        protocolo de teste (como CARS, Stroop, ATA, SNAP) e relatório digital atenda exatamente aos 
+                        protocolo de teste (como CARS, Stroop, ATA, SNAP, AQ-10) e relatório digital atenda exatamente aos 
                         mais altos padrões exigidos pela prática profissional e ética clínica.
                       </Typography>
                     </Stack>

@@ -44,7 +44,8 @@ export const formatTestType = (type: TestType): string => {
     ATA: 'ATA - Escala de Avaliação de Traços Autísticos',
     SNAP: 'SNAP - Escala de TDAH',
     Token: 'Token - Teste de Compreensão',
-    TDE2: 'TDE2 - Teste de Desempenho Escolar'
+    TDE2: 'TDE2 - Teste de Desempenho Escolar',
+    'AQ-10-Child': 'AQ-10 - Rastreamento de Autismo Infantil (4 a 11 anos)'
   };
   return typeMap[type] || type;
 };
