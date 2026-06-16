@@ -35,7 +35,8 @@ const schoolYears: SchoolYear[] = [
   '7º Ano',
   '8º Ano',
   '9º Ano',
-  'Ensino Médio'
+  'Ensino Médio',
+  'Adulto'
 ];
 
 const genders: Gender[] = ['Masculino', 'Feminino'];
