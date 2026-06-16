@@ -45,6 +45,17 @@ import { TEST_DEFINITIONS } from '@/constants/test-definitions';
 import { SNAP_QUESTIONS } from '@/constants/snap-questions';
 import { AQ10_CHILD_QUESTIONS } from '@/constants/aq10-child-questions';
 import { AQ10_ADULT_QUESTIONS } from '@/constants/aq10-adult-questions';
+import { MCHAT_QUESTIONS } from '@/constants/mchat-questions';
+
+const calculateAgeInMonths = (dateOfBirth: string) => {
+    const dob = new Date(dateOfBirth);
+    const today = new Date();
+    let months = (today.getFullYear() - dob.getFullYear()) * 12 + today.getMonth() - dob.getMonth();
+    if (today.getDate() < dob.getDate()) {
+        months--;
+    }
+    return Math.max(0, months);
+};
 
 export default function TestRunnerPage() {
     const { type } = useParams<{ type: string }>();
@@ -105,6 +116,16 @@ export default function TestRunnerPage() {
         }
     }, [resultTde2]);
 
+    useEffect(() => {
+        if (selectedPatient) {
+            if (type === 'm-chat' && selectedPatient.dateOfBirth) {
+                setAge(calculateAgeInMonths(selectedPatient.dateOfBirth).toString());
+            } else {
+                setAge(selectedPatient.age.toString());
+            }
+        }
+    }, [type, selectedPatient]);
+
     if (!testDef) {
         return <Navigate to="/app/tests" />;
     }
@@ -116,7 +137,11 @@ export default function TestRunnerPage() {
         setSelectedPatient(newValue);
         if (newValue) {
             setPatientName(newValue.name);
-            setAge(newValue.age.toString());
+            if (type === 'm-chat' && newValue.dateOfBirth) {
+                setAge(calculateAgeInMonths(newValue.dateOfBirth).toString());
+            } else {
+                setAge(newValue.age.toString());
+            }
         } else {
             setPatientName('');
             setAge('');
@@ -132,13 +157,13 @@ export default function TestRunnerPage() {
         e.preventDefault();
         setValidationError(null);
         if (type) {
-            if (type === 'ata' || type === 'cars' || type === 'aq10-child' || type === 'aq10-adult') {
+            if (type === 'ata' || type === 'cars' || type === 'aq10-child' || type === 'aq10-adult' || type === 'm-chat') {
                 if (!isAnonymous && !selectedPatient) {
                     setValidationError('Por favor, selecione um paciente cadastrado ou ative a opção de Teste Anônimo.');
                     return;
                 }
                 if (!age) {
-                    setValidationError('A idade do paciente é obrigatória.');
+                    setValidationError(type === 'm-chat' ? 'A idade do paciente em meses é obrigatória.' : 'A idade do paciente é obrigatória.');
                     return;
                 }
             }
@@ -253,6 +278,40 @@ export default function TestRunnerPage() {
                     responses,
                     clinicalObservations: formData.clinicalObservations || ''
                 };
+            } else if (type === 'm-chat') {
+                const ageMonths = Number(age);
+                if (ageMonths < 16 || ageMonths > 30) {
+                    setValidationError('O M-CHAT-R é validado apenas para crianças entre 16 e 30 meses.');
+                    return;
+                }
+                if (!formData.informant) {
+                    setValidationError('Por favor, selecione o informante da aplicação.');
+                    return;
+                }
+                const missingQuestions: number[] = [];
+                const responses = Array.from({ length: 20 }, (_, i) => {
+                    const questionNum = i + 1;
+                    const val = formData[`question_${questionNum}`];
+                    if (val === undefined || val === null) {
+                        missingQuestions.push(questionNum);
+                    }
+                    return {
+                        questionNumber: questionNum,
+                        value: val // boolean (true or false)
+                    };
+                });
+                if (missingQuestions.length > 0) {
+                    setValidationError(`Por favor, responda todas as questões. Questões pendentes: ${missingQuestions.join(', ')}`);
+                    return;
+                }
+                data = {
+                    patientId: isAnonymous ? 'anonymous' : (selectedPatient?.id || ''),
+                    applicationDate: formData.applicationDate || new Date().toISOString().split('T')[0],
+                    informant: formData.informant,
+                    ageInMonths: ageMonths,
+                    responses,
+                    clinicalObservations: formData.clinicalObservations || ''
+                };
             } else if (type === 'token') {
                 data = {
                     name: patientName,
@@ -294,7 +353,7 @@ export default function TestRunnerPage() {
             processTest({ testType: type, data }, {
                 onSuccess: (testResult) => {
                     setShowForm(false);
-                    if (type !== 'ata' && type !== 'cars' && type !== 'aq10-child' && type !== 'aq10-adult' && selectedPatient && user?.id) {
+                    if (type !== 'ata' && type !== 'cars' && type !== 'aq10-child' && type !== 'aq10-adult' && type !== 'm-chat' && selectedPatient && user?.id) {
                         addProtocol({
                             patientId: selectedPatient.id,
                             accountId: user.id,
@@ -979,6 +1038,155 @@ export default function TestRunnerPage() {
                     </Stack>
                 );
             }
+            case 'm-chat': {
+                const mchatOptions = [
+                    { val: true, label: 'Sim' },
+                    { val: false, label: 'Não' }
+                ];
+
+                const mchatAnsweredCount = Array.from({ length: 20 }, (_, i) => {
+                    return formData[`question_${i + 1}`] !== undefined;
+                }).filter(Boolean).length;
+
+                return (
+                    <Stack spacing={4}>
+                        {/* Aviso Informativo */}
+                        <Alert severity="info" sx={{ borderRadius: 2, border: '1px solid #fbcfe8', bgcolor: '#fdf2f8', '& .MuiAlert-icon': { color: '#ec4899' } }}>
+                            <Typography variant="body2" sx={{ color: '#9d174d', fontWeight: 500, lineHeight: 1.6 }}>
+                                O M-CHAT-R é uma ferramenta de triagem para risco de TEA em crianças de 16 a 30 meses. Deve ser respondido por um informante (pais ou responsáveis) considerando o comportamento habitual da criança.
+                            </Typography>
+                        </Alert>
+
+                        {/* Metadados da Aplicação */}
+                        <Box display="grid" gridTemplateColumns={{ xs: '1fr', sm: '1fr 1fr' }} gap={2}>
+                            <TextField
+                                label="Data da Aplicação"
+                                type="date"
+                                required
+                                value={formData.applicationDate ?? new Date().toISOString().split('T')[0]}
+                                onChange={(e) => handleInputChange('applicationDate', e.target.value)}
+                                slotProps={{
+                                    inputLabel: { shrink: true }
+                                }}
+                            />
+                            <TextField
+                                select
+                                label="Informante"
+                                required
+                                value={formData.informant ?? ''}
+                                onChange={(e) => handleInputChange('informant', e.target.value)}
+                                fullWidth
+                            >
+                                <MenuItem value="Mãe">Mãe</MenuItem>
+                                <MenuItem value="Pai">Pai</MenuItem>
+                                <MenuItem value="Responsável">Responsável</MenuItem>
+                                <MenuItem value="Outro">Outro</MenuItem>
+                            </TextField>
+                        </Box>
+
+                        <TextField
+                            label="Observações Clínicas (Opcional)"
+                            multiline
+                            rows={3}
+                            fullWidth
+                            value={formData.clinicalObservations ?? ''}
+                            onChange={(e) => handleInputChange('clinicalObservations', e.target.value)}
+                            placeholder="Adicione observações clínicas sobre a aplicação ou comportamento da criança..."
+                        />
+
+                        {/* Lista de Questões com Prévia */}
+                        <Stack spacing={2}>
+                            <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ pb: 1, borderBottom: '1px solid', borderColor: 'divider' }}>
+                                <Typography variant="subtitle1" fontWeight={700} color="text.primary">
+                                    Itens do Questionário
+                                </Typography>
+                                <Chip
+                                    label={`Respondidas: ${mchatAnsweredCount} / 20`}
+                                    color={mchatAnsweredCount === 20 ? "success" : "primary"}
+                                    variant="outlined"
+                                    sx={{ fontWeight: 700, borderRadius: 2 }}
+                                />
+                            </Box>
+
+                            <Stack spacing={2.5}>
+                                {MCHAT_QUESTIONS.map((questionText, index) => {
+                                    const questionNum = index + 1;
+                                    const fieldName = `question_${questionNum}`;
+                                    const currentValue = formData[fieldName];
+
+                                    return (
+                                        <Paper
+                                            key={questionNum}
+                                            variant="outlined"
+                                            sx={{
+                                                p: 2.5,
+                                                borderRadius: 3,
+                                                bgcolor: currentValue !== undefined ? 'rgba(236, 72, 153, 0.02)' : 'background.paper',
+                                                borderColor: currentValue !== undefined ? 'rgba(236, 72, 153, 0.3)' : 'divider',
+                                                transition: 'all 0.2s',
+                                                '&:hover': {
+                                                    borderColor: '#ec4899',
+                                                    boxShadow: '0 4px 12px rgba(0,0,0,0.02)'
+                                                }
+                                            }}
+                                        >
+                                            <Stack spacing={2}>
+                                                <Typography variant="body1" fontWeight={700} color="text.primary">
+                                                    {questionText}
+                                                </Typography>
+
+                                                <Box display="flex" gap={2}>
+                                                    {mchatOptions.map((opt) => {
+                                                        const isSelected = currentValue === opt.val;
+                                                        return (
+                                                            <Box
+                                                                key={opt.label}
+                                                                onClick={() => handleInputChange(fieldName, opt.val)}
+                                                                sx={{
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    px: 3,
+                                                                    py: 1,
+                                                                    borderRadius: 2,
+                                                                    border: '1px solid',
+                                                                    borderColor: isSelected ? '#ec4899' : 'rgba(0, 0, 0, 0.06)',
+                                                                    bgcolor: isSelected ? 'rgba(236, 72, 153, 0.08)' : 'transparent',
+                                                                    cursor: 'pointer',
+                                                                    transition: 'all 0.15s',
+                                                                    '&:hover': {
+                                                                        bgcolor: isSelected ? undefined : 'action.hover',
+                                                                        borderColor: isSelected ? '#ec4899' : 'grey.400'
+                                                                    }
+                                                                }}
+                                                            >
+                                                                <Radio
+                                                                    checked={isSelected}
+                                                                    size="small"
+                                                                    sx={{
+                                                                        p: 0.5,
+                                                                        mr: 1,
+                                                                        color: isSelected ? '#ec4899' : undefined,
+                                                                        '&.Mui-checked': {
+                                                                            color: '#ec4899'
+                                                                        }
+                                                                    }}
+                                                                />
+                                                                <Typography variant="body2" fontWeight={isSelected ? 600 : 400}>
+                                                                    {opt.label}
+                                                                </Typography>
+                                                            </Box>
+                                                        );
+                                                    })}
+                                                </Box>
+                                            </Stack>
+                                        </Paper>
+                                    );
+                                })}
+                            </Stack>
+                        </Stack>
+                    </Stack>
+                );
+            }
             case 'token':
                 return (
                     <Stack spacing={2}>
@@ -1237,13 +1445,13 @@ export default function TestRunnerPage() {
                                             )}
 
                                             <TextField
-                                                label="Idade do Paciente"
+                                                label={type === 'm-chat' ? "Idade (em meses)" : "Idade do Paciente"}
                                                 type="number"
                                                 value={age}
                                                 onChange={(e) => setAge(e.target.value)}
                                                 fullWidth
                                                 required
-                                                helperText={selectedPatient ? "Calculado automaticamente do cadastro" : "Necessário para normas de correção"}
+                                                helperText={selectedPatient ? (type === 'm-chat' ? "Calculada em meses a partir do nascimento" : "Calculado automaticamente do cadastro") : (type === 'm-chat' ? "Idade da criança em meses (16 a 30)" : "Necessário para normas de correção")}
                                                 InputProps={{
                                                     readOnly: !!selectedPatient,
                                                 }}
@@ -1335,8 +1543,8 @@ export default function TestRunnerPage() {
                     <TestResultDisplay
                         testName={testDef.name}
                         resultData={result}
-                        isSaved={(type === 'ata' || type === 'cars' || type === 'aq10-child' || type === 'aq10-adult') && !isAnonymous ? true : isSaved}
-                        isSaving={(type === 'ata' || type === 'cars' || type === 'aq10-child' || type === 'aq10-adult') && !isAnonymous ? false : isSaving}
+                        isSaved={(type === 'ata' || type === 'cars' || type === 'aq10-child' || type === 'aq10-adult' || type === 'm-chat') && !isAnonymous ? true : isSaved}
+                        isSaving={(type === 'ata' || type === 'cars' || type === 'aq10-child' || type === 'aq10-adult' || type === 'm-chat') && !isAnonymous ? false : isSaving}
                         hasPatient={!!selectedPatient}
                         onNewTest={handleNewTest}
                     />

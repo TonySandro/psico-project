@@ -87,6 +87,7 @@ export const TEST_KEY_TRANSLATIONS: Record<string, string> = {
     applicationDate: 'Data de Aplicação',
     clinicalObservations: 'Observações Clínicas',
     reportText: 'Texto para Relatório',
+    ageInMonths: 'Idade (meses)',
 };
 
 export const TEST_VALUE_TRANSLATIONS: Record<string, string> = {
@@ -110,7 +111,10 @@ export const TEST_VALUE_TRANSLATIONS: Record<string, string> = {
     'Moderate': 'Moderado',
     'Severe': 'Severo',
     'Typical': 'Típico',
-    'Atypical': 'Atípico'
+    'Atypical': 'Atípico',
+    'LOW_RISK': 'Baixo Risco',
+    'MEDIUM_RISK': 'Risco Moderado',
+    'HIGH_RISK': 'Alto Risco'
 };
 
 export const translateTestKey = (key: string): string => {

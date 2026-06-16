@@ -144,7 +144,7 @@ export const TEST_DEFINITIONS: Record<string, TestDefinition> = {
         id: 'aq10-adult',
         name: 'AQ-10 Adult',
         fullName: 'Quociente de Espectro Autista (AQ-10) - Versão Adulto',
-        description: 'Questionário de triagem rápida de traços autísticos para adultos (16 anos ou mais), respondido por autoaplicação ou informante.',
+        description: 'Questionário de triagem rápida de traços autísticos para adults (16 anos ou mais), respondido por autoaplicação ou informante.',
         instructions: [
             'O questionário pode ser preenchido pelo próprio paciente (Autoaplicação) ou por um informante.',
             'Para cada comportamento abaixo, selecione a opção de frequência observada.',
@@ -156,5 +156,22 @@ export const TEST_DEFINITIONS: Record<string, TestDefinition> = {
         color: '#6366F1',
         timeEstimate: '5-10 min',
         targetAge: '16+ anos'
+    },
+    'm-chat': {
+        id: 'm-chat',
+        name: 'M-CHAT',
+        fullName: 'Modified Checklist for Autism in Toddlers, Revised (M-CHAT-R)',
+        description: 'Questionário de triagem para risco de Transtorno do Espectro Autista (TEA) em crianças de 16 a 30 meses.',
+        instructions: [
+            'O questionário deve ser preenchido por um informante (pais ou responsáveis).',
+            'Responda a cada uma das 20 perguntas considerando o comportamento habitual da criança.',
+            'Selecione Sim ou Não para cada pergunta.',
+            'Informe a idade da criança em meses (deve ser entre 16 e 30 meses).',
+            'O sistema calculará a pontuação total e classificará o nível de risco (Baixo, Moderado ou Alto).'
+        ],
+        icon: Baby,
+        color: '#EC4899',
+        timeEstimate: '5-10 min',
+        targetAge: '16-30 meses'
     }
 };

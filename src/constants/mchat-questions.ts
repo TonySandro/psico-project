@@ -1,0 +1,22 @@
+export const MCHAT_QUESTIONS = [
+  "1. Se você apontar para qualquer coisa do outro lado do cômodo, sua criança olha para o que você está apontando?",
+  "2. Alguma vez você já se perguntou se sua criança poderia ser surda?",
+  "3. Sua criança brinca de faz-de-conta?",
+  "4. Sua criança gosta de subir nas coisas?",
+  "5. Sua criança faz movimentos incomuns com os dedos perto dos olhos?",
+  "6. Sua criança aponta com o dedo para pedir algo ou para conseguir ajuda?",
+  "7. Sua criança aponta com o dedo para lhe mostrar algo interessante?",
+  "8. Sua criança interessa-se por outras crianças?",
+  "9. Sua criança mostra-lhe coisas, trazendo-as ou segurando-as para que você as veja – não para obter ajuda, mas apenas para compartilhar com você?",
+  "10. Sua criança responde quando você a chama pelo nome?",
+  "11. Quando você sorri para sua criança, ela sorri de volta para você?",
+  "12. Sua criança fica incomodada com os ruídos do dia a dia?",
+  "13. Sua criança já anda?",
+  "14. Sua criança olha você nos olhos quando você fala com ela, brinca com ela ou veste-a?",
+  "15. Sua criança tenta imitar aquilo que você faz?",
+  "16. Se você virar a sua cabeça para olhar para alguma coisa, sua criança olha em volta para ver o que é que você está olhando?",
+  "17. Sua criança busca que você preste atenção nela?",
+  "18. Sua criança compreende quando você lhe diz para fazer alguma coisa?",
+  "19. Quando alguma coisa nova acontece, sua criança olha para o seu rosto para ver sua reação?",
+  "20. Sua criança gosta de atividades com movimento?"
+];

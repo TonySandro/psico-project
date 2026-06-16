@@ -258,6 +258,70 @@ const AQ10AdultResultView = ({ data }: { data: any }) => {
     );
 };
 
+const MChatResultView = ({ data }: { data: any }) => {
+    const isHigh = data.result === 'HIGH_RISK';
+    const isMedium = data.result === 'MEDIUM_RISK';
+    const resultColor = isHigh ? '#ef4444' : isMedium ? '#f59e0b' : '#10b981';
+    const resultText = translateTestValue(data.result);
+    
+    return (
+        <Grid container spacing={2.5}>
+            <Grid size={{ xs: 12 }}>
+                <Typography variant="subtitle1" sx={{ color: '#334155', fontWeight: 700, mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box component="span" sx={{ width: 4, height: 16, bgcolor: '#EC4899', borderRadius: 1 }} />
+                    Resultado da Avaliação M-CHAT-R
+                </Typography>
+            </Grid>
+            
+            <Grid size={{ xs: 12, sm: 4 }}>
+                <LabelValue label="Pontuação Total" value={`${data.totalScore ?? 0} / ${data.maxScore ?? 20}`} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 4 }}>
+                <LabelValue label="Idade de Aplicação" value={data.ageInMonths !== undefined ? `${data.ageInMonths} meses` : '-'} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 4 }}>
+                <LabelValue 
+                    label="Classificação de Risco" 
+                    value={
+                        <Box component="span" sx={{ color: resultColor, fontWeight: 700 }}>
+                            {resultText}
+                        </Box>
+                    } 
+                />
+            </Grid>
+            
+            <Grid size={{ xs: 12 }}>
+                <LabelValue label="Informante" value={data.informant || '-'} />
+            </Grid>
+            
+            {data.clinicalObservations && (
+                <Grid size={{ xs: 12 }}>
+                    <LabelValue label="Observações Clínicas" value={data.clinicalObservations} />
+                </Grid>
+            )}
+            
+            {data.interpretation && (
+                <Grid size={{ xs: 12 }}>
+                    <LabelValue label="Interpretação" value={data.interpretation} />
+                </Grid>
+            )}
+
+            {data.reportText && (
+                <Grid size={{ xs: 12 }}>
+                    <LabelValue 
+                        label="Texto para Relatório" 
+                        value={
+                            <Typography variant="body2" sx={{ fontStyle: 'italic', color: '#475569', whiteSpace: 'pre-wrap', fontWeight: 500, lineHeight: 1.6 }}>
+                                {data.reportText}
+                            </Typography>
+                        } 
+                    />
+                </Grid>
+            )}
+        </Grid>
+    );
+};
+
 const SnapResultView = ({ data }: { data: any }) => {
     return (
         <Grid container spacing={2.5}>
@@ -354,6 +418,10 @@ export default function TestResultDialog({ open, onClose, protocol }: TestResult
             case 'AQ10-Adult':
             case 'AQ10_Adult':
                 return <AQ10AdultResultView data={protocol.data} />;
+            case 'M-CHAT-R':
+            case 'M-CHAT':
+            case 'm-chat':
+                return <MChatResultView data={protocol.data} />;
             case 'SNAP':
                 return <SnapResultView data={protocol.data} />;
             case 'CARS':
