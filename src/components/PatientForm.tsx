@@ -56,7 +56,7 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
       name: '',
       age: 0,
       dateOfBirth: '',
-      gender: 'null',
+      gender: '' as any,
       schoolYear: 'Educação Infantil',
       address: '',
       phoneNumber: '',
@@ -207,12 +207,15 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
               <Controller
                 name="gender"
                 control={control}
+                rules={{ required: 'Gênero é obrigatório' }}
                 render={({ field }) => (
                   <TextField
                     {...field}
                     fullWidth
                     select
                     label="Gênero"
+                    error={!!errors.gender}
+                    helperText={errors.gender?.message}
                   >
                     {genders.map((gender) => (
                       <MenuItem key={gender} value={gender}>
@@ -249,6 +252,7 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
               <Controller
                 name="address"
                 control={control}
+                rules={{ required: 'Endereço é obrigatório' }}
                 render={({ field }) => (
                   <TextField
                     {...field}
@@ -256,6 +260,8 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
                     label="Endereço"
                     multiline
                     rows={2}
+                    error={!!errors.address}
+                    helperText={errors.address?.message}
                   />
                 )}
               />
@@ -265,11 +271,14 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
               <Controller
                 name="phoneNumber"
                 control={control}
+                rules={{ required: 'Telefone é obrigatório' }}
                 render={({ field }) => (
                   <TextField
                     {...field}
                     fullWidth
                     label="Telefone"
+                    error={!!errors.phoneNumber}
+                    helperText={errors.phoneNumber?.message}
                   />
                 )}
               />
@@ -279,11 +288,14 @@ export default function PatientForm({ patient, onClose }: PatientFormProps) {
               <Controller
                 name="motherName"
                 control={control}
+                rules={{ required: 'Nome da mãe é obrigatório' }}
                 render={({ field }) => (
                   <TextField
                     {...field}
                     fullWidth
                     label="Nome da Mãe"
+                    error={!!errors.motherName}
+                    helperText={errors.motherName?.message}
                   />
                 )}
               />
