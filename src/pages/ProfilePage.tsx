@@ -33,12 +33,16 @@ import {
 import { useAuthStore } from '@/stores/authStore';
 import { api } from '@/services/api';
 import { useAccount } from '@/hooks/useAccount';
+import { useSubscription } from '@/hooks/useSubscription';
 
 export default function ProfilePage() {
   const user = useAuthStore((state) => state.user);
   const updateUser = useAuthStore((state) => state.updateUser);
+  const { subscription } = useSubscription();
 
   useAccount(user?.id);
+
+  const isPremiumActive = user?.subscriptionStatus === 'active' || subscription?.status === 'active';
 
   const [loading, setLoading] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
@@ -412,7 +416,7 @@ export default function ProfilePage() {
               <Card
                 sx={{
                   borderRadius: 3,
-                  bgcolor: user?.subscriptionStatus === 'active' ? '#4F46E5' : '#1e1b4b',
+                  bgcolor: isPremiumActive ? '#4F46E5' : '#1e1b4b',
                   color: 'white',
                   position: 'relative',
                   overflow: 'visible'
@@ -424,13 +428,13 @@ export default function ProfilePage() {
 
                 <CardContent sx={{ p: 4 }}>
                   <Typography variant="h6" fontWeight={700} gutterBottom>
-                    {user?.subscriptionStatus === 'active' ? 'Plano Premium' : 'Plano Grátis'}
+                    {isPremiumActive ? 'Plano Premium' : 'Plano Grátis'}
                   </Typography>
                   <Chip
-                    label={user?.subscriptionStatus === 'active' ? 'PREMIUM ATIVO' : 'FREE'}
+                    label={isPremiumActive ? 'PREMIUM ATIVO' : 'FREE'}
                     size="small"
                     sx={{
-                      bgcolor: user?.subscriptionStatus === 'active' ? '#F59E0B' : '#6B7280',
+                      bgcolor: isPremiumActive ? '#F59E0B' : '#6B7280',
                       color: 'white',
                       fontWeight: 700,
                       fontSize: '0.7rem',
@@ -439,28 +443,25 @@ export default function ProfilePage() {
                     }}
                   />
 
-                  <Box display="flex" alignItems="baseline" sx={{ mb: 3 }}>
-                    <Typography variant="h3" fontWeight={700}>
-                      {user?.subscriptionStatus === 'active' ? 'R$ 29,90' : 'Grátis'}
-                    </Typography>
-                    {user?.subscriptionStatus === 'active' && (
-                      <Typography variant="body1" sx={{ opacity: 0.7, ml: 1 }}>
-                        /mês
+                  {!isPremiumActive && (
+                    <Box display="flex" alignItems="baseline" sx={{ mb: 3 }}>
+                      <Typography variant="h3" fontWeight={700}>
+                        Grátis
                       </Typography>
-                    )}
-                  </Box>
+                    </Box>
+                  )}
 
                   <Stack spacing={2} sx={{ mb: 4 }}>
                     {[
                       'Acesso total à plataforma',
                       'Relatórios Ilimitados',
                       'Suporte prioritário',
-                      user?.subscriptionStatus !== 'active' ? 'Limite de 5 pacientes' : 'Pacientes ilimitados'
+                      !isPremiumActive ? 'Limite de 5 pacientes' : 'Pacientes ilimitados'
                     ].map((feature, idx) => (
                       <Stack key={idx} direction="row" spacing={1.5} alignItems="center">
                         <Box
                           sx={{
-                            bgcolor: user?.subscriptionStatus === 'active' ? '#F59E0B' : 'rgba(255,255,255,0.2)',
+                            bgcolor: isPremiumActive ? '#F59E0B' : 'rgba(255,255,255,0.2)',
                             borderRadius: '50%',
                             p: 0.5,
                             display: 'flex'
@@ -473,7 +474,7 @@ export default function ProfilePage() {
                     ))}
                   </Stack>
 
-                  {user?.subscriptionStatus !== 'active' && (
+                  {!isPremiumActive && (
                     <Button
                       variant="contained"
                       fullWidth
@@ -493,7 +494,7 @@ export default function ProfilePage() {
                     </Button>
                   )}
 
-                  {user?.subscriptionStatus === 'active' && (
+                  {isPremiumActive && (
                     <Typography variant="body2" sx={{ opacity: 0.8, fontStyle: 'italic' }}>
                       Sua assinatura está ativa e renova automaticamente.
                     </Typography>
