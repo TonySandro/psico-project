@@ -17,10 +17,10 @@ export default function PaymentSuccessPage() {
             await new Promise((resolve) => setTimeout(resolve, 3000));
 
             const params = new URLSearchParams(window.location.search);
-            const paymentId = params.get('payment_id') || params.get('collection_id');
+            const preapprovalId = params.get('preapproval_id');
 
             try {
-                const subStatus = await checkStatus(paymentId || undefined);
+                const subStatus = await checkStatus(preapprovalId || undefined);
                 if (isMounted) {
                     if (subStatus.status === 'active') {
                         setVerified(true);
@@ -69,14 +69,14 @@ export default function PaymentSuccessPage() {
                         )}
                     </Box>
                     <Typography variant="h4" fontWeight={800} gutterBottom>
-                        {verifying ? 'Confirmando Pagamento...' : 'Pagamento realizado!'}
+                        {verifying ? 'Confirmando Assinatura...' : 'Assinatura confirmada!'}
                     </Typography>
                     <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
                         {verifying
-                            ? 'Estamos verificando a confirmação do pagamento com o Mercado Pago. Isso pode levar alguns segundos.'
+                            ? 'Estamos verificando a confirmação da sua assinatura com o Mercado Pago. Isso pode levar alguns segundos.'
                             : verified
-                            ? 'Sua assinatura Premium foi confirmada com sucesso! Redirecionando em instantes...'
-                            : 'Seu pagamento está sendo processado. Você já pode acessar a plataforma.'}
+                            ? 'Sua assinatura Premium recorrente foi ativada com sucesso! Redirecionando em instantes...'
+                            : 'Sua assinatura está sendo processada. Você já pode acessar a plataforma.'}
                     </Typography>
                     <Button
                         variant="contained"

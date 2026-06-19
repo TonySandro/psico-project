@@ -149,9 +149,10 @@ export interface PublicTeacherReportData {
 }
 
 export interface SubscriptionStatus {
-  status: 'trial' | 'active' | 'expired';
+  status: 'trial' | 'active' | 'expired' | 'paused' | 'cancelled';
   daysLeft?: number;
   trialEndsAt?: string;
   endsAt?: string;
+  mpSubscriptionId?: string;
   message: string;
 }

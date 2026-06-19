@@ -26,7 +26,7 @@ export const useSubscription = () => {
 
   const initiatePaymentMutation = useMutation({
     mutationFn: async () => {
-      const response = await api.post<{ checkoutUrl: string }>('/payment/preference', {
+      const response = await api.post<{ checkoutUrl: string }>('/payment/subscribe', {
         description: 'Assinatura Premium NeuroPPAvalia',
         price: 29.90,
       });
@@ -39,9 +39,20 @@ export const useSubscription = () => {
     },
   });
 
-  const checkStatus = useCallback(async (paymentId?: string) => {
+  const cancelSubscriptionMutation = useMutation({
+    mutationFn: async () => {
+      const response = await api.post('/payment/cancel');
+      return response.data;
+    },
+    onSuccess: () => {
+      // Refetch subscription status after cancellation
+      query.refetch();
+    },
+  });
+
+  const checkStatus = useCallback(async (preapprovalId?: string) => {
     try {
-      const url = paymentId ? `/payment/status?payment_id=${paymentId}` : '/payment/status';
+      const url = preapprovalId ? `/payment/status?preapproval_id=${preapprovalId}` : '/payment/status';
       const response = await api.get<SubscriptionStatus>(url);
       if (response.data) {
         setSubscription(response.data);
@@ -62,8 +73,11 @@ export const useSubscription = () => {
     checkStatus,
     initiatePayment: () => initiatePaymentMutation.mutate(),
     subscribing: initiatePaymentMutation.isPending,
+    cancelSubscription: () => cancelSubscriptionMutation.mutate(),
+    cancelling: cancelSubscriptionMutation.isPending,
     isExpired: activeSubscription?.status === 'expired',
     isTrial: activeSubscription?.status === 'trial',
     isActive: activeSubscription?.status === 'active',
+    isPaused: activeSubscription?.status === 'paused',
   };
 };
