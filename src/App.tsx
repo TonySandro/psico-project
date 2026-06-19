@@ -26,6 +26,7 @@ import ReportEditorPage from './pages/ReportEditorPage';
 import PaymentSuccessPage from './pages/payment/SuccessPage';
 import PaymentFailurePage from './pages/payment/FailurePage';
 import PaymentPendingPage from './pages/payment/PendingPage';
+import SubscribePage from './pages/payment/SubscribePage';
 import AboutUsPage from './pages/AboutUsPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsPage from './pages/TermsPage';
@@ -42,6 +43,13 @@ function App() {
         const token = useAuthStore.getState().token;
         if (token && response.data) {
           useAuthStore.getState().setUser(response.data, token);
+          api.get('/payment/status')
+            .then((subResponse) => {
+              useAuthStore.getState().setSubscription(subResponse.data);
+            })
+            .catch((err) => {
+              console.error('Error fetching subscription status on boot', err);
+            });
         }
       })
       .catch(() => {
@@ -64,6 +72,7 @@ function App() {
         <Route path="/anamnesis/responder/:token" element={<PublicAnamnesisPage />} />
         <Route path="/teacher-report/responder/:token" element={<PublicTeacherReportPage />} />
 
+        <Route path="/payment/subscribe" element={<SubscribePage />} />
         <Route path="/payment/success" element={<PaymentSuccessPage />} />
         <Route path="/payment/failure" element={<PaymentFailurePage />} />
         <Route path="/payment/pending" element={<PaymentPendingPage />} />

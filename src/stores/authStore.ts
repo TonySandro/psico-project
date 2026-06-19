@@ -1,14 +1,16 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Account } from '@/types/schema';
+import type { Account, SubscriptionStatus } from '@/types/schema';
 
 interface AuthState {
   user: Account | null;
   token: string | null;
   isAuthenticated: boolean;
+  subscription: SubscriptionStatus | null;
   setUser: (user: Account, token: string) => void;
   updateUser: (user: Partial<Account>) => void;
   setToken: (token: string) => void;
+  setSubscription: (subscription: SubscriptionStatus | null) => void;
   logout: () => void;
 }
 
@@ -18,6 +20,7 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       token: null,
       isAuthenticated: false,
+      subscription: null,
 
       setUser: (user, token) => {
         set({ user, token, isAuthenticated: true });
@@ -33,8 +36,12 @@ export const useAuthStore = create<AuthState>()(
         }));
       },
 
+      setSubscription: (subscription) => {
+        set({ subscription });
+      },
+
       logout: () => {
-        set({ user: null, token: null, isAuthenticated: false });
+        set({ user: null, token: null, isAuthenticated: false, subscription: null });
         localStorage.removeItem('auth-storage');
       }
     }),

@@ -1,5 +1,6 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Avatar, Menu, MenuItem, Divider, Box } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Avatar, Menu, MenuItem, Divider, Box, Chip, Button } from '@mui/material';
+import { useSubscription } from '@/hooks/useSubscription';
 import { Menu as MenuIcon, LayoutDashboard, Users, ClipboardList, MessageSquare, UserCircle, LogOut, FileText } from 'lucide-react';
 import { useState } from 'react';
 import { useUIStore } from '@/stores/uiStore';
@@ -26,6 +27,7 @@ export default function DashboardLayout() {
   const toggleSidebar = useUIStore((state) => state.toggleSidebar);
   const { user } = useAuthStore();
   const { mutate: logout } = useLogout();
+  const { isTrial, subscription, initiatePayment, subscribing } = useSubscription();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleUserMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -95,6 +97,31 @@ export default function DashboardLayout() {
               <Typography variant="caption" color="text.secondary">
                 {user?.email}
               </Typography>
+              {subscription && (
+                <Box sx={{ mt: 1 }}>
+                  {subscription.status === 'active' && (
+                    <Chip
+                      label="Premium Ativo"
+                      size="small"
+                      sx={{ bgcolor: 'rgba(16, 185, 129, 0.1)', color: '#10B981', fontWeight: 700, fontSize: '0.75rem', height: 22 }}
+                    />
+                  )}
+                  {subscription.status === 'trial' && (
+                    <Chip
+                      label={`Trial: ${subscription.daysLeft}d restantes`}
+                      size="small"
+                      sx={{ bgcolor: 'rgba(245, 158, 11, 0.1)', color: '#F59E0B', fontWeight: 700, fontSize: '0.75rem', height: 22 }}
+                    />
+                  )}
+                  {subscription.status === 'expired' && (
+                    <Chip
+                      label="Assinatura Expirada"
+                      size="small"
+                      sx={{ bgcolor: 'rgba(239, 68, 68, 0.1)', color: '#EF4444', fontWeight: 700, fontSize: '0.75rem', height: 22 }}
+                    />
+                  )}
+                </Box>
+              )}
             </Stack>
             <Divider />
             <MenuItem onClick={() => { navigate('/app/profile'); handleUserMenuClose(); }}>
@@ -181,6 +208,40 @@ export default function DashboardLayout() {
         }}
       >
         <Toolbar />
+        {isTrial && (
+          <Box
+            sx={{
+              bgcolor: '#FEF3C7',
+              color: '#92400E',
+              px: 3,
+              py: 1.5,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderBottom: '1px solid #FCD34D',
+            }}
+          >
+            <Typography variant="body2" fontWeight={600}>
+              🎁 Você está no período de teste gratuito! Restam {subscription?.daysLeft} dia(s). Assine agora para não perder acesso.
+            </Typography>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={initiatePayment}
+              disabled={subscribing}
+              sx={{
+                bgcolor: '#D97706',
+                color: '#ffffff',
+                fontWeight: 700,
+                textTransform: 'none',
+                '&:hover': { bgcolor: '#B45309' },
+                ml: 2,
+              }}
+            >
+              {subscribing ? 'Carregando...' : 'Assinar Agora'}
+            </Button>
+          </Box>
+        )}
         <Box className="p-6">
           <ErrorBoundary>
             <Outlet />

@@ -147,3 +147,11 @@ export interface PublicTeacherReportData {
   title: string;
   questions: PublicTeacherReportQuestion[];
 }
+
+export interface SubscriptionStatus {
+  status: 'trial' | 'active' | 'expired';
+  daysLeft?: number;
+  trialEndsAt?: string;
+  endsAt?: string;
+  message: string;
+}

@@ -35,6 +35,16 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // Handle 403 Forbidden - Subscription expired/inactive
+    if (error.response?.status === 403) {
+      const currentPath = window.location.pathname;
+      if (!currentPath.startsWith('/payment')) {
+        sessionStorage.setItem('redirectAfterPayment', currentPath);
+        window.location.href = '/payment/subscribe';
+      }
+      return Promise.reject(error);
+    }
+
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
