@@ -347,7 +347,7 @@ export default function HomePage() {
                 Sistema profissional de gestão clínica para psicopedagogos e neuropsicopedagogos.
               </Typography>
               <Typography variant="caption" sx={{ color: 'success.light', display: 'block' }}>
-                ✓ Ambiente em conformidade com a LGPD e criptografia ativa.
+                ✓ Ambiente em conformidade com a LGPD.
               </Typography>
             </Grid>
 

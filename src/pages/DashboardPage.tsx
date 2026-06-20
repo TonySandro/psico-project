@@ -94,7 +94,14 @@ export default function DashboardPage() {
                 Pacientes por Faixa Etária
               </Typography>
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={Object.entries(stats?.patientsByAgeGroup || {}).map(([ageRange, count]) => ({ ageRange, count }))}>
+                <BarChart data={Object.entries(stats?.patientsByAgeGroup || {})
+                  .map(([ageRange, count]) => ({ ageRange, count }))
+                  .sort((a, b) => {
+                    const ageA = parseInt(a.ageRange.match(/\d+/)?.[0] || '0', 10);
+                    const ageB = parseInt(b.ageRange.match(/\d+/)?.[0] || '0', 10);
+                    return ageA - ageB;
+                  })
+                }>
                   <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                   <XAxis dataKey="ageRange" stroke="#6B7280" />
                   <YAxis stroke="#6B7280" />
