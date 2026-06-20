@@ -7,7 +7,6 @@ import {
   User,
   Mail,
   Check,
-  Brain,
   AlertCircle
 } from 'lucide-react';
 
@@ -70,9 +69,7 @@ export default function SignupPage() {
 
         {/* Header Logo */}
         <div className="relative z-10 flex items-center gap-3 text-white">
-          <div className="flex items-center justify-center p-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 shadow-sm">
-            <Brain size={28} className="text-white" />
-          </div>
+          <img src="/favicon.svg" alt="NPPAvalia Logo" className="size-11 rounded-xl shadow-sm border border-white/20" />
           <h1 className="text-2xl font-bold tracking-tight">NPPAvalia</h1>
         </div>
 
@@ -101,7 +98,7 @@ export default function SignupPage() {
         <div className="w-full max-w-[480px] py-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
           {/* Mobile Logo (Visible only on < lg) */}
           <div className="lg:hidden flex items-center gap-2 mb-8 text-slate-900">
-            <Brain className="text-primary" size={32} />
+            <img src="/favicon.svg" alt="NPPAvalia Logo" className="size-8" />
             <span className="text-xl font-bold">NPPAvalia</span>
           </div>
 

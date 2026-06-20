@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="NPPAvalia">
+  <rect width="512" height="512" rx="96" fill="#3B82F6"/>
+  <path d="M256 337.5L157.4 238.9C132.2 213.7 132.2 172.8 157.4 147.6C182.6 122.4 223.5 122.4 248.7 147.6L256 154.9L263.3 147.6C288.5 122.4 329.4 122.4 354.6 147.6C379.8 172.8 379.8 213.7 354.6 238.9L256 337.5Z"
+        fill="none" stroke="#FFFFFF" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

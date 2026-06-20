@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useLogin } from '@/hooks/useAuth';
-import { HeartPulse } from 'lucide-react';
+
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -87,11 +87,8 @@ export default function LoginPage() {
             {/* Header */}
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-3 text-primary mb-2">
-                {/* Logo SVG */}
                 {/* Logo */}
-                <div className="flex items-center justify-center size-10 rounded-xl bg-primary text-white shadow-lg shadow-primary/20">
-                  <HeartPulse size={24} />
-                </div>
+                <img src="/favicon.svg" alt="NPPAvalia Logo" className="size-10 rounded-xl shadow-lg shadow-primary/20" />
                 <h2 className="text-xl font-bold leading-tight tracking-[-0.015em] text-text-main">NPPAvalia</h2>
               </div>
               <h1 className="text-3xl font-black leading-tight tracking-tight text-text-main sm:text-4xl">

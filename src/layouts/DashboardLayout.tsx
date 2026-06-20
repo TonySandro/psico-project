@@ -66,9 +66,12 @@ export default function DashboardLayout() {
             <MenuIcon size={24} />
           </IconButton>
 
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 600 }}>
-            Sistema de Gestão Clínica
-          </Typography>
+          <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <img src="/favicon.svg" alt="NPPAvalia Logo" className="w-8 h-8 rounded-lg shadow-sm" />
+            <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
+              NPPAvalia
+            </Typography>
+          </Box>
 
           <IconButton onClick={handleUserMenuOpen}>
             <Avatar
