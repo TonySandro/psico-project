@@ -17,10 +17,10 @@ export default function CookiesPage() {
         }}
       >
         <Toolbar>
-          <Stack 
-            direction="row" 
-            alignItems="center" 
-            spacing={1} 
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1}
             sx={{ flexGrow: 1, cursor: 'pointer' }}
             onClick={() => navigate('/')}
           >
@@ -38,7 +38,7 @@ export default function CookiesPage() {
               <HeartPulse size={24} color="white" />
             </Box>
             <Typography variant="h6" fontWeight={700}>
-              NeuroPPAvalia
+              NPPAvalia
             </Typography>
           </Stack>
 
@@ -96,7 +96,7 @@ export default function CookiesPage() {
       <Container maxWidth="md" sx={{ py: 8, flexGrow: 1 }}>
         <Stack spacing={4} sx={{ fontSize: '1rem', lineHeight: 1.7, color: 'text.secondary' }}>
           <Typography variant="body1" sx={{ fontSize: '1.1rem' }}>
-            Esta Política de Cookies explica o que são cookies, como o <strong>NeuroPPAvalia</strong> os utiliza e como você pode gerenciar suas preferências em nosso site e aplicação.
+            Esta Política de Cookies explica o que são cookies, como o <strong>NPPAvalia</strong> os utiliza e como você pode gerenciar suas preferências em nosso site e aplicação.
           </Typography>
 
           <Divider />
@@ -123,7 +123,7 @@ export default function CookiesPage() {
             <Typography variant="h5" fontWeight={700} color="text.primary" sx={{ mb: 2 }}>
               3. Tipos de Cookies Coletados
             </Typography>
-            
+
             <TableContainer component={Paper} variant="outlined" sx={{ mt: 2 }}>
               <Table>
                 <TableHead sx={{ bgcolor: 'grey.50' }}>
@@ -159,9 +159,9 @@ export default function CookiesPage() {
               4. Consentimento e Controle de Cookies
             </Typography>
             <Typography variant="body1">
-              Ao acessar o NeuroPPAvalia pela primeira vez, você é notificado sobre o uso de cookies. 
-              Os cookies estritamente necessários são ativados automaticamente por serem indispensáveis para a 
-              execução segura da plataforma de saúde. Caso você não concorde com a ativação de cookies de 
+              Ao acessar o NPPAvalia pela primeira vez, você é notificado sobre o uso de cookies.
+              Os cookies estritamente necessários são ativados automaticamente por serem indispensáveis para a
+              execução segura da plataforma de saúde. Caso você não concorde com a ativação de cookies de
               sessão necessários, infelizmente não será possível utilizar a área logada do sistema.
             </Typography>
           </Box>
@@ -171,7 +171,7 @@ export default function CookiesPage() {
               5. Como Desativar os Cookies no Navegador
             </Typography>
             <Typography variant="body1">
-              Você pode, a qualquer momento, desativar, bloquear ou excluir cookies diretamente nas configurações 
+              Você pode, a qualquer momento, desativar, bloquear ou excluir cookies diretamente nas configurações
               do seu navegador de preferência. Siga os links oficiais de ajuda de cada navegador:
             </Typography>
             <Typography variant="body2" component="div" sx={{ mt: 1 }}>
@@ -212,11 +212,11 @@ export default function CookiesPage() {
                 <HeartPulse size={18} color="white" />
               </Box>
               <Typography variant="h6" fontWeight={700}>
-                NeuroPPAvalia
+                NPPAvalia
               </Typography>
             </Stack>
             <Typography variant="body2" sx={{ opacity: 0.6 }}>
-              © {new Date().getFullYear()} NeuroPPAvalia. Todos os direitos reservados.
+              © {new Date().getFullYear()} NPPAvalia. Todos os direitos reservados.
             </Typography>
           </Box>
         </Container>

@@ -17,10 +17,10 @@ export default function PrivacyPolicyPage() {
         }}
       >
         <Toolbar>
-          <Stack 
-            direction="row" 
-            alignItems="center" 
-            spacing={1} 
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1}
             sx={{ flexGrow: 1, cursor: 'pointer' }}
             onClick={() => navigate('/')}
           >
@@ -38,7 +38,7 @@ export default function PrivacyPolicyPage() {
               <HeartPulse size={24} color="white" />
             </Box>
             <Typography variant="h6" fontWeight={700}>
-              NeuroPPAvalia
+              NPPAvalia
             </Typography>
           </Stack>
 
@@ -96,7 +96,7 @@ export default function PrivacyPolicyPage() {
       <Container maxWidth="md" sx={{ py: 8, flexGrow: 1 }}>
         <Stack spacing={4} sx={{ fontSize: '1rem', lineHeight: 1.7, color: 'text.secondary' }}>
           <Typography variant="body1" sx={{ fontSize: '1.1rem' }}>
-            A sua privacidade é de extrema importância para nós do <strong>NeuroPPAvalia</strong>. Esta Política de Privacidade descreve como coletamos, usamos, armazenamos e protegemos as informações pessoais e dados de saúde sensíveis dos profissionais de psicopedagogia/neuropsicopedagogia e de seus respectivos pacientes, em conformidade com a <strong>Lei Geral de Proteção de Dados Pessoais (LGPD - Lei nº 13.709/2018)</strong>.
+            A sua privacidade é de extrema importância para nós do <strong>NPPAvalia</strong>. Esta Política de Privacidade descreve como coletamos, usamos, armazenamos e protegemos as informações pessoais e dados de saúde sensíveis dos profissionais de psicopedagogia/neuropsicopedagogia e de seus respectivos pacientes, em conformidade com a <strong>Lei Geral de Proteção de Dados Pessoais (LGPD - Lei nº 13.709/2018)</strong>.
           </Typography>
 
           <Divider />
@@ -108,7 +108,7 @@ export default function PrivacyPolicyPage() {
             <Typography variant="body2" component="div">
               <ul>
                 <li><strong>Controlador:</strong> O profissional de psicopedagogia/neuropsicopedagogia que assina o serviço e insere os dados de seus pacientes no sistema, definindo a finalidade do tratamento.</li>
-                <li><strong>Operador:</strong> O NeuroPPAvalia, que realiza o tratamento de dados pessoais sob as instruções e em nome do Controlador.</li>
+                <li><strong>Operador:</strong> O NPPAvalia, que realiza o tratamento de dados pessoais sob as instruções e em nome do Controlador.</li>
                 <li><strong>Titular de Dados:</strong> O profissional (usuário do sistema) e seus pacientes (cujas informações clínicas são inseridas na plataforma).</li>
                 <li><strong>Dados Sensíveis:</strong> Dados de saúde, anamneses, diagnósticos e resultados de testes neuropsicopedagógicos dos pacientes (Artigo 5º, II da LGPD).</li>
               </ul>
@@ -135,7 +135,7 @@ export default function PrivacyPolicyPage() {
               3. Finalidade do Tratamento de Dados
             </Typography>
             <Typography variant="body1">
-              Todos os dados pessoais sensíveis inseridos no NeuroPPAvalia são utilizados exclusivamente para:
+              Todos os dados pessoais sensíveis inseridos no NPPAvalia são utilizados exclusivamente para:
             </Typography>
             <Typography variant="body2" component="div">
               <ul>
@@ -153,7 +153,7 @@ export default function PrivacyPolicyPage() {
               4. Consentimento e Legalidade
             </Typography>
             <Typography variant="body1">
-              É responsabilidade legal exclusiva do profissional (Controlador) obter o consentimento livre, expresso e informado dos pacientes ou de seus responsáveis legais (no caso de crianças e adolescentes) para o tratamento de dados de saúde sensíveis inseridos na plataforma, nos termos do Artigo 11 e Artigo 14 da LGPD. O NeuroPPAvalia fornece modelos de Termos de Consentimento que podem ser assinados fisicamente ou digitalmente pelos responsáveis.
+              É responsabilidade legal exclusiva do profissional (Controlador) obter o consentimento livre, expresso e informado dos pacientes ou de seus responsáveis legais (no caso de crianças e adolescentes) para o tratamento de dados de saúde sensíveis inseridos na plataforma, nos termos do Artigo 11 e Artigo 14 da LGPD. O NPPAvalia fornece modelos de Termos de Consentimento que podem ser assinados fisicamente ou digitalmente pelos responsáveis.
             </Typography>
           </Box>
 
@@ -179,7 +179,7 @@ export default function PrivacyPolicyPage() {
               6. Direitos dos Titulares de Dados (Artigo 18 da LGPD)
             </Typography>
             <Typography variant="body1">
-              Os pacientes (ou seus responsáveis) podem exercer seus direitos de confirmação de existência de tratamento, acesso, correção de dados incompletos ou eliminação diretamente junto ao profissional de saúde (Controlador). O NeuroPPAvalia dispõe de mecanismos internos para que o profissional exporte, edite ou exclua permanentemente os prontuários de forma imediata.
+              Os pacientes (ou seus responsáveis) podem exercer seus direitos de confirmação de existência de tratamento, acesso, correção de dados incompletos ou eliminação diretamente junto ao profissional de saúde (Controlador). O NPPAvalia dispõe de mecanismos internos para que o profissional exporte, edite ou exclua permanentemente os prontuários de forma imediata.
             </Typography>
           </Box>
 
@@ -188,7 +188,7 @@ export default function PrivacyPolicyPage() {
               7. Contato e Encarregado de Proteção de Dados (DPO)
             </Typography>
             <Typography variant="body1">
-              Para esclarecer dúvidas sobre esta Política de Privacidade ou sobre as práticas de proteção de dados do NeuroPPAvalia, entre em contato com nosso Encarregado pelo e-mail: <strong>suporte@nppavalia.com.br</strong>.
+              Para esclarecer dúvidas sobre esta Política de Privacidade ou sobre as práticas de proteção de dados do NPPAvalia, entre em contato com nosso Encarregado pelo e-mail: <strong>suporte@nppavalia.com.br</strong>.
             </Typography>
           </Box>
         </Stack>
@@ -220,11 +220,11 @@ export default function PrivacyPolicyPage() {
                 <HeartPulse size={18} color="white" />
               </Box>
               <Typography variant="h6" fontWeight={700}>
-                NeuroPPAvalia
+                NPPAvalia
               </Typography>
             </Stack>
             <Typography variant="body2" sx={{ opacity: 0.6 }}>
-              © {new Date().getFullYear()} NeuroPPAvalia. Todos os direitos reservados.
+              © {new Date().getFullYear()} NPPAvalia. Todos os direitos reservados.
             </Typography>
           </Box>
         </Container>

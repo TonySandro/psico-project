@@ -18,13 +18,13 @@ export default function ResetPasswordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
-    
+
     if (!token) {
       setStatus('error');
       setErrorMessage('Link de recuperação inválido ou ausente.');
       return;
     }
-    
+
     if (password !== passwordConfirmation) {
       setStatus('error');
       setErrorMessage('As senhas não coincidem.');
@@ -88,7 +88,7 @@ export default function ResetPasswordPage() {
                 <div className="flex items-center justify-center size-10 rounded-xl bg-primary text-white shadow-lg shadow-primary/20">
                   <HeartPulse size={24} />
                 </div>
-                <h2 className="text-xl font-bold leading-tight tracking-[-0.015em] text-text-main">NeuroPPAvalia</h2>
+                <h2 className="text-xl font-bold leading-tight tracking-[-0.015em] text-text-main">NPPAvalia</h2>
               </div>
               <h1 className="text-3xl font-black leading-tight tracking-tight text-text-main sm:text-4xl">
                 Nova Senha

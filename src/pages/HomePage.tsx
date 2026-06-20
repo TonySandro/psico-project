@@ -63,7 +63,7 @@ export default function HomePage() {
               <HeartPulse size={24} color="white" />
             </Box>
             <Typography variant="h6" fontWeight={700} sx={{ display: { xs: 'none', sm: 'block' } }}>
-              NeuroPPAvalia
+              NPPAvalia
             </Typography>
           </Stack>
 
@@ -340,7 +340,7 @@ export default function HomePage() {
                   <HeartPulse size={24} color="white" />
                 </Box>
                 <Typography variant="h6" fontWeight={700}>
-                  NeuroPPAvalia
+                  NPPAvalia
                 </Typography>
               </Stack>
               <Typography variant="body2" sx={{ opacity: 0.8, mb: 1 }}>
@@ -379,7 +379,7 @@ export default function HomePage() {
 
           <Box sx={{ mt: 6, pt: 4, borderTop: '1px solid rgba(255,255,255,0.1)', textAlign: 'center' }}>
             <Typography variant="body2" sx={{ opacity: 0.6 }}>
-              © {new Date().getFullYear()} NeuroPPAvalia. Todos os direitos reservados.
+              © {new Date().getFullYear()} NPPAvalia. Todos os direitos reservados.
             </Typography>
           </Box>
         </Container>

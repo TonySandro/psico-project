@@ -27,7 +27,7 @@ export const useSubscription = () => {
   const initiatePaymentMutation = useMutation({
     mutationFn: async () => {
       const response = await api.post<{ checkoutUrl: string }>('/payment/subscribe', {
-        description: 'Assinatura Premium NeuroPPAvalia',
+        description: 'Assinatura Premium NPPAvalia',
         price: 29.90,
       });
       return response.data;

@@ -10,20 +10,20 @@ export default function FeedbackPage() {
   const user = useAuthStore((state) => state.user);
   const [type, setType] = useState<FeedbackType>('sugestao');
   const [message, setMessage] = useState('');
-  
+
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [isHovered, setIsHovered] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('loading');
-    
+
     try {
-      await api.post('/feedback', { 
-        name: user?.name || 'Usuário Anônimo', 
-        email: user?.email || 'Sem email', 
-        type, 
-        message 
+      await api.post('/feedback', {
+        name: user?.name || 'Usuário Anônimo',
+        email: user?.email || 'Sem email',
+        type,
+        message
       });
       setStatus('success');
       setTimeout(() => {
@@ -41,11 +41,11 @@ export default function FeedbackPage() {
       <Stack spacing={5}>
         {/* Header */}
         <Stack spacing={2} textAlign="center" alignItems="center">
-          <Avatar 
-            sx={{ 
-              width: 64, 
-              height: 64, 
-              bgcolor: 'rgba(59, 130, 246, 0.1)', 
+          <Avatar
+            sx={{
+              width: 64,
+              height: 64,
+              bgcolor: 'rgba(59, 130, 246, 0.1)',
               color: '#3B82F6',
               mb: 1
             }}
@@ -63,15 +63,15 @@ export default function FeedbackPage() {
             Feedback
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 600, fontSize: '1.1rem' }}>
-            Ajude-nos a melhorar o NeuroPPAvalia! Sua opinião é fundamental para moldar o futuro da plataforma.
+            Ajude-nos a melhorar o NPPAvalia! Sua opinião é fundamental para moldar o futuro da plataforma.
           </Typography>
         </Stack>
 
         {/* Main Card */}
-        <Card 
+        <Card
           elevation={0}
-          sx={{ 
-            borderRadius: 5, 
+          sx={{
+            borderRadius: 5,
             boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)',
             border: '1px solid',
             borderColor: 'divider',
@@ -109,7 +109,7 @@ export default function FeedbackPage() {
               <Typography variant="body1" sx={{ opacity: 0.9, lineHeight: 1.7 }}>
                 Estamos em fase de testes e valorizamos cada comentário. Seja uma nova funcionalidade que você gostaria de ver, ou um erro que encontrou, queremos saber!
               </Typography>
-              
+
               <Stack spacing={3} sx={{ mt: 4 }}>
                 <Stack direction="row" spacing={2} alignItems="center">
                   <Box sx={{ p: 1.5, bgcolor: 'rgba(255,255,255,0.15)', borderRadius: 3, backdropFilter: 'blur(10px)' }}>
@@ -137,15 +137,15 @@ export default function FeedbackPage() {
           <Box sx={{ flex: 1, p: { xs: 3, md: 6 }, bgcolor: 'background.paper', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             {status === 'success' ? (
               <Fade in={status === 'success'} timeout={800}>
-                <Stack 
-                  spacing={3} 
-                  alignItems="center" 
-                  justifyContent="center" 
+                <Stack
+                  spacing={3}
+                  alignItems="center"
+                  justifyContent="center"
                   sx={{ height: '100%', minHeight: 400, textAlign: 'center' }}
                 >
-                  <Box sx={{ 
-                    p: 3, 
-                    borderRadius: '50%', 
+                  <Box sx={{
+                    p: 3,
+                    borderRadius: '50%',
                     bgcolor: '#DCFCE7',
                     color: '#16A34A',
                     mb: 2,
@@ -173,7 +173,7 @@ export default function FeedbackPage() {
                     {status === 'error' && (
                       <Alert severity="error">Não foi possível enviar o feedback.</Alert>
                     )}
-                    
+
                     <TextField
                       select
                       label="Tipo de Feedback"
@@ -237,11 +237,11 @@ export default function FeedbackPage() {
                       onMouseEnter={() => setIsHovered(true)}
                       onMouseLeave={() => setIsHovered(false)}
                       endIcon={
-                        <Send 
-                          size={20} 
-                          style={{ 
-                            transform: isHovered && status !== 'loading' ? 'translateX(4px) translateY(-4px)' : 'none', 
-                            transition: 'transform 0.3s' 
+                        <Send
+                          size={20}
+                          style={{
+                            transform: isHovered && status !== 'loading' ? 'translateX(4px) translateY(-4px)' : 'none',
+                            transition: 'transform 0.3s'
                           }}
                         />
                       }

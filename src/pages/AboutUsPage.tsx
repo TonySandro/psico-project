@@ -17,10 +17,10 @@ export default function AboutUsPage() {
         }}
       >
         <Toolbar>
-          <Stack 
-            direction="row" 
-            alignItems="center" 
-            spacing={1} 
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1}
             sx={{ flexGrow: 1, cursor: 'pointer' }}
             onClick={() => navigate('/')}
           >
@@ -38,7 +38,7 @@ export default function AboutUsPage() {
               <HeartPulse size={24} color="white" />
             </Box>
             <Typography variant="h6" fontWeight={700}>
-              NeuroPPAvalia
+              NPPAvalia
             </Typography>
           </Stack>
 
@@ -82,7 +82,7 @@ export default function AboutUsPage() {
             Quem Somos
           </Typography>
           <Typography variant="h6" color="text.secondary" sx={{ fontSize: { xs: '1.1rem', md: '1.25rem' }, lineHeight: 1.6 }}>
-            A união entre a experiência clínica em neuropsicopedagogia e a engenharia de software 
+            A união entre a experiência clínica em neuropsicopedagogia e a engenharia de software
             para transformar e otimizar a prática avaliativa no Brasil.
           </Typography>
         </Container>
@@ -98,14 +98,14 @@ export default function AboutUsPage() {
                 Nossa Missão
               </Typography>
               <Typography variant="body1" color="text.secondary" sx={{ fontSize: '1.1rem', lineHeight: 1.7 }}>
-                O <strong>NeuroPPAvalia</strong> nasceu de uma necessidade real de consultório. 
-                Profissionais de psicopedagogia e neuropsicopedagogia lidam diariamente com um volume 
+                O <strong>NPPAvalia</strong> nasceu de uma necessidade real de consultório.
+                Profissionais de psicopedagogia e neuropsicopedagogia lidam diariamente com um volume
                 massivo de prontuários físicos, tabelas de testes complexas e processos manuais de correção.
               </Typography>
               <Typography variant="body1" color="text.secondary" sx={{ fontSize: '1.1rem', lineHeight: 1.7 }}>
-                Nossa missão é fornecer uma plataforma tecnológica de excelência, segura e intuitiva, 
-                que elimine a burocracia do processo de avaliação diagnóstica. Com isso, permitimos que o 
-                profissional dedique seu tempo precioso ao que realmente importa: a escuta clínica, a 
+                Nossa missão é fornecer uma plataforma tecnológica de excelência, segura e intuitiva,
+                que elimine a burocracia do processo de avaliação diagnóstica. Com isso, permitimos que o
+                profissional dedique seu tempo precioso ao que realmente importa: a escuta clínica, a
                 intervenção de qualidade e o acolhimento do paciente.
               </Typography>
             </Stack>
@@ -118,7 +118,7 @@ export default function AboutUsPage() {
                   <Typography variant="h5" fontWeight={700}>
                     Nossos Valores Fundamentais
                   </Typography>
-                  
+
                   <Stack direction="row" spacing={2} alignItems="flex-start">
                     <ShieldCheck size={28} style={{ flexShrink: 0 }} />
                     <Box>
@@ -163,23 +163,23 @@ export default function AboutUsPage() {
               <Grid container spacing={4} justifyContent="center">
                 {/* Ana Paula */}
                 <Grid size={{ xs: 12, md: 6 }}>
-                  <Card 
-                    sx={{ 
-                      p: 4, 
-                      height: '100%', 
-                      borderTop: '5px solid', 
+                  <Card
+                    sx={{
+                      p: 4,
+                      height: '100%',
+                      borderTop: '5px solid',
                       borderColor: 'primary.main',
                       boxShadow: 3
                     }}
                   >
                     <Stack spacing={3} alignItems="center" textAlign="center">
-                      <Avatar 
-                        sx={{ 
-                          width: 100, 
-                          height: 100, 
-                          bgcolor: 'teal.500', 
-                          fontSize: '2rem', 
-                          fontWeight: 700 
+                      <Avatar
+                        sx={{
+                          width: 100,
+                          height: 100,
+                          bgcolor: 'teal.500',
+                          fontSize: '2rem',
+                          fontWeight: 700
                         }}
                       >
                         AP
@@ -193,10 +193,10 @@ export default function AboutUsPage() {
                         </Typography>
                       </Box>
                       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem', lineHeight: 1.6 }}>
-                        Psicopedagoga e Neuropsicopedagoga com mais de 20 anos de atuação clínica no diagnóstico, 
-                        intervenção e assessoria de dificuldades e transtornos de aprendizagem. Ana Paula é a mente 
-                        por trás da validação científica do NeuroPPAvalia, garantindo que cada ferramenta de triagem, 
-                        protocolo de teste (como CARS, Stroop, ATA, SNAP, AQ-10) e relatório digital atenda exatamente aos 
+                        Psicopedagoga e Neuropsicopedagoga com mais de 20 anos de atuação clínica no diagnóstico,
+                        intervenção e assessoria de dificuldades e transtornos de aprendizagem. Ana Paula é a mente
+                        por trás da validação científica do NPPAvalia, garantindo que cada ferramenta de triagem,
+                        protocolo de teste (como CARS, Stroop, ATA, SNAP, AQ-10) e relatório digital atenda exatamente aos
                         mais altos padrões exigidos pela prática profissional e ética clínica.
                       </Typography>
                     </Stack>
@@ -205,23 +205,23 @@ export default function AboutUsPage() {
 
                 {/* Tony Sandro */}
                 <Grid size={{ xs: 12, md: 6 }}>
-                  <Card 
-                    sx={{ 
-                      p: 4, 
-                      height: '100%', 
-                      borderTop: '5px solid', 
+                  <Card
+                    sx={{
+                      p: 4,
+                      height: '100%',
+                      borderTop: '5px solid',
                       borderColor: 'secondary.main',
                       boxShadow: 3
                     }}
                   >
                     <Stack spacing={3} alignItems="center" textAlign="center">
-                      <Avatar 
-                        sx={{ 
-                          width: 100, 
-                          height: 100, 
-                          bgcolor: 'blue.500', 
-                          fontSize: '2rem', 
-                          fontWeight: 700 
+                      <Avatar
+                        sx={{
+                          width: 100,
+                          height: 100,
+                          bgcolor: 'blue.500',
+                          fontSize: '2rem',
+                          fontWeight: 700
                         }}
                       >
                         TD
@@ -235,10 +235,10 @@ export default function AboutUsPage() {
                         </Typography>
                       </Box>
                       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '1rem', lineHeight: 1.6 }}>
-                        Programador e especialista em Engenharia de Software com mais de 5 anos de experiência no 
-                        desenvolvimento de sistemas escaláveis e seguros. Tony é responsável por projetar uma 
-                        arquitetura de software robusta, focada em segurança da informação, criptografia em trânsito 
-                        e em repouso, e o cumprimento rigoroso da Lei Geral de Proteção de Dados (LGPD) no 
+                        Programador e especialista em Engenharia de Software com mais de 5 anos de experiência no
+                        desenvolvimento de sistemas escaláveis e seguros. Tony é responsável por projetar uma
+                        arquitetura de software robusta, focada em segurança da informação, criptografia em trânsito
+                        e em repouso, e o cumprimento rigoroso da Lei Geral de Proteção de Dados (LGPD) no
                         gerenciamento das informações sensíveis dos pacientes e profissionais.
                       </Typography>
                     </Stack>
@@ -276,11 +276,11 @@ export default function AboutUsPage() {
                 <HeartPulse size={18} color="white" />
               </Box>
               <Typography variant="h6" fontWeight={700}>
-                NeuroPPAvalia
+                NPPAvalia
               </Typography>
             </Stack>
             <Typography variant="body2" sx={{ opacity: 0.6 }}>
-              © {new Date().getFullYear()} NeuroPPAvalia. Todos os direitos reservados.
+              © {new Date().getFullYear()} NPPAvalia. Todos os direitos reservados.
             </Typography>
           </Box>
         </Container>

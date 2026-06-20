@@ -17,10 +17,10 @@ export default function TermsPage() {
         }}
       >
         <Toolbar>
-          <Stack 
-            direction="row" 
-            alignItems="center" 
-            spacing={1} 
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1}
             sx={{ flexGrow: 1, cursor: 'pointer' }}
             onClick={() => navigate('/')}
           >
@@ -38,7 +38,7 @@ export default function TermsPage() {
               <HeartPulse size={24} color="white" />
             </Box>
             <Typography variant="h6" fontWeight={700}>
-              NeuroPPAvalia
+              NPPAvalia
             </Typography>
           </Stack>
 
@@ -96,7 +96,7 @@ export default function TermsPage() {
       <Container maxWidth="md" sx={{ py: 8, flexGrow: 1 }}>
         <Stack spacing={4} sx={{ fontSize: '1rem', lineHeight: 1.7, color: 'text.secondary' }}>
           <Typography variant="body1" sx={{ fontSize: '1.1rem' }}>
-            Bem-vindo ao <strong>NeuroPPAvalia</strong>. Ao se cadastrar e utilizar a nossa plataforma, você concorda expressamente com os seguintes Termos de Uso. Leia-os atentamente antes de prosseguir com a utilização dos nossos serviços.
+            Bem-vindo ao <strong>NPPAvalia</strong>. Ao se cadastrar e utilizar a nossa plataforma, você concorda expressamente com os seguintes Termos de Uso. Leia-os atentamente antes de prosseguir com a utilização dos nossos serviços.
           </Typography>
 
           <Divider />
@@ -106,7 +106,7 @@ export default function TermsPage() {
               1. Escopo e Objeto do Serviço
             </Typography>
             <Typography variant="body1">
-              O NeuroPPAvalia é um software em nuvem (SaaS) projetado especificamente como ferramenta de apoio a profissionais das áreas de Psicopedagogia, Neuropsicopedagogia, Psicologia e Educação. A plataforma disponibiliza recursos para o cadastro de pacientes, preenchimento de anamneses, automatização de cálculos de testes padronizados e estruturação de relatórios clínicos.
+              O NPPAvalia é um software em nuvem (SaaS) projetado especificamente como ferramenta de apoio a profissionais das áreas de Psicopedagogia, Neuropsicopedagogia, Psicologia e Educação. A plataforma disponibiliza recursos para o cadastro de pacientes, preenchimento de anamneses, automatização de cálculos de testes padronizados e estruturação de relatórios clínicos.
             </Typography>
           </Box>
 
@@ -115,7 +115,7 @@ export default function TermsPage() {
               2. Isenção de Responsabilidade e Atuação Clínica (Cláusula YMYL)
             </Typography>
             <Typography variant="body1" sx={{ fontWeight: 500, color: 'text.primary', mb: 1 }}>
-              IMPORTANTE: O NeuroPPAvalia não emite diagnósticos clínicos e não substitui de nenhuma forma o julgamento profissional.
+              IMPORTANTE: O NPPAvalia não emite diagnósticos clínicos e não substitui de nenhuma forma o julgamento profissional.
             </Typography>
             <Typography variant="body1">
               Nossa plataforma atua única e exclusivamente como um <strong>auxiliar técnico</strong> para a organização e agilização dos processos de triagem e preenchimento de documentos. Todos os laudos, relatórios, diagnósticos e encaminhamentos gerados com o auxílio do software são de <strong>inteira, exclusiva e intransferível responsabilidade do profissional de saúde/educação registrado</strong> que operou o sistema.
@@ -127,7 +127,7 @@ export default function TermsPage() {
               3. Cadastro de Usuários e Requisitos de Habilitação
             </Typography>
             <Typography variant="body1">
-              Para utilizar o NeuroPPAvalia, o usuário declara e garante que possui a habilitação técnica e legal necessária para o exercício profissional da psicopedagogia, neuropsicopedagogia ou especialidade médica/educativa equivalente no Brasil. O usuário é inteiramente responsável por manter o sigilo de sua senha de acesso e de seu e-mail cadastrado, respondendo por toda atividade realizada em sua conta.
+              Para utilizar o NPPAvalia, o usuário declara e garante que possui a habilitação técnica e legal necessária para o exercício profissional da psicopedagogia, neuropsicopedagogia ou especialidade médica/educativa equivalente no Brasil. O usuário é inteiramente responsável por manter o sigilo de sua senha de acesso e de seu e-mail cadastrado, respondendo por toda atividade realizada em sua conta.
             </Typography>
           </Box>
 
@@ -136,7 +136,7 @@ export default function TermsPage() {
               4. Propriedade Intelectual
             </Typography>
             <Typography variant="body1">
-              Todo o código-fonte, design visual, logotipos, layouts, ferramentas de cálculo automatizado de testes e bancos de dados do NeuroPPAvalia pertencem exclusivamente aos fundadores e desenvolvedores da plataforma. É estritamente proibido realizar engenharia reversa, cópia ou distribuição do material proprietário sem autorização prévia por escrito.
+              Todo o código-fonte, design visual, logotipos, layouts, ferramentas de cálculo automatizado de testes e bancos de dados do NPPAvalia pertencem exclusivamente aos fundadores e desenvolvedores da plataforma. É estritamente proibido realizar engenharia reversa, cópia ou distribuição do material proprietário sem autorização prévia por escrito.
             </Typography>
           </Box>
 
@@ -195,11 +195,11 @@ export default function TermsPage() {
                 <HeartPulse size={18} color="white" />
               </Box>
               <Typography variant="h6" fontWeight={700}>
-                NeuroPPAvalia
+                NPPAvalia
               </Typography>
             </Stack>
             <Typography variant="body2" sx={{ opacity: 0.6 }}>
-              © {new Date().getFullYear()} NeuroPPAvalia. Todos os direitos reservados.
+              © {new Date().getFullYear()} NPPAvalia. Todos os direitos reservados.
             </Typography>
           </Box>
         </Container>

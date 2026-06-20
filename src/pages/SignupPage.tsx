@@ -73,7 +73,7 @@ export default function SignupPage() {
           <div className="flex items-center justify-center p-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 shadow-sm">
             <Brain size={28} className="text-white" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">NeuroPPAvalia</h1>
+          <h1 className="text-2xl font-bold tracking-tight">NPPAvalia</h1>
         </div>
 
         {/* Central Content */}
@@ -102,7 +102,7 @@ export default function SignupPage() {
           {/* Mobile Logo (Visible only on < lg) */}
           <div className="lg:hidden flex items-center gap-2 mb-8 text-slate-900">
             <Brain className="text-primary" size={32} />
-            <span className="text-xl font-bold">NeuroPPAvalia</span>
+            <span className="text-xl font-bold">NPPAvalia</span>
           </div>
 
           {/* Heading */}
