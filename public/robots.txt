@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
 Allow: /quem-somos
+Allow: /plataforma
+Allow: /recursos/
 Allow: /politica-de-privacidade
 Allow: /termos-de-uso
 Allow: /politica-de-cookies
