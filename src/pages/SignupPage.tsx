@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useSignup, useLogin } from '@/hooks/useAuth';
+import signupImg from '../images/profissional-analisando-dados-neuropsicopedagogicos-nppavalia.webp';
 import {
   Eye,
   EyeOff,
@@ -77,9 +78,9 @@ export default function SignupPage() {
         <div className="relative z-10 my-auto max-w-lg">
           <div className="mb-8 overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-1 shadow-2xl transform transition-transform duration-700 hover:scale-[1.02]">
             <img
-              alt="Profissional analisando dados"
+              src={signupImg}
+              alt="Profissional analisando dados neuropsicopedagógicos - NPPAvalia"
               className="h-64 w-full rounded-xl object-cover opacity-90"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmm0huIGs0Z5WOSduOtH-ZiVT6ndzMUB_whUZ5ptNKT5_neXe8AB6LNjfT9fqebc9SS6MhkU6tbCEiiSCVGivkpl6AL8N78DW8WGfAOo4OeoHoQIJByh8nFWtZQaxBYZ0z_QV22nNH0UomUCPK6YrV3uZpW7ybRHsXRnGRYDNoBi_yI9ZB6c5xCzh0pPeVzOpi8LU4s8kQbx5SbHOwEsE3Zbv4HkefFLwxQefQGKEfKKORlPv3xraNBIALFW66sqIe5W2F2P6JzQcp"
               loading="eager"
               fetchPriority="high"
             />

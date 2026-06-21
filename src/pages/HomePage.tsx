@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, Button, Typography, Box, Container, Stack, Card, CardContent, Grid } from '@mui/material';
 import { HeartPulse, ClipboardList, BarChart, Users, ArrowRight, CheckCircle } from 'lucide-react';
-import photo1 from '../images/photo-1.avif';
-import photo2 from '../images/photo-2.avif';
+import photo1 from '../images/profissional-psicopedagoga-trabalhando-nppavalia.webp';
+import photo2 from '../images/gestao-dados-relatorios-clinicos-nppavalia.webp';
 
 
 export default function HomePage() {

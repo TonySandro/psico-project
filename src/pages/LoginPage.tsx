@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useLogin } from '@/hooks/useAuth';
+import loginBg from '../images/consultorio-neuropsicopedagogia-nppavalia.webp';
 
 
 export default function LoginPage() {
@@ -46,8 +47,9 @@ export default function LoginPage() {
         {/* Background Image */}
         <div
           className="absolute inset-0 z-0 h-full w-full bg-cover bg-center opacity-90 transition-all duration-500 hover:scale-105"
-          data-alt="Modern clean abstract medical interface background with soft blue and purple lighting"
-          style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAlg164ysupHG0KdsZk8UC50RsX6Rpv16YvDQPLWAyVjP4Gtj8WBsalg2ZqXUq1gfPFRd8h-7951g_LRWsXTxhdo5F9kJjqq_EWRZ0TgFWFVTxKZbdWs0tiY1N4iNCBKOg4b4HMhC0_x7da0uymBPzS-pVK2rDOYgmkpGNC5zzBX0iB5dC4szITYpcx-kb6xILr27Dy1Oq-AvY-n3opeSOayNbzGbCmQzlVJSG_u7WH8qZSUx2Ws2sfF2Rf4Pms6AvcfuhuSwqK8i6U')" }}
+          role="img"
+          aria-label="Consultório de neuropsicopedagogia moderno e acolhedor - NPPAvalia"
+          style={{ backgroundImage: `url(${loginBg})` }}
         >
           <div className="absolute inset-0 bg-primary/20 mix-blend-multiply"></div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
