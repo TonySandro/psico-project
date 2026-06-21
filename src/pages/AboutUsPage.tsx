@@ -184,6 +184,8 @@ export default function AboutUsPage() {
                     >
                       <Stack spacing={3} alignItems="center" textAlign="center">
                         <Avatar
+                          src="/photos/tony-s-duarte-anselmo.webp"
+                          alt="Tony Sandro Duarte Anselmo"
                           sx={{
                             width: 100,
                             height: 100,
