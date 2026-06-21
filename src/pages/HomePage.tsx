@@ -44,7 +44,7 @@ const structuredData = {
       '@id': 'https://nppavalia.com.br/#organization',
       name: 'NPPAvalia',
       url: 'https://nppavalia.com.br',
-      logo: 'https://nppavalia.com.br/android-chrome-512x512.png',
+      logo: 'https://nppavalia.com.br/icons/android-chrome-512x512.webp',
     },
     {
       '@type': 'FAQPage',
