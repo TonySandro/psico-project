@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useLogin } from '@/hooks/useAuth';
 import loginBg from '../images/consultorio-neuropsicopedagogia-nppavalia.webp';
+import { HeartPulse, ArrowLeft } from 'lucide-react';
 
 
 export default function LoginPage() {
@@ -56,18 +57,17 @@ export default function LoginPage() {
         </div>
         {/* Content Overlay */}
         <div className="relative z-10 max-w-md text-white">
-          <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl">
-            <span className="material-symbols-outlined text-4xl text-white">neurology</span>
+          <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl text-white">
+            <HeartPulse size={36} />
           </div>
           <div className="inline-block px-3 py-1 mb-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
-            <span className="text-xs font-bold text-white uppercase tracking-wider">Exclusivo para Psicopedagogos</span>
+            <span className="text-xs font-bold text-white uppercase tracking-wider">Para Psicopedagogos & Neuropsicopedagogos</span>
           </div>
           <h2 className="text-4xl font-bold leading-tight tracking-tight mb-4">
-            Gestão completa de Avaliações Neuropsicopedagógicas.
+            Gestão de Avaliações Psicopedagógicas e Neuropsicopedagógicas.
           </h2>
           <p className="text-lg text-white/90 font-medium leading-relaxed">
-            Centralize avaliações, aplique testes padronizados (Token Test, Stroop) e gere relatórios clínicos automáticos.
-            Acompanhe a evolução cognitiva dos seus pacientes em um único ambiente seguro.
+            Centralize anamneses, aplique testes clínicos padronizados e gere relatórios automatizados de forma prática.
           </p>
 
           {/* <div className="mt-8 flex items-center gap-4">
@@ -83,23 +83,36 @@ export default function LoginPage() {
       </div>
 
       {/* Right Side: Login Form */}
-      <div className="w-full lg:w-1/2 h-full flex flex-col overflow-y-auto bg-background-light">
+      <div className="w-full lg:w-1/2 h-full flex flex-col overflow-y-auto bg-background-light relative">
+        {/* Back Button */}
+        <div className="absolute top-6 left-6 z-20">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-primary transition-colors bg-white hover:bg-slate-50 px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-sm"
+          >
+            <ArrowLeft size={16} />
+            <span>Voltar</span>
+          </Link>
+        </div>
+
         <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-24">
           <div className="w-full max-w-[420px] flex flex-col gap-8">
             {/* Header */}
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-3 text-primary mb-2">
                 {/* Logo */}
-                <img src="/favicon.svg" alt="NPPAvalia Logo" className="size-10 rounded-xl shadow-lg shadow-primary/20" />
+                <div className="size-10 rounded-xl shadow-lg shadow-primary/20 bg-primary flex items-center justify-center text-white">
+                  <HeartPulse size={22} />
+                </div>
                 <h2 className="text-xl font-bold leading-tight tracking-[-0.015em] text-text-main">NPPAvalia</h2>
               </div>
               <h1 className="text-3xl font-black leading-tight tracking-tight text-text-main sm:text-4xl">
-                {isRecoverPassword ? 'Recuperar Senha' : 'Acesso Profissional'}
+                {isRecoverPassword ? 'Recuperar Senha' : 'Portal do Profissional'}
               </h1>
               <p className="text-base text-gray-500 font-normal">
                 {isRecoverPassword
                   ? 'Informe seu e-mail e enviaremos um link para recuperar a sua senha.'
-                  : 'Faça login para acessar avaliações, testes e relatórios clínicos.'}
+                  : 'Acesse seus pacientes, anamneses, testes psicopedagógicos e relatórios.'}
               </p>
             </div>
 
@@ -238,7 +251,7 @@ export default function LoginPage() {
             <div className="flex flex-col items-center gap-4">
               <div className="flex items-center justify-center gap-2">
                 <p className="text-sm font-medium text-gray-500">Ainda não possui cadastro?</p>
-                <Link className="text-sm font-bold text-primary hover:text-primary/80 transition-colors" to="/signup">Criar conta profissional</Link>
+                <Link className="text-sm font-bold text-primary hover:text-primary/80 transition-colors" to="/signup">Cadastre-se gratuitamente</Link>
               </div>
 
               <div className="w-full border-t border-gray-100 pt-4 mt-2">

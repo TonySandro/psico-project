@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { lazy, Suspense, useEffect } from 'react';
 import ProtectedRoute from './components/ProtectedRoute';
+import ScrollToTop from './components/ScrollToTop';
 import { useAuthStore } from './stores/authStore';
 import { api } from './services/api';
 import type { Account } from './types/schema';
@@ -37,6 +38,12 @@ const AboutUsPage = lazy(() => import('./pages/AboutUsPage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
 const CookiesPage = lazy(() => import('./pages/CookiesPage'));
+const PlataformaPage = lazy(() => import('./pages/PlataformaPage'));
+const RecursoTestesPage = lazy(() => import('./pages/recursos/RecursoTestesPage'));
+const RecursoProntuarioPage = lazy(() => import('./pages/recursos/RecursoProntuarioPage'));
+const RecursoAnamnesePage = lazy(() => import('./pages/recursos/RecursoAnamnesePage'));
+const RecursoRelatoriosPage = lazy(() => import('./pages/recursos/RecursoRelatoriosPage'));
+const RecursoPacientesPage = lazy(() => import('./pages/recursos/RecursoPacientesPage'));
 
 function LoadingSpinner() {
   return (
@@ -72,6 +79,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -83,6 +91,12 @@ function App() {
           <Route path="/politica-de-privacidade" element={<PrivacyPolicyPage />} />
           <Route path="/termos-de-uso" element={<TermsPage />} />
           <Route path="/politica-de-cookies" element={<CookiesPage />} />
+          <Route path="/plataforma" element={<PlataformaPage />} />
+          <Route path="/recursos/testes" element={<RecursoTestesPage />} />
+          <Route path="/recursos/prontuario" element={<RecursoProntuarioPage />} />
+          <Route path="/recursos/anamnese" element={<RecursoAnamnesePage />} />
+          <Route path="/recursos/relatorios" element={<RecursoRelatoriosPage />} />
+          <Route path="/recursos/pacientes" element={<RecursoPacientesPage />} />
           <Route path="/anamnesis/responder/:token" element={<PublicAnamnesisPage />} />
           <Route path="/teacher-report/responder/:token" element={<PublicTeacherReportPage />} />
 

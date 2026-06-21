@@ -8,7 +8,9 @@ import {
   User,
   Mail,
   Check,
-  AlertCircle
+  AlertCircle,
+  HeartPulse,
+  ArrowLeft
 } from 'lucide-react';
 
 export default function SignupPage() {
@@ -70,7 +72,9 @@ export default function SignupPage() {
 
         {/* Header Logo */}
         <div className="relative z-10 flex items-center gap-3 text-white">
-          <img src="/favicon.svg" alt="NPPAvalia Logo" className="size-11 rounded-xl shadow-sm border border-white/20" />
+          <div className="size-11 rounded-xl shadow-sm border border-white/20 bg-white/10 backdrop-blur-md flex items-center justify-center text-white">
+            <HeartPulse size={24} />
+          </div>
           <h1 className="text-2xl font-bold tracking-tight">NPPAvalia</h1>
         </div>
 
@@ -86,27 +90,40 @@ export default function SignupPage() {
             />
           </div>
           <h2 className="text-4xl font-extrabold text-white leading-tight tracking-tight mb-4 drop-shadow-sm">
-            Transforme sua gestão clínica hoje.
+            Simplifique seus atendimentos psicopedagógicos.
           </h2>
           <p className="text-white/80 text-lg font-medium leading-relaxed">
-            Junte-se a milhares de neuropsicopedagogos que simplificaram seus atendimentos e focaram no que realmente importa: seus pacientes.
+            Organize pacientes, aplique triagens e testes clínicos, envie anamneses online para responsáveis e elabore relatórios e laudos com rapidez e segurança jurídica.
           </p>
         </div>
       </div>
 
       {/* Right Side: Form */}
-      <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-6 overflow-y-auto bg-background-light scrollbar-hide">
+      <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-6 overflow-y-auto bg-background-light scrollbar-hide relative">
+        {/* Back Button */}
+        <div className="absolute top-6 left-6 z-20">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-primary transition-colors bg-white hover:bg-slate-50 px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-sm"
+          >
+            <ArrowLeft size={16} />
+            <span>Voltar</span>
+          </Link>
+        </div>
+
         <div className="w-full max-w-[480px] py-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
           {/* Mobile Logo (Visible only on < lg) */}
           <div className="lg:hidden flex items-center gap-2 mb-8 text-slate-900">
-            <img src="/favicon.svg" alt="NPPAvalia Logo" className="size-8" />
+            <div className="size-8 rounded-lg bg-primary flex items-center justify-center text-white">
+              <HeartPulse size={18} />
+            </div>
             <span className="text-xl font-bold">NPPAvalia</span>
           </div>
 
           {/* Heading */}
           <div className="mb-8">
-            <h2 className="text-3xl font-black tracking-tight text-slate-900 mb-2">Crie sua conta</h2>
-            <p className="text-slate-500 text-base">Gerencie seus atendimentos de forma simples e eficiente.</p>
+            <h2 className="text-3xl font-black tracking-tight text-slate-900 mb-2">Cadastre-se na Plataforma</h2>
+            <p className="text-slate-500 text-base">Experimente o NPPAvalia gratuitamente e revolucione sua rotina clínica.</p>
           </div>
 
           {/* Error Message */}
@@ -231,7 +248,7 @@ export default function SignupPage() {
               disabled={isPending || !termsAccepted}
               className="mt-4 w-full h-12 rounded-xl bg-primary hover:bg-primary-hover text-white font-bold text-base shadow-lg shadow-primary/30 transition-all duration-200 transform active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed hover:-translate-y-0.5 disabled:hover:translate-y-0"
             >
-              {isPending ? 'Criando conta...' : 'Criar minha conta'}
+              {isPending ? 'Criando conta...' : 'Criar minha Conta Gratuita'}
             </button>
           </form>
 
@@ -239,7 +256,7 @@ export default function SignupPage() {
           <p className="text-center mt-8 text-sm text-slate-500">
             Já possui uma conta?{' '}
             <Link to="/login" className="text-primary font-bold hover:underline hover:text-primary-hover transition-colors">
-              Entrar agora
+              Faça login
             </Link>
           </p>
         </div>
