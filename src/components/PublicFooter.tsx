@@ -30,8 +30,21 @@ export default function PublicFooter() {
         <Grid container spacing={5}>
           {/* Brand column */}
           <Grid size={{ xs: 12, md: 4 }}>
-            <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 2, cursor: 'pointer' }} onClick={() => navigate('/')}>
+            <Stack
+              direction="row"
+              alignItems="center"
+              spacing={1.5}
+              sx={{
+                mb: 2,
+                cursor: 'pointer',
+                '&:hover .footer-logo': {
+                  transform: 'scale(1.08) rotate(5deg)',
+                }
+              }}
+              onClick={() => navigate('/')}
+            >
               <Box
+                className="footer-logo"
                 sx={{
                   width: 38,
                   height: 38,
@@ -41,6 +54,7 @@ export default function PublicFooter() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
+                  transition: 'transform 0.3s ease',
                 }}
               >
                 <HeartPulse size={20} color="white" />
@@ -66,7 +80,20 @@ export default function PublicFooter() {
                 <Button
                   key={link.path}
                   onClick={() => navigate(link.path)}
-                  sx={{ color: 'grey.400', justifyContent: 'flex-start', p: 0, textTransform: 'none', fontWeight: 400, fontSize: '0.875rem', '&:hover': { color: 'white' }, minWidth: 0 }}
+                  sx={{
+                    color: 'grey.400',
+                    justifyContent: 'flex-start',
+                    p: 0,
+                    textTransform: 'none',
+                    fontWeight: 400,
+                    fontSize: '0.875rem',
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      color: 'white',
+                      transform: 'translateX(6px)',
+                    },
+                    minWidth: 0
+                  }}
                 >
                   {link.label}
                 </Button>
@@ -84,7 +111,20 @@ export default function PublicFooter() {
                 <Button
                   key={link.path}
                   onClick={() => navigate(link.path)}
-                  sx={{ color: 'grey.400', justifyContent: 'flex-start', p: 0, textTransform: 'none', fontWeight: 400, fontSize: '0.875rem', '&:hover': { color: 'white' }, minWidth: 0 }}
+                  sx={{
+                    color: 'grey.400',
+                    justifyContent: 'flex-start',
+                    p: 0,
+                    textTransform: 'none',
+                    fontWeight: 400,
+                    fontSize: '0.875rem',
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      color: 'white',
+                      transform: 'translateX(6px)',
+                    },
+                    minWidth: 0
+                  }}
                 >
                   {link.label}
                 </Button>

@@ -5,6 +5,7 @@ import PageMeta from '@/components/PageMeta';
 import StructuredData from '@/components/StructuredData';
 import PublicNavbar from '@/components/PublicNavbar';
 import PublicFooter from '@/components/PublicFooter';
+import AnimatedSection from '@/components/AnimatedSection';
 
 const sdData = {
   '@context': 'https://schema.org',
@@ -35,7 +36,8 @@ export default function RecursoAnamnesePage() {
           <Container maxWidth="lg">
             <Grid container spacing={6} alignItems="center">
               <Grid size={{ xs: 12, md: 6 }}>
-                <Stack spacing={3}>
+                <AnimatedSection animation="fadeUp" delay={0}>
+                  <Stack spacing={3}>
                   <Chip label="Recursos / Anamnese" size="small" sx={{ bgcolor: 'primary.main', color: 'white', fontWeight: 700, fontSize: '0.7rem', width: 'fit-content' }} />
                   <Typography component="h1" variant="h2" fontWeight={800} sx={{ fontSize: { xs: '1.8rem', md: '2.6rem' }, lineHeight: 1.2 }}>
                     Anamnese Psicopedagógica Online
@@ -53,9 +55,11 @@ export default function RecursoAnamnesePage() {
                     </Button>
                   </Stack>
                 </Stack>
+                </AnimatedSection>
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <Box sx={{ borderRadius: 3, overflow: 'hidden', border: '1px solid', borderColor: 'divider', boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}>
+                <AnimatedSection animation="fadeLeft" delay={200} className="animate-float">
+                  <Box sx={{ borderRadius: 3, overflow: 'hidden', border: '1px solid', borderColor: 'divider', boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}>
                   <Box sx={{ px: 2, py: 1, bgcolor: 'grey.100', borderBottom: '1px solid', borderColor: 'divider', display: 'flex', gap: 0.8 }}>
                     {['#EF4444', '#F59E0B', '#10B981'].map((c) => <Box key={c} sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: c }} />)}
                   </Box>
@@ -68,14 +72,16 @@ export default function RecursoAnamnesePage() {
                     style={{ width: '100%', height: 'auto', display: 'block' }}
                   />
                 </Box>
+                </AnimatedSection>
               </Grid>
             </Grid>
           </Container>
         </Box>
 
         {/* Content */}
-        <Box component="section" sx={{ py: { xs: 8, md: 10 }, bgcolor: 'background.paper' }}>
+        <Box component="section" sx={{ py: { xs: 8, md: 10 }, bgcolor: 'background.paper', overflow: 'hidden' }}>
           <Container maxWidth="lg">
+            <AnimatedSection animation="fadeUp" delay={100}>
             <Grid container spacing={8} alignItems="flex-start">
               <Grid size={{ xs: 12, md: 7 }}>
                 <Stack spacing={4}>
@@ -156,6 +162,7 @@ export default function RecursoAnamnesePage() {
                 </Box>
               </Grid>
             </Grid>
+            </AnimatedSection>
           </Container>
         </Box>
       </main>

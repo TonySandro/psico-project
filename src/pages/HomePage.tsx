@@ -13,6 +13,7 @@ import PageMeta from '@/components/PageMeta';
 import StructuredData from '@/components/StructuredData';
 import PublicNavbar from '@/components/PublicNavbar';
 import PublicFooter from '@/components/PublicFooter';
+import AnimatedSection from '@/components/AnimatedSection';
 
 // ── Demo screenshots (served from public/) ──────────────────────────────────
 const DEMO_IMAGES = {
@@ -314,89 +315,125 @@ export default function HomePage() {
             pt: { xs: 14, md: 18 },
             pb: { xs: 8, md: 12 },
             background: 'linear-gradient(160deg, #EFF6FF 0%, #F0FDFA 60%, #FAFFFE 100%)',
+            overflow: 'hidden',
           }}
         >
           <Container maxWidth="lg">
             <Grid container spacing={{ xs: 6, md: 8 }} alignItems="center">
               <Grid size={{ xs: 12, md: 6 }}>
                 <Stack spacing={3}>
-                  <Chip
-                    label="Para psicopedagogos e neuropsicopedagogos"
-                    size="small"
-                    sx={{ bgcolor: 'primary.main', color: 'white', fontWeight: 700, fontSize: '0.7rem', letterSpacing: 0.5, width: 'fit-content' }}
-                  />
-                  <Typography
-                    component="h1"
-                    variant="h2"
-                    fontWeight={800}
-                    sx={{ fontSize: { xs: '1.9rem', md: '2.8rem' }, lineHeight: 1.15, color: 'text.primary' }}
-                  >
-                    Plataforma para{' '}
-                    <Box component="span" sx={{ color: 'primary.main' }}>
-                      Avaliação Psicopedagógica,
-                    </Box>{' '}
-                    Prontuários e Relatórios
-                  </Typography>
-                  <Typography variant="h6" color="text.secondary" sx={{ fontSize: { xs: '1rem', md: '1.15rem' }, lineHeight: 1.7, fontWeight: 400 }}>
-                    Organize pacientes, anamneses, testes, prontuários e relatórios em um só lugar,
-                    com mais agilidade e segurança para a rotina psicopedagógica.
-                  </Typography>
-                  <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ pt: 1 }}>
-                    <Button
-                      variant="contained"
-                      size="large"
-                      endIcon={<ArrowRight size={18} />}
-                      onClick={() => navigate('/signup')}
-                      sx={{ px: 4, py: 1.5, fontWeight: 700, textTransform: 'none', fontSize: '1rem', borderRadius: 2 }}
+                  <AnimatedSection animation="fadeUp" delay={0}>
+                    <Chip
+                      label="Para psicopedagogos e neuropsicopedagogos"
+                      size="small"
+                      sx={{ bgcolor: 'primary.main', color: 'white', fontWeight: 700, fontSize: '0.7rem', letterSpacing: 0.5, width: 'fit-content' }}
+                    />
+                  </AnimatedSection>
+                  <AnimatedSection animation="fadeUp" delay={150}>
+                    <Typography
+                      component="h1"
+                      variant="h2"
+                      fontWeight={800}
+                      sx={{ fontSize: { xs: '1.9rem', md: '2.8rem' }, lineHeight: 1.15, color: 'text.primary' }}
                     >
-                      Começar agora
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      size="large"
-                      onClick={() => document.getElementById('recursos')?.scrollIntoView({ behavior: 'smooth' })}
-                      sx={{ px: 4, py: 1.5, fontWeight: 600, textTransform: 'none', fontSize: '1rem', borderRadius: 2 }}
-                    >
-                      Conhecer recursos
-                    </Button>
-                  </Stack>
-                  <Stack direction="row" spacing={3} sx={{ pt: 1 }}>
-                    {['Gratuito para começar', 'Conformidade com LGPD', 'Dados seguros'].map((t) => (
-                      <Stack key={t} direction="row" alignItems="center" spacing={0.5}>
-                        <CheckCircle size={14} color="#10B981" />
-                        <Typography variant="caption" color="text.secondary" fontWeight={500}>{t}</Typography>
-                      </Stack>
-                    ))}
-                  </Stack>
+                      Plataforma para{' '}
+                      <Box component="span" sx={{ color: 'primary.main' }}>
+                        Avaliação Psicopedagógica,
+                      </Box>{' '}
+                      Prontuários e Relatórios
+                    </Typography>
+                  </AnimatedSection>
+                  <AnimatedSection animation="fadeUp" delay={300}>
+                    <Typography variant="h6" color="text.secondary" sx={{ fontSize: { xs: '1rem', md: '1.15rem' }, lineHeight: 1.7, fontWeight: 400 }}>
+                      Organize pacientes, anamneses, testes, prontuários e relatórios em um só lugar,
+                      com mais agilidade e segurança para a rotina psicopedagógica.
+                    </Typography>
+                  </AnimatedSection>
+                  <AnimatedSection animation="fadeUp" delay={450}>
+                    <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ pt: 1 }}>
+                      <Button
+                        variant="contained"
+                        size="large"
+                        endIcon={<ArrowRight size={18} />}
+                        onClick={() => navigate('/signup')}
+                        sx={{
+                          px: 4,
+                          py: 1.5,
+                          fontWeight: 700,
+                          textTransform: 'none',
+                          fontSize: '1rem',
+                          borderRadius: 2,
+                          boxShadow: '0 8px 24px rgba(91, 19, 236, 0.25)',
+                          '&:hover': {
+                            boxShadow: '0 12px 28px rgba(91, 19, 236, 0.35)',
+                            transform: 'translateY(-2px)',
+                          }
+                        }}
+                      >
+                        Começar agora
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        size="large"
+                        onClick={() => document.getElementById('recursos')?.scrollIntoView({ behavior: 'smooth' })}
+                        sx={{
+                          px: 4,
+                          py: 1.5,
+                          fontWeight: 600,
+                          textTransform: 'none',
+                          fontSize: '1rem',
+                          borderRadius: 2,
+                          '&:hover': {
+                            transform: 'translateY(-2px)',
+                            bgcolor: 'rgba(59, 130, 246, 0.04)',
+                          }
+                        }}
+                      >
+                        Conhecer recursos
+                      </Button>
+                    </Stack>
+                  </AnimatedSection>
+                  <AnimatedSection animation="fadeUp" delay={600}>
+                    <Stack direction="row" spacing={3} sx={{ pt: 1 }}>
+                      {['Gratuito para começar', 'Conformidade com LGPD', 'Dados seguros'].map((t) => (
+                        <Stack key={t} direction="row" alignItems="center" spacing={0.5}>
+                          <CheckCircle size={14} color="#10B981" />
+                          <Typography variant="caption" color="text.secondary" fontWeight={500}>{t}</Typography>
+                        </Stack>
+                      ))}
+                    </Stack>
+                  </AnimatedSection>
                 </Stack>
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <Box
-                  sx={{
-                    borderRadius: 3,
-                    overflow: 'hidden',
-                    boxShadow: '0 24px 48px -12px rgba(0,0,0,0.18)',
-                    border: '1px solid rgba(0,0,0,0.06)',
-                    bgcolor: 'background.paper',
-                  }}
-                >
-                  {/* Browser chrome bar */}
-                  <Box sx={{ px: 2, py: 1, bgcolor: 'grey.100', borderBottom: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', gap: 0.8 }}>
-                    {['#EF4444', '#F59E0B', '#10B981'].map((c) => (
-                      <Box key={c} sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: c }} />
-                    ))}
-                    <Box sx={{ ml: 1, flex: 1, bgcolor: 'white', borderRadius: 1, px: 2, py: 0.4, fontSize: '0.75rem', color: 'text.disabled', border: '1px solid', borderColor: 'divider' }}>
-                      nppavalia.com.br/app/dashboard
+                <AnimatedSection animation="fadeLeft" delay={300} className="animate-float">
+                  <Box
+                    sx={{
+                      borderRadius: 3,
+                      overflow: 'hidden',
+                      boxShadow: '0 24px 48px -12px rgba(0,0,0,0.18)',
+                      border: '1px solid rgba(0,0,0,0.06)',
+                      bgcolor: 'background.paper',
+                    }}
+                  >
+                    {/* Browser chrome bar */}
+                    <Box sx={{ px: 2, py: 1, bgcolor: 'grey.100', borderBottom: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', gap: 0.8 }}>
+                      {['#EF4444', '#F59E0B', '#10B981'].map((c) => (
+                        <Box key={c} sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: c }} />
+                      ))}
+                      <Box sx={{ ml: 1, flex: 1, bgcolor: 'white', borderRadius: 1, px: 2, py: 0.4, fontSize: '0.75rem', color: 'text.disabled', border: '1px solid', borderColor: 'divider' }}>
+                        nppavalia.com.br/app/dashboard
+                      </Box>
                     </Box>
+                    <img
+                      src={DEMO_IMAGES.dashboard}
+                      alt="Dashboard da plataforma NPPAvalia com indicadores fictícios de pacientes e avaliações"
+                      width={800}
+                      height={500}
+                      style={{ width: '100%', height: 'auto', display: 'block' }}
+                    />
                   </Box>
-                  <img
-                    src={DEMO_IMAGES.dashboard}
-                    alt="Dashboard da plataforma NPPAvalia com indicadores fictícios de pacientes e avaliações"
-                    width={800}
-                    height={500}
-                    style={{ width: '100%', height: 'auto', display: 'block' }}
-                  />
-                </Box>
+                </AnimatedSection>
               </Grid>
             </Grid>
           </Container>
@@ -411,43 +448,60 @@ export default function HomePage() {
         >
           <Container maxWidth="md">
             <Stack spacing={4} alignItems="center" textAlign="center">
-              <SectionLabel>O que é o NPPAvalia</SectionLabel>
-              <SectionHeading>Uma plataforma criada para apoiar a rotina de avaliação psicopedagógica</SectionHeading>
-              <Typography variant="body1" color="text.secondary" sx={{ fontSize: '1.1rem', lineHeight: 1.8, maxWidth: 720 }}>
-                O <strong>NPPAvalia</strong> é um sistema de gestão clínica desenvolvido para psicopedagogos e neuropsicopedagogos.
-                Ele centraliza informações de pacientes, anamneses, prontuários psicopedagógicos, testes psicopedagógicos e relatórios psicopedagógicos
-                em um único ambiente digital — organizado, seguro e acessível.
-              </Typography>
-              <Typography variant="body1" color="text.secondary" sx={{ fontSize: '1.05rem', lineHeight: 1.8, maxWidth: 720 }}>
-                A plataforma <strong>não realiza diagnóstico</strong> e <strong>não substitui o profissional</strong>.
-                Ela apoia a organização e o registro de informações, a correção de alguns testes quando permitido, e a estruturação
-                de dados para que o psicopedagogo possa elaborar relatórios e devolutivas com mais clareza e agilidade.
-              </Typography>
-              <Grid container spacing={2} sx={{ mt: 2, textAlign: 'left' }} justifyContent="center">
-                {[
-                  'Avaliação psicopedagógica estruturada',
-                  'Prontuário psicopedagógico digital',
-                  'Gestão de pacientes centralizada',
-                  'Testes psicopedagógicos integrados',
-                  'Anamnese digital com link de acesso',
-                  'Relatórios psicopedagógicos organizados',
-                ].map((item) => (
-                  <Grid key={item} size={{ xs: 12, sm: 6 }}>
-                    <Stack direction="row" spacing={1.5} alignItems="flex-start">
-                      <CheckCircle size={18} color="#3B82F6" style={{ marginTop: 2, flexShrink: 0 }} />
-                      <Typography variant="body2" fontWeight={500}>{item}</Typography>
-                    </Stack>
-                  </Grid>
-                ))}
-              </Grid>
-              <Button
-                variant="outlined"
-                size="large"
-                onClick={() => navigate('/plataforma')}
-                sx={{ mt: 2, textTransform: 'none', fontWeight: 600, borderRadius: 2 }}
-              >
-                Saiba mais sobre a plataforma
-              </Button>
+              <AnimatedSection animation="fadeUp">
+                <SectionLabel>O que é o NPPAvalia</SectionLabel>
+                <SectionHeading>Uma plataforma criada para apoiar a rotina de avaliação psicopedagógica</SectionHeading>
+              </AnimatedSection>
+              <AnimatedSection animation="fadeUp" delay={150}>
+                <Typography variant="body1" color="text.secondary" sx={{ fontSize: '1.1rem', lineHeight: 1.8, maxWidth: 720, mb: 2 }}>
+                  O <strong>NPPAvalia</strong> é um sistema de gestão clínica desenvolvido para psicopedagogos e neuropsicopedagogos.
+                  Ele centraliza informações de pacientes, anamneses, prontuários psicopedagógicos, testes psicopedagógicos e relatórios psicopedagógicos
+                  em um único ambiente digital — organizado, seguro e acessível.
+                </Typography>
+                <Typography variant="body1" color="text.secondary" sx={{ fontSize: '1.05rem', lineHeight: 1.8, maxWidth: 720 }}>
+                  A plataforma <strong>não realiza diagnóstico</strong> e <strong>não substitui o profissional</strong>.
+                  Ela apoia a organização e o registro de informações, a correção de alguns testes quando permitido, e a estruturação
+                  de dados para que o psicopedagogo possa elaborar relatórios e devolutivas com mais clareza e agilidade.
+                </Typography>
+              </AnimatedSection>
+              <AnimatedSection animation="fadeUp" delay={300}>
+                <Grid container spacing={2} sx={{ mt: 2, textAlign: 'left' }} justifyContent="center">
+                  {[
+                    'Avaliação psicopedagógica estruturada',
+                    'Prontuário psicopedagógico digital',
+                    'Gestão de pacientes centralizada',
+                    'Testes psicopedagógicos integrados',
+                    'Anamnese digital com link de acesso',
+                    'Relatórios psicopedagógicos organizados',
+                  ].map((item) => (
+                    <Grid key={item} size={{ xs: 12, sm: 6 }}>
+                      <Stack direction="row" spacing={1.5} alignItems="flex-start">
+                        <CheckCircle size={18} color="#3B82F6" style={{ marginTop: 2, flexShrink: 0 }} />
+                        <Typography variant="body2" fontWeight={500}>{item}</Typography>
+                      </Stack>
+                    </Grid>
+                  ))}
+                </Grid>
+              </AnimatedSection>
+              <AnimatedSection animation="fadeUp" delay={400}>
+                <Button
+                  variant="outlined"
+                  size="large"
+                  onClick={() => navigate('/plataforma')}
+                  sx={{
+                    mt: 2,
+                    textTransform: 'none',
+                    fontWeight: 600,
+                    borderRadius: 2,
+                    '&:hover': {
+                      transform: 'translateY(-2px)',
+                      bgcolor: 'rgba(59, 130, 246, 0.04)',
+                    }
+                  }}
+                >
+                  Saiba mais sobre a plataforma
+                </Button>
+              </AnimatedSection>
             </Stack>
           </Container>
         </Box>
@@ -461,53 +515,61 @@ export default function HomePage() {
         >
           <Container maxWidth="lg">
             <Stack spacing={6}>
-              <Stack spacing={2} textAlign="center" alignItems="center">
+              <AnimatedSection animation="fadeUp" textAlign="center" alignItems="center">
                 <SectionLabel>Para quem é</SectionLabel>
-                <SectionHeading>Feito para psicopedagógos e neuropsicopedagogos</SectionHeading>
+                <SectionHeading>Feito para psicopedagogos e neuropsicopedagogos</SectionHeading>
                 <Typography color="text.secondary" sx={{ maxWidth: 600, lineHeight: 1.7 }}>
                   A plataforma foi desenvolvida com foco nas necessidades reais de quem realiza avaliações
                   psicopedagógicas e precisa de organização clínica no dia a dia.
                 </Typography>
-              </Stack>
+              </AnimatedSection>
               <Grid container spacing={3}>
-                {targetAudience.map((item) => {
+                {targetAudience.map((item, index) => {
                   const Icon = item.icon;
                   return (
                     <Grid key={item.title} size={{ xs: 12, sm: 6, md: 3 }}>
-                      <Card
-                        sx={{
-                          height: '100%',
-                          borderRadius: 3,
-                          border: '1px solid',
-                          borderColor: 'divider',
-                          boxShadow: 'none',
-                          transition: 'all 0.25s',
-                          '&:hover': { boxShadow: 4, borderColor: 'primary.light', transform: 'translateY(-4px)' },
-                        }}
-                      >
-                        <CardContent sx={{ p: 3.5 }}>
-                          <Box
-                            sx={{
-                              width: 52,
-                              height: 52,
-                              borderRadius: 2,
-                              bgcolor: 'primary.main',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              mb: 2.5,
-                            }}
-                          >
-                            <Icon size={26} color="white" />
-                          </Box>
-                          <Typography component="h3" variant="h6" fontWeight={700} sx={{ mb: 1 }}>
-                            {item.title}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
-                            {item.description}
-                          </Typography>
-                        </CardContent>
-                      </Card>
+                      <AnimatedSection animation="fadeUp" delay={index * 100} height="100%">
+                        <Card
+                          sx={{
+                            height: '100%',
+                            borderRadius: 3,
+                            border: '1px solid',
+                            borderColor: 'divider',
+                            boxShadow: 'none',
+                            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                            '&:hover': {
+                              boxShadow: '0 12px 30px rgba(0,0,0,0.06)',
+                              borderColor: 'primary.light',
+                              transform: 'translateY(-6px)'
+                            },
+                          }}
+                        >
+                          <CardContent sx={{ p: 3.5 }}>
+                            <Box
+                              sx={{
+                                width: 52,
+                                height: 52,
+                                borderRadius: 2,
+                                bgcolor: 'primary.main',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                mb: 2.5,
+                                transition: 'transform 0.3s ease',
+                                '&:hover': { transform: 'scale(1.1) rotate(4deg)' }
+                              }}
+                            >
+                              <Icon size={26} color="white" />
+                            </Box>
+                            <Typography component="h3" variant="h6" fontWeight={700} sx={{ mb: 1 }}>
+                              {item.title}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                              {item.description}
+                            </Typography>
+                          </CardContent>
+                        </Card>
+                      </AnimatedSection>
                     </Grid>
                   );
                 })}
@@ -525,55 +587,63 @@ export default function HomePage() {
         >
           <Container maxWidth="lg">
             <Stack spacing={6}>
-              <Stack spacing={2} textAlign="center" alignItems="center">
+              <AnimatedSection animation="fadeUp" textAlign="center" alignItems="center">
                 <SectionLabel>Principais recursos</SectionLabel>
                 <SectionHeading>Tudo que você precisa em um só lugar</SectionHeading>
                 <Typography color="text.secondary" sx={{ maxWidth: 600, lineHeight: 1.7 }}>
                   Ferramentas desenvolvidas para apoiar a rotina clínica de psicopedagogos e
                   neuropsicopedagogos, do cadastro do paciente ao relatório final.
                 </Typography>
-              </Stack>
+              </AnimatedSection>
               <Grid container spacing={3}>
-                {resources.map((item) => {
+                {resources.map((item, index) => {
                   const Icon = item.icon;
                   return (
                     <Grid key={item.title} size={{ xs: 12, sm: 6, md: 3 }}>
-                      <Card
-                        onClick={() => navigate(item.path)}
-                        sx={{
-                          height: '100%',
-                          borderRadius: 3,
-                          border: '1px solid',
-                          borderColor: 'divider',
-                          boxShadow: 'none',
-                          cursor: 'pointer',
-                          transition: 'all 0.25s',
-                          '&:hover': { boxShadow: 3, borderColor: 'primary.main', transform: 'translateY(-3px)' },
-                        }}
-                      >
-                        <CardContent sx={{ p: 3 }}>
-                          <Box
-                            sx={{
-                              width: 44,
-                              height: 44,
-                              borderRadius: 2,
-                              bgcolor: 'primary.main',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              mb: 2,
-                            }}
-                          >
-                            <Icon size={22} color="white" />
-                          </Box>
-                          <Typography component="h3" variant="subtitle1" fontWeight={700} sx={{ mb: 1 }}>
-                            {item.title}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
-                            {item.description}
-                          </Typography>
-                        </CardContent>
-                      </Card>
+                      <AnimatedSection animation="fadeUp" delay={index * 80} height="100%">
+                        <Card
+                          onClick={() => navigate(item.path)}
+                          sx={{
+                            height: '100%',
+                            borderRadius: 3,
+                            border: '1px solid',
+                            borderColor: 'divider',
+                            boxShadow: 'none',
+                            cursor: 'pointer',
+                            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                            '&:hover': {
+                              boxShadow: '0 12px 30px rgba(0,0,0,0.06)',
+                              borderColor: 'primary.main',
+                              transform: 'translateY(-5px)'
+                            },
+                          }}
+                        >
+                          <CardContent sx={{ p: 3 }}>
+                            <Box
+                              sx={{
+                                width: 44,
+                                height: 44,
+                                borderRadius: 2,
+                                bgcolor: 'primary.main',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                mb: 2,
+                                transition: 'transform 0.3s ease',
+                                '&:hover': { transform: 'scale(1.1) rotate(-4deg)' }
+                              }}
+                            >
+                              <Icon size={22} color="white" />
+                            </Box>
+                            <Typography component="h3" variant="subtitle1" fontWeight={700} sx={{ mb: 1 }}>
+                              {item.title}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                              {item.description}
+                            </Typography>
+                          </CardContent>
+                        </Card>
+                      </AnimatedSection>
                     </Grid>
                   );
                 })}
@@ -591,50 +661,58 @@ export default function HomePage() {
         >
           <Container maxWidth="lg">
             <Stack spacing={6}>
-              <Stack spacing={2} textAlign="center" alignItems="center">
+              <AnimatedSection animation="fadeUp" textAlign="center" alignItems="center">
                 <SectionLabel>Como funciona</SectionLabel>
                 <SectionHeading>Da anamnese ao relatório, passo a passo</SectionHeading>
                 <Typography color="text.secondary" sx={{ maxWidth: 560, lineHeight: 1.7 }}>
                   Um fluxo simples e organizado para apoiar todo o processo de avaliação psicopedagógica.
                 </Typography>
-              </Stack>
+              </AnimatedSection>
               <Grid container spacing={3}>
                 {steps.map((step, i) => (
                   <Grid key={i} size={{ xs: 12, sm: 6, md: 4 }}>
-                    <Box
-                      sx={{
-                        bgcolor: 'background.paper',
-                        borderRadius: 3,
-                        p: 3.5,
-                        border: '1px solid',
-                        borderColor: 'divider',
-                        height: '100%',
-                        position: 'relative',
-                        overflow: 'hidden',
-                        '&::before': {
-                          content: '""',
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          width: 4,
+                    <AnimatedSection animation="fadeUp" delay={i * 100} height="100%">
+                      <Box
+                        sx={{
+                          bgcolor: 'background.paper',
+                          borderRadius: 3,
+                          p: 3.5,
+                          border: '1px solid',
+                          borderColor: 'divider',
                           height: '100%',
-                          bgcolor: 'primary.main',
-                          borderRadius: '3px 0 0 3px',
-                        },
-                      }}
-                    >
-                      <Typography
-                        sx={{ fontSize: '2rem', fontWeight: 800, color: 'primary.main', opacity: 0.15, lineHeight: 1, mb: 1.5 }}
+                          position: 'relative',
+                          overflow: 'hidden',
+                          transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                          '&:hover': {
+                            boxShadow: '0 12px 30px rgba(0,0,0,0.05)',
+                            transform: 'translateY(-4px)',
+                            borderColor: 'primary.light',
+                          },
+                          '&::before': {
+                            content: '""',
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: 4,
+                            height: '100%',
+                            bgcolor: 'primary.main',
+                            borderRadius: '3px 0 0 3px',
+                          },
+                        }}
                       >
-                        {step.num}
-                      </Typography>
-                      <Typography component="h3" variant="subtitle1" fontWeight={700} sx={{ mb: 1 }}>
-                        {step.title}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
-                        {step.desc}
-                      </Typography>
-                    </Box>
+                        <Typography
+                          sx={{ fontSize: '2rem', fontWeight: 800, color: 'primary.main', opacity: 0.15, lineHeight: 1, mb: 1.5 }}
+                        >
+                          {step.num}
+                        </Typography>
+                        <Typography component="h3" variant="subtitle1" fontWeight={700} sx={{ mb: 1 }}>
+                          {step.title}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                          {step.desc}
+                        </Typography>
+                      </Box>
+                    </AnimatedSection>
                   </Grid>
                 ))}
               </Grid>
@@ -651,13 +729,13 @@ export default function HomePage() {
         >
           <Container maxWidth="lg">
             <Stack spacing={5}>
-              <Stack spacing={2} textAlign="center" alignItems="center">
+              <AnimatedSection animation="fadeUp" textAlign="center" alignItems="center">
                 <SectionLabel>Veja a plataforma</SectionLabel>
                 <SectionHeading>Conheça a interface da plataforma</SectionHeading>
                 <Typography color="text.secondary" sx={{ maxWidth: 560, lineHeight: 1.7 }}>
                   Todas as telas abaixo utilizam dados <strong>100% fictícios</strong>, criados apenas para demonstração. Nenhum dado real de paciente é exibido.
                 </Typography>
-              </Stack>
+              </AnimatedSection>
               <Box>
                 <Tabs
                   value={screenshotTab}
@@ -726,51 +804,59 @@ export default function HomePage() {
         >
           <Container maxWidth="lg">
             <Stack spacing={6}>
-              <Stack spacing={2} textAlign="center" alignItems="center">
+              <AnimatedSection animation="fadeUp" textAlign="center" alignItems="center">
                 <SectionLabel>Benefícios</SectionLabel>
                 <SectionHeading>Mais organização para a rotina psicopedagógica</SectionHeading>
                 <Typography color="text.secondary" sx={{ maxWidth: 580, lineHeight: 1.7 }}>
                   O NPPAvalia foi pensado para reduzir a carga administrativa e apoiar a organização clínica, deixando mais espaço para o trabalho técnico do profissional.
                 </Typography>
-              </Stack>
+              </AnimatedSection>
               <Grid container spacing={3}>
-                {benefits.map((item) => {
+                {benefits.map((item, index) => {
                   const Icon = item.icon;
                   return (
                     <Grid key={item.title} size={{ xs: 12, sm: 6, md: 4 }}>
-                      <Box
-                        sx={{
-                          bgcolor: 'background.paper',
-                          borderRadius: 3,
-                          p: 3.5,
-                          border: '1px solid',
-                          borderColor: 'divider',
-                          height: '100%',
-                          transition: 'all 0.2s',
-                          '&:hover': { boxShadow: 2, borderColor: 'primary.light' },
-                        }}
-                      >
+                      <AnimatedSection animation="fadeUp" delay={index * 100} height="100%">
                         <Box
                           sx={{
-                            width: 48,
-                            height: 48,
-                            borderRadius: 2,
-                            bgcolor: 'primary.main',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            mb: 2,
+                            bgcolor: 'background.paper',
+                            borderRadius: 3,
+                            p: 3.5,
+                            border: '1px solid',
+                            borderColor: 'divider',
+                            height: '100%',
+                            transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                            '&:hover': {
+                              boxShadow: '0 12px 30px rgba(0,0,0,0.05)',
+                              borderColor: 'primary.light',
+                              transform: 'translateY(-5px)',
+                            },
                           }}
                         >
-                          <Icon size={24} color="white" />
+                          <Box
+                            sx={{
+                              width: 48,
+                              height: 48,
+                              borderRadius: 2,
+                              bgcolor: 'primary.main',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              mb: 2,
+                              transition: 'transform 0.3s ease',
+                              '&:hover': { transform: 'scale(1.1) rotate(4deg)' }
+                            }}
+                          >
+                            <Icon size={24} color="white" />
+                          </Box>
+                          <Typography component="h3" variant="subtitle1" fontWeight={700} sx={{ mb: 1 }}>
+                            {item.title}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                            {item.desc}
+                          </Typography>
                         </Box>
-                        <Typography component="h3" variant="subtitle1" fontWeight={700} sx={{ mb: 1 }}>
-                          {item.title}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
-                          {item.desc}
-                        </Typography>
-                      </Box>
+                      </AnimatedSection>
                     </Grid>
                   );
                 })}
@@ -784,41 +870,53 @@ export default function HomePage() {
           component="section"
           id="confianca"
           aria-label="Compromisso e cuidados da plataforma NPPAvalia"
-          sx={{ py: { xs: 8, md: 12 }, bgcolor: 'primary.main', color: 'white' }}
+          sx={{ py: { xs: 8, md: 12 }, bgcolor: 'primary.main', color: 'white', overflow: 'hidden' }}
         >
           <Container maxWidth="lg">
             <Grid container spacing={6} alignItems="center">
               <Grid size={{ xs: 12, md: 6 }}>
-                <SectionLabel>Nossa abordagem</SectionLabel>
-                <Typography
-                  component="h2"
-                  variant="h3"
-                  fontWeight={700}
-                  sx={{ fontSize: { xs: '1.6rem', md: '2.2rem' }, lineHeight: 1.25, mb: 3, color: 'white' }}
-                >
-                  Uma plataforma com foco no trabalho técnico do psicopedagogo
-                </Typography>
-                <Typography sx={{ color: 'rgba(255,255,255,0.85)', lineHeight: 1.8, mb: 3 }}>
-                  O NPPAvalia foi desenvolvido com atenção ao rigor técnico da prática psicopedagógica.
-                  Nossa missão é apoiar o trabalho do profissional — nunca substituí-lo.
-                </Typography>
-                <Button
-                  variant="contained"
-                  size="large"
-                  onClick={() => navigate('/signup')}
-                  sx={{
-                    bgcolor: 'white',
-                    color: 'primary.main',
-                    fontWeight: 700,
-                    textTransform: 'none',
-                    borderRadius: 2,
-                    px: 4,
-                    '&:hover': { bgcolor: 'grey.100' },
-                  }}
-                  endIcon={<ArrowRight size={18} />}
-                >
-                  Criar conta gratuita
-                </Button>
+                <AnimatedSection animation="fadeRight">
+                  <Chip
+                    label="Nossa abordagem"
+                    size="small"
+                    sx={{ bgcolor: 'rgba(255,255,255,0.2)', color: 'white', fontWeight: 700, fontSize: '0.7rem', letterSpacing: 1, textTransform: 'uppercase', mb: 2 }}
+                  />
+                  <Typography
+                    component="h2"
+                    variant="h3"
+                    fontWeight={700}
+                    sx={{ fontSize: { xs: '1.6rem', md: '2.2rem' }, lineHeight: 1.25, mb: 3, color: 'white' }}
+                  >
+                    Uma plataforma com foco no trabalho técnico do psicopedagogo
+                  </Typography>
+                  <Typography sx={{ color: 'rgba(255,255,255,0.85)', lineHeight: 1.8, mb: 3 }}>
+                    O NPPAvalia foi desenvolvido com atenção ao rigor técnico da prática psicopedagógica.
+                    Nossa missão é apoiar o trabalho do profissional — nunca substituí-lo.
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    onClick={() => navigate('/signup')}
+                    sx={{
+                      bgcolor: 'white',
+                      color: 'primary.main',
+                      fontWeight: 700,
+                      textTransform: 'none',
+                      borderRadius: 2,
+                      px: 4,
+                      py: 1.5,
+                      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
+                      '&:hover': {
+                        bgcolor: 'grey.100',
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 12px 28px rgba(0, 0, 0, 0.25)',
+                      },
+                    }}
+                    endIcon={<ArrowRight size={18} />}
+                  >
+                    Criar conta gratuita
+                  </Button>
+                </AnimatedSection>
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <Stack spacing={2.5}>
@@ -827,27 +925,33 @@ export default function HomePage() {
                     { icon: BookOpen, title: 'Apoio ao trabalho técnico', desc: 'A plataforma organiza registros e apoia o processo — o julgamento clínico é sempre do profissional.' },
                     { icon: Brain, title: 'Sem substituir a análise clínica', desc: 'Nenhum resultado gerado pela plataforma substitui a avaliação, análise ou conclusão do psicopedagogo.' },
                     { icon: FileText, title: 'Sem conteúdo protegido exposto', desc: 'A plataforma não expõe materiais, tabelas ou critérios de correção restritos dos instrumentos utilizados.' },
-                  ].map((item) => {
+                  ].map((item, index) => {
                     const Icon = item.icon;
                     return (
-                      <Box
-                        key={item.title}
-                        sx={{
-                          bgcolor: 'rgba(255,255,255,0.12)',
-                          backdropFilter: 'blur(4px)',
-                          borderRadius: 2,
-                          p: 2.5,
-                          border: '1px solid rgba(255,255,255,0.2)',
-                        }}
-                      >
-                        <Stack direction="row" spacing={2} alignItems="flex-start">
-                          <Icon size={22} color="white" style={{ flexShrink: 0, marginTop: 2 }} />
-                          <Box>
-                            <Typography fontWeight={700} sx={{ mb: 0.5, color: 'white' }}>{item.title}</Typography>
-                            <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.75)', lineHeight: 1.6 }}>{item.desc}</Typography>
-                          </Box>
-                        </Stack>
-                      </Box>
+                      <AnimatedSection key={item.title} animation="fadeLeft" delay={index * 100}>
+                        <Box
+                          sx={{
+                            bgcolor: 'rgba(255,255,255,0.12)',
+                            backdropFilter: 'blur(4px)',
+                            borderRadius: 2,
+                            p: 2.5,
+                            border: '1px solid rgba(255,255,255,0.2)',
+                            transition: 'all 0.2s',
+                            '&:hover': {
+                              bgcolor: 'rgba(255,255,255,0.18)',
+                              transform: 'translateX(4px)',
+                            }
+                          }}
+                        >
+                          <Stack direction="row" spacing={2} alignItems="flex-start">
+                            <Icon size={22} color="white" style={{ flexShrink: 0, marginTop: 2 }} />
+                            <Box>
+                              <Typography fontWeight={700} sx={{ mb: 0.5, color: 'white' }}>{item.title}</Typography>
+                              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.75)', lineHeight: 1.6 }}>{item.desc}</Typography>
+                            </Box>
+                          </Stack>
+                        </Box>
+                      </AnimatedSection>
                     );
                   })}
                 </Stack>
@@ -865,41 +969,43 @@ export default function HomePage() {
         >
           <Container maxWidth="md">
             <Stack spacing={5}>
-              <Stack spacing={2} textAlign="center" alignItems="center">
+              <AnimatedSection animation="fadeUp" textAlign="center" alignItems="center">
                 <SectionLabel>Perguntas frequentes</SectionLabel>
                 <SectionHeading>Dúvidas comuns sobre o NPPAvalia</SectionHeading>
-              </Stack>
+              </AnimatedSection>
               <Box>
                 {faqs.map((faq, i) => (
-                  <Accordion
-                    key={i}
-                    expanded={expandedFaq === `faq-${i}`}
-                    onChange={handleFaqChange(`faq-${i}`)}
-                    disableGutters
-                    elevation={0}
-                    sx={{
-                      border: '1px solid',
-                      borderColor: 'divider',
-                      borderRadius: '12px !important',
-                      mb: 1.5,
-                      '&::before': { display: 'none' },
-                      '&.Mui-expanded': { borderColor: 'primary.main' },
-                    }}
-                  >
-                    <AccordionSummary
-                      expandIcon={<ChevronDown size={20} />}
-                      sx={{ px: 3, py: 1, '& .MuiAccordionSummary-content': { my: 1.5 } }}
+                  <AnimatedSection key={i} animation="fadeUp" delay={i * 60}>
+                    <Accordion
+                      expanded={expandedFaq === `faq-${i}`}
+                      onChange={handleFaqChange(`faq-${i}`)}
+                      disableGutters
+                      elevation={0}
+                      sx={{
+                        border: '1px solid',
+                        borderColor: 'divider',
+                        borderRadius: '12px !important',
+                        mb: 1.5,
+                        '&::before': { display: 'none' },
+                        '&.Mui-expanded': { borderColor: 'primary.main', boxShadow: '0 4px 20px rgba(91, 19, 236, 0.05)' },
+                        transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                      }}
                     >
-                      <Typography fontWeight={600} sx={{ fontSize: '0.95rem' }}>
-                        {faq.q}
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails sx={{ px: 3, pb: 2.5 }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.8 }}>
-                        {faq.a}
-                      </Typography>
-                    </AccordionDetails>
-                  </Accordion>
+                      <AccordionSummary
+                        expandIcon={<ChevronDown size={20} />}
+                        sx={{ px: 3, py: 1, '& .MuiAccordionSummary-content': { my: 1.5 } }}
+                      >
+                        <Typography fontWeight={600} sx={{ fontSize: '0.95rem' }}>
+                          {faq.q}
+                        </Typography>
+                      </AccordionSummary>
+                      <AccordionDetails sx={{ px: 3, pb: 2.5 }}>
+                        <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.8 }}>
+                          {faq.a}
+                        </Typography>
+                      </AccordionDetails>
+                    </Accordion>
+                  </AnimatedSection>
                 ))}
               </Box>
             </Stack>
@@ -911,51 +1017,76 @@ export default function HomePage() {
           component="section"
           id="cta-final"
           aria-label="Chamada final para cadastro"
-          sx={{ py: { xs: 8, md: 12 }, bgcolor: 'grey.50' }}
+          sx={{ py: { xs: 8, md: 12 }, bgcolor: 'grey.50', overflow: 'hidden' }}
         >
           <Container maxWidth="md">
-            <Box
-              sx={{
-                textAlign: 'center',
-                bgcolor: 'background.paper',
-                borderRadius: 4,
-                p: { xs: 5, md: 8 },
-                border: '1px solid',
-                borderColor: 'divider',
-                boxShadow: '0 8px 40px rgba(59,130,246,0.08)',
-              }}
-            >
-              <Typography
-                component="h2"
-                variant="h3"
-                fontWeight={800}
-                sx={{ fontSize: { xs: '1.5rem', md: '2rem' }, lineHeight: 1.3, mb: 2 }}
+            <AnimatedSection animation="scaleIn">
+              <Box
+                sx={{
+                  textAlign: 'center',
+                  bgcolor: 'background.paper',
+                  borderRadius: 4,
+                  p: { xs: 5, md: 8 },
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  boxShadow: '0 12px 40px rgba(91, 19, 236, 0.06)',
+                }}
               >
-                Organize sua rotina psicopedagógica em uma plataforma feita para avaliações, pacientes e relatórios.
-              </Typography>
-              <Typography color="text.secondary" sx={{ mb: 4, fontSize: '1.05rem', lineHeight: 1.7 }}>
-                Crie sua conta gratuitamente e conheça os recursos disponíveis para psicopedagogos e neuropsicopedagogos.
-              </Typography>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
-                <Button
-                  variant="contained"
-                  size="large"
-                  endIcon={<ArrowRight size={18} />}
-                  onClick={() => navigate('/signup')}
-                  sx={{ px: 5, py: 1.5, fontWeight: 700, textTransform: 'none', fontSize: '1rem', borderRadius: 2 }}
+                <Typography
+                  component="h2"
+                  variant="h3"
+                  fontWeight={800}
+                  sx={{ fontSize: { xs: '1.5rem', md: '2rem' }, lineHeight: 1.3, mb: 2 }}
                 >
-                  Criar conta
-                </Button>
-                <Button
-                  variant="outlined"
-                  size="large"
-                  onClick={() => navigate('/plataforma')}
-                  sx={{ px: 5, py: 1.5, fontWeight: 600, textTransform: 'none', fontSize: '1rem', borderRadius: 2 }}
-                >
-                  Ver recursos da plataforma
-                </Button>
-              </Stack>
-            </Box>
+                  Organize sua rotina psicopedagógica em uma plataforma feita para avaliações, pacientes e relatórios.
+                </Typography>
+                <Typography color="text.secondary" sx={{ mb: 4, fontSize: '1.05rem', lineHeight: 1.7 }}>
+                  Crie sua conta gratuitamente e conheça os recursos disponíveis para psicopedagogos e neuropsicopedagogos.
+                </Typography>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
+                  <Button
+                    variant="contained"
+                    size="large"
+                    endIcon={<ArrowRight size={18} />}
+                    onClick={() => navigate('/signup')}
+                    sx={{
+                      px: 5,
+                      py: 1.5,
+                      fontWeight: 700,
+                      textTransform: 'none',
+                      fontSize: '1rem',
+                      borderRadius: 2,
+                      boxShadow: '0 8px 24px rgba(91, 19, 236, 0.25)',
+                      '&:hover': {
+                        boxShadow: '0 12px 28px rgba(91, 19, 236, 0.35)',
+                        transform: 'translateY(-2px)',
+                      }
+                    }}
+                  >
+                    Criar conta
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    size="large"
+                    onClick={() => navigate('/plataforma')}
+                    sx={{
+                      px: 5,
+                      py: 1.5,
+                      fontWeight: 600,
+                      textTransform: 'none',
+                      fontSize: '1rem',
+                      borderRadius: 2,
+                      '&:hover': {
+                        transform: 'translateY(-2px)',
+                        bgcolor: 'rgba(59, 130, 246, 0.04)',
+                      }
+                    }}
+                  >
+                    Ver recursos da plataforma
+                  </Button>
+                </Stack>
+              </Box>
+            </AnimatedSection>
           </Container>
         </Box>
       </main>

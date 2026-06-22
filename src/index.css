@@ -111,3 +111,55 @@
     min-height: 500px;
   }
 }
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes pulse-soft {
+  0% {
+    box-shadow: 0 0 0 0 rgba(91, 19, 236, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(91, 19, 236, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(91, 19, 236, 0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2.5s infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, var(--color-primary) 25%, #a78bfa 50%, var(--color-primary) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2.5s infinite linear;
+}
+
+/* Scrollbar transitions and interactive elements */
+a, button {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}

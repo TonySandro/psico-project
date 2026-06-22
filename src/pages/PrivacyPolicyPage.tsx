@@ -1,99 +1,58 @@
-import { useNavigate } from 'react-router-dom';
-import { AppBar, Toolbar, Button, Typography, Box, Container, Stack, Divider } from '@mui/material';
-import { HeartPulse, ArrowLeft, Shield } from 'lucide-react';
+import PublicNavbar from '@/components/PublicNavbar';
+import PublicFooter from '@/components/PublicFooter';
+import AnimatedSection from '@/components/AnimatedSection';
+import { Typography, Box, Container, Stack, Divider } from '@mui/material';
+import { Shield } from 'lucide-react';
 
 export default function PrivacyPolicyPage() {
-  const navigate = useNavigate();
+
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Navbar */}
-      <AppBar
-        position="fixed"
-        sx={{
-          backgroundColor: 'background.paper',
-          color: 'text.primary',
-          boxShadow: 1
-        }}
-      >
-        <Toolbar>
-          <Stack
-            direction="row"
-            alignItems="center"
-            spacing={1}
-            sx={{ flexGrow: 1, cursor: 'pointer' }}
-            onClick={() => navigate('/')}
-          >
-            <Box
-              sx={{
-                width: 40,
-                height: 40,
-                borderRadius: '8px',
-                bgcolor: 'primary.main',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <HeartPulse size={24} color="white" />
-            </Box>
-            <Typography variant="h6" fontWeight={700}>
-              NPPAvalia
-            </Typography>
-          </Stack>
-
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Button
-              startIcon={<ArrowLeft size={16} />}
-              onClick={() => navigate('/')}
-              sx={{ display: { xs: 'none', sm: 'flex' } }}
-            >
-              Voltar
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => navigate('/login')}
-            >
-              Entrar
-            </Button>
-          </Stack>
-        </Toolbar>
-      </AppBar>
+      <header><PublicNavbar /></header>
 
       {/* Hero Section */}
       <Box
         sx={{
-          pt: { xs: 12, md: 16 },
-          pb: { xs: 6, md: 8 },
+          pt: { xs: 14, md: 18 },
+          pb: { xs: 8, md: 10 },
           background: 'linear-gradient(135deg, #EFF6FF 0%, #F0FDFA 100%)',
-          textAlign: 'center'
+          textAlign: 'center',
+          overflow: 'hidden',
         }}
       >
         <Container maxWidth="md">
           <Stack spacing={2} alignItems="center">
-            <Box sx={{ color: 'primary.main', display: 'flex', justifyContent: 'center' }}>
-              <Shield size={48} />
-            </Box>
-            <Typography
-              variant="h2"
-              fontWeight={800}
-              sx={{
-                fontSize: { xs: '2rem', md: '3rem' },
-                lineHeight: 1.2,
-                mb: 1
-              }}
-            >
-              Política de Privacidade
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Última atualização: 27 de maio de 2026.
-            </Typography>
+            <AnimatedSection animation="fadeUp" delay={0}>
+              <Box sx={{ color: 'primary.main', display: 'flex', justifyContent: 'center' }}>
+                <Shield size={48} />
+              </Box>
+            </AnimatedSection>
+            <AnimatedSection animation="fadeUp" delay={150}>
+              <Typography
+                variant="h2"
+                fontWeight={800}
+                sx={{
+                  fontSize: { xs: '2rem', md: '3rem' },
+                  lineHeight: 1.2,
+                  mb: 1
+                }}
+              >
+                Política de Privacidade
+              </Typography>
+            </AnimatedSection>
+            <AnimatedSection animation="fadeUp" delay={300}>
+              <Typography variant="body1" color="text.secondary">
+                Última atualização: 27 de maio de 2026.
+              </Typography>
+            </AnimatedSection>
           </Stack>
         </Container>
       </Box>
 
       {/* Main Content */}
       <Container maxWidth="md" sx={{ py: 8, flexGrow: 1 }}>
+        <AnimatedSection animation="fadeUp" delay={100}>
         <Stack spacing={4} sx={{ fontSize: '1rem', lineHeight: 1.7, color: 'text.secondary' }}>
           <Typography variant="body1" sx={{ fontSize: '1.1rem' }}>
             A sua privacidade é de extrema importância para nós do <strong>NPPAvalia</strong>. Esta Política de Privacidade descreve como coletamos, usamos, armazenamos e protegemos as informações pessoais e dados de saúde sensíveis dos profissionais de psicopedagogia/neuropsicopedagogia e de seus respectivos pacientes, em conformidade com a <strong>Lei Geral de Proteção de Dados Pessoais (LGPD - Lei nº 13.709/2018)</strong>.
@@ -192,43 +151,10 @@ export default function PrivacyPolicyPage() {
             </Typography>
           </Box>
         </Stack>
+        </AnimatedSection>
       </Container>
 
-      {/* Footer */}
-      <Box
-        sx={{
-          bgcolor: 'grey.900',
-          color: 'white',
-          py: 6,
-          mt: 'auto'
-        }}
-      >
-        <Container maxWidth="lg">
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
-            <Stack direction="row" alignItems="center" spacing={1}>
-              <Box
-                sx={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: '6px',
-                  bgcolor: 'primary.main',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <HeartPulse size={18} color="white" />
-              </Box>
-              <Typography variant="h6" fontWeight={700}>
-                NPPAvalia
-              </Typography>
-            </Stack>
-            <Typography variant="body2" sx={{ opacity: 0.6 }}>
-              © {new Date().getFullYear()} NPPAvalia. Todos os direitos reservados.
-            </Typography>
-          </Box>
-        </Container>
-      </Box>
+      <PublicFooter />
     </Box>
   );
 }
