@@ -84,7 +84,7 @@ export default function PatientDetailPage() {
             <AnamnesisCard patientId={patient.id} />
             <TeacherReportCard patientId={patient.id} />
             <AssessmentListCard protocols={patient.protocols} />
-            <ReportListCard patientId={patient.id} report={patient.report} />
+            <ReportListCard patientId={patient.id} patientName={patient.name} report={patient.report} />
           </Stack>
         </Grid>
       </Grid>

@@ -49,5 +49,17 @@ export const reportService = {
             },
         });
         return response.data;
+    },
+
+    /**
+     * Baixa o relatório em formato Word .docx.
+     * Rota: GET /reports/:id/download-docx
+     */
+    downloadReportDocx: async (id: string) => {
+        const response = await api.get<Blob>(`/reports/${id}/download-docx`, {
+            responseType: 'blob',
+        });
+        return response.data;
     }
 };
+

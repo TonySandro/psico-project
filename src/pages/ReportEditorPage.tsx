@@ -26,7 +26,9 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
-    DialogActions
+    DialogActions,
+    Snackbar,
+    Alert
 } from '@mui/material';
 import type { SelectChangeEvent } from '@mui/material';
 import {
@@ -42,12 +44,14 @@ import {
     ListOrdered,
 
     Save,
-    X
+    X,
+    FileDown
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { useGetReport, useUpdateReport, useUploadImage } from '@/hooks/useReports';
 import { usePatient } from '@/hooks/usePatients';
 import { useAutosave } from '@/hooks/useAutosave';
+import { reportService } from '@/services/reportService';
 import { useWordCount } from '@/hooks/useWordCount';
 import { formatDistanceToNow } from '@/utils/dateUtils';
 
@@ -82,6 +86,55 @@ export default function ReportEditorPage() {
     const [reportType, setReportType] = useState('Avaliação Inicial');
 
     const [showDiscardDialog, setShowDiscardDialog] = useState(false);
+    const [isDownloadingDocx, setIsDownloadingDocx] = useState(false);
+    const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
+        open: false,
+        message: '',
+        severity: 'success'
+    });
+
+    const closeSnackbar = () => setSnackbar(s => ({ ...s, open: false }));
+
+    const handleDownloadDocx = async () => {
+        if (!reportId) return;
+        setIsDownloadingDocx(true);
+        try {
+            const blob = await reportService.downloadReportDocx(reportId);
+            
+            const patientSlug = patient?.name
+                ? patient.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-')
+                : 'paciente';
+            const fileName = `relatorio-${patientSlug}.docx`;
+
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode?.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            
+            setSnackbar({ open: true, message: 'Relatório baixado com sucesso!', severity: 'success' });
+        } catch (error: any) {
+            console.error('Failed to download report:', error);
+            let errorMessage = 'Erro ao baixar o relatório em Word. Tente novamente.';
+            if (error.response?.data instanceof Blob) {
+                try {
+                    const text = await error.response.data.text();
+                    const json = JSON.parse(text);
+                    if (json.message) {
+                        errorMessage = json.message;
+                    }
+                } catch (_) {}
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            setSnackbar({ open: true, message: errorMessage, severity: 'error' });
+        } finally {
+            setIsDownloadingDocx(false);
+        }
+    };
 
     const { data: report, isLoading: loadingReport } = useGetReport(reportId || '');
     const { data: patient } = usePatient(patientId || report?.patientId || '');
@@ -273,6 +326,19 @@ export default function ReportEditorPage() {
                             <Chip label="Erro ao salvar" color="error" size="small" />
                         )}
                     </Stack>
+
+                    {/* Download Button */}
+                    {reportId && (
+                        <Button
+                            variant="outlined"
+                            startIcon={isDownloadingDocx ? <CircularProgress size={18} color="inherit" /> : <FileDown size={18} />}
+                            onClick={handleDownloadDocx}
+                            disabled={isDownloadingDocx}
+                            sx={{ mr: 2 }}
+                        >
+                            {isDownloadingDocx ? 'Gerando...' : 'Baixar Word'}
+                        </Button>
+                    )}
 
                     {/* Save Button */}
                     <Button
@@ -543,6 +609,13 @@ export default function ReportEditorPage() {
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            {/* Snackbar para feedback de download */}
+            <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={closeSnackbar} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+                <Alert onClose={closeSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 }

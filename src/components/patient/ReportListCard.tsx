@@ -1,20 +1,71 @@
-
-import { Card, CardContent, Typography, Button, Stack, Box, Grid, Chip, Alert, CircularProgress } from '@mui/material';
-import { FileText, Plus, FileType } from 'lucide-react';
+import { useState } from 'react';
+import { Card, CardContent, Typography, Button, Stack, Box, Grid, Chip, Alert, CircularProgress, Snackbar } from '@mui/material';
+import { FileText, Plus, FileType, FileDown } from 'lucide-react';
 import type { Report } from '@/types/schema';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
 import { useCreateReport } from '@/hooks/useReports';
+import { reportService } from '@/services/reportService';
 
 interface ReportListCardProps {
     report?: Report | null;
     patientId: string;
+    patientName?: string;
 }
 
-export default function ReportListCard({ report, patientId }: ReportListCardProps) {
+export default function ReportListCard({ report, patientId, patientName }: ReportListCardProps) {
     const navigate = useNavigate();
     const user = useAuthStore(state => state.user);
     const createReportMutation = useCreateReport();
+
+    const [isDownloading, setIsDownloading] = useState(false);
+    const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
+        open: false,
+        message: '',
+        severity: 'success'
+    });
+
+    const closeSnackbar = () => setSnackbar(s => ({ ...s, open: false }));
+
+    const handleDownloadReport = async (reportId: string) => {
+        setIsDownloading(true);
+        try {
+            const blob = await reportService.downloadReportDocx(reportId);
+            
+            const patientSlug = patientName
+                ? patientName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-')
+                : 'paciente';
+            const fileName = `relatorio-${patientSlug}.docx`;
+
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode?.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            
+            setSnackbar({ open: true, message: 'Relatório baixado com sucesso!', severity: 'success' });
+        } catch (error: any) {
+            console.error('Failed to download report:', error);
+            let errorMessage = 'Erro ao baixar o relatório em Word. Tente novamente.';
+            if (error.response?.data instanceof Blob) {
+                try {
+                    const text = await error.response.data.text();
+                    const json = JSON.parse(text);
+                    if (json.message) {
+                        errorMessage = json.message;
+                    }
+                } catch (_) {}
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            setSnackbar({ open: true, message: errorMessage, severity: 'error' });
+        } finally {
+            setIsDownloading(false);
+        }
+    };
 
     const handleCreateReport = async () => {
         if (!user) return;
@@ -126,12 +177,34 @@ export default function ReportListCard({ report, patientId }: ReportListCardProp
                                     >
                                         Visualizar / Editar
                                     </Button>
+                                    <Button
+                                        variant="outlined"
+                                        color="primary"
+                                        size="small"
+                                        onClick={() => handleDownloadReport(report.id)}
+                                        disabled={isDownloading}
+                                        title="Baixar relatório em Word"
+                                        sx={{ minWidth: 'auto', px: 1.5 }}
+                                    >
+                                        {isDownloading ? <CircularProgress size={18} color="inherit" /> : <FileDown size={18} />}
+                                    </Button>
                                 </Stack>
                             </Box>
                         </Grid>
                     </Grid>
                 )}
             </CardContent>
+            {/* Snackbar para feedback de download */}
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={closeSnackbar}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            >
+                <Alert onClose={closeSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </Card>
     );
 }
