@@ -58,10 +58,12 @@ function LoadingSpinner() {
 
 function App() {
   useEffect(() => {
+    const token = useAuthStore.getState().token;
+    if (!token) return;
+
     api.get<Account>('/auth')
       .then((response) => {
-        const token = useAuthStore.getState().token;
-        if (token && response.data) {
+        if (response.data) {
           useAuthStore.getState().setUser(response.data, token);
           api.get('/payment/status')
             .then((subResponse) => {

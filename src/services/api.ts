@@ -45,7 +45,12 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const token = useAuthStore.getState().token;
+    const isAuthRequest = originalRequest?.url?.includes('/login') || 
+                          originalRequest?.url?.includes('/signup') || 
+                          originalRequest?.url?.includes('/refresh-token');
+
+    if (error.response?.status === 401 && !originalRequest?._retry && token && !isAuthRequest) {
       originalRequest._retry = true;
 
       try {
@@ -63,7 +68,6 @@ api.interceptors.response.use(
           return api(originalRequest);
         }
       } catch (refreshError) {
-
         useAuthStore.getState().logout();
         return Promise.reject(refreshError);
       }
