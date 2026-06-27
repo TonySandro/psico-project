@@ -319,16 +319,18 @@ export default function TestRunnerPage() {
                     correctAnswers: Number(formData.correctAnswers ?? 0)
                 };
             } else if (type === 'tde2') {
+                const acertos = Number(formData.acertos ?? 0);
+                const erros = Number(formData.erros ?? 0);
                 const payload = {
                     nomePaciente: patientName,
                     anoEscolar: String(formData.anoEscolar || '1º ano'),
                     subteste: (formData.subteste || 'ESCRITA') as 'ESCRITA' | 'LEITURA' | 'ARITMETICA',
-                    pontuacaoTotal: Number(formData.pontuacaoTotal ?? 0),
+                    pontuacaoTotal: 40,
                     tempoTotal: Number(formData.tempoTotal ?? 0),
                     unidadeTempo: (formData.unidadeTempo || 'minutos') as 'minutos' | 'segundos',
-                    naoSabe: Number(formData.naoSabe ?? 0),
-                    acertos: Number(formData.acertos ?? 0),
-                    erros: Number(formData.erros ?? 0),
+                    naoSabe: 40 - (acertos + erros),
+                    acertos,
+                    erros,
                 };
 
                 calcularTde2(payload, {
@@ -1236,13 +1238,9 @@ export default function TestRunnerPage() {
                                 Resultados Obtidos
                             </Typography>
                             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                                {renderInput('Pontuação Total', 'pontuacaoTotal')}
                                 {renderInput('Acertos', 'acertos')}
                                 {renderInput('Erros', 'erros')}
                             </Stack>
-                            <Box mt={2}>
-                                {renderInput('Não Sabe (omissões)', 'naoSabe')}
-                            </Box>
                         </Box>
 
                         {/* Tempo */}
