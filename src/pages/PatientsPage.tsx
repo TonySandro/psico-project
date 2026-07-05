@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Typography, Stack, Button, TextField, InputAdornment, Box, CircularProgress, Alert, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { Plus, Search } from 'lucide-react';
 import { usePatients, useDeletePatient } from '@/hooks/usePatients';
+import { useGenerateAnamnesisLink } from '@/hooks/useAnamnesis';
 import { useAuthStore } from '@/stores/authStore';
 import PatientForm from '@/components/PatientForm';
 import type { Patient } from '@/types/schema';
@@ -14,6 +15,7 @@ export default function PatientsPage() {
   const user = useAuthStore((state) => state.user);
   const { data: patients, isLoading, error } = usePatients(user?.id || '');
   const deletePatient = useDeletePatient();
+  const { mutateAsync: generateLink } = useGenerateAnamnesisLink();
   const [searchQuery, setSearchQuery] = useState('');
   const [formOpen, setFormOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | undefined>();
@@ -34,8 +36,15 @@ export default function PatientsPage() {
     setDeleteDialogOpen(true);
   };
 
-  const handleAnamnesis = (id: string) => {
-    navigate(`/app/patients/${id}/anamnesis/new`);
+  const handleAnamnesis = async (id: string) => {
+    try {
+        const data = await generateLink(id);
+        const fullUrl = `${window.location.origin}/anamnesis/responder/${data.token}`;
+        window.open(fullUrl, '_blank');
+    } catch (error) {
+        console.error("Error starting anamnesis:", error);
+        alert("Erro ao iniciar anamnese.");
+    }
   };
 
 

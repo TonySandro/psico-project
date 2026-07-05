@@ -48,17 +48,14 @@ export default function PatientRow({
             </TableCell>
             <TableCell align="right" onClick={(e) => e.stopPropagation()}>
                 <Stack direction="row" spacing={1} justifyContent="flex-end">
-                    <Tooltip title="Nova Anamnese (Indisponível no momento)">
-                        <span>
-                            <IconButton
-                                size="small"
-                                disabled
-                                onClick={() => onAnamnesis(patient.id)}
-                                color="primary"
-                            >
-                                <FileText size={18} />
-                            </IconButton>
-                        </span>
+                    <Tooltip title="Nova Anamnese">
+                        <IconButton
+                            size="small"
+                            onClick={() => onAnamnesis(patient.id)}
+                            color="primary"
+                        >
+                            <FileText size={18} />
+                        </IconButton>
                     </Tooltip>
 
                     <Tooltip title="Editar">

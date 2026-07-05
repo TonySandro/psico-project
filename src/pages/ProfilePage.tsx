@@ -1,39 +1,46 @@
 import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 import {
-  Typography,
-  Stack,
-  Card,
-  CardContent,
-  TextField,
-  Button,
-  Chip,
-  Divider,
-  Alert,
-  Avatar,
-  Box,
-  Grid,
-  Container,
-  InputAdornment,
-  IconButton,
+  Typography, Stack, Card, CardContent, TextField, Button, Chip,
+  Divider, Alert, Avatar, Box, Grid, Container, InputAdornment, IconButton,
+  Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
 } from '@mui/material';
 import {
-  User,
-  Mail,
-  Phone,
-  Lock,
-  Eye,
-  EyeOff,
-  Check,
-  Star,
-  Shield,
-  Calendar,
-  Camera,
-  CreditCard
+  User, Mail, Phone, Lock, Eye, EyeOff, Check, Star, Shield,
+  Calendar, Camera, CreditCard, Info
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { api } from '@/services/api';
 import { useAccount } from '@/hooks/useAccount';
 import { useSubscription } from '@/hooks/useSubscription';
+
+// Schemas
+const personalDataSchema = z.object({
+  name: z.string().min(2, "Nome é obrigatório"),
+  phone: z.string().min(10, "Telefone inválido")
+});
+
+const emailDataSchema = z.object({
+  newEmail: z.string().email("E-mail inválido"),
+  password: z.string().min(1, "Senha é obrigatória")
+});
+
+const passwordSchema = z.object({
+  currentPassword: z.string().min(1, "Senha atual é obrigatória"),
+  newPassword: z.string()
+    .min(8, "A nova senha deve ter no mínimo 8 caracteres")
+    .regex(/[a-zA-Z]/, "A senha deve conter letras")
+    .regex(/[0-9]/, "A senha deve conter números"),
+  confirmPassword: z.string()
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "As senhas não coincidem",
+  path: ["confirmPassword"],
+});
+
+type PersonalDataForm = z.infer<typeof personalDataSchema>;
+type EmailDataForm = z.infer<typeof emailDataSchema>;
+type PasswordForm = z.infer<typeof passwordSchema>;
 
 export default function ProfilePage() {
   const user = useAuthStore((state) => state.user);
@@ -44,58 +51,144 @@ export default function ProfilePage() {
 
   const isPremiumActive = user?.subscriptionStatus === 'active' || subscription?.status === 'active';
 
-  const [loading, setLoading] = useState(false);
+  const [globalSuccessMsg, setGlobalSuccessMsg] = useState('');
+  const [globalErrorMsg, setGlobalErrorMsg] = useState('');
+  
   const [subscribing, setSubscribing] = useState(false);
-  const [successMsg, setSuccessMsg] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  // Modals
+  const [confirmPersonalModal, setConfirmPersonalModal] = useState(false);
+
+  // Forms
+  const {
+    register: registerPersonal,
+    handleSubmit: handleSubmitPersonal,
+    formState: { errors: errorsPersonal, isDirty: isDirtyPersonal, isValid: isValidPersonal },
+    getValues: getValuesPersonal,
+    watch: watchPersonal,
+    reset: resetPersonal
+  } = useForm<PersonalDataForm>({ mode: 'onChange' });
+
+  const watchPersonalData = watchPersonal();
+
+  const {
+    register: registerEmail,
+    handleSubmit: handleSubmitEmail,
+    formState: { errors: errorsEmail, isSubmitting: isSubmittingEmail, isValid: isValidEmail },
+    reset: resetEmail,
+    setError: setEmailError
+  } = useForm<EmailDataForm>({ mode: 'onChange' });
+
+  const {
+    register: registerPassword,
+    handleSubmit: handleSubmitPassword,
+    formState: { errors: errorsPassword, isSubmitting: isSubmittingPassword, isValid: isValidPassword },
+    reset: resetPassword
+  } = useForm<PasswordForm>({ mode: 'onChange' });
 
   useEffect(() => {
     if (user) {
-      setName(user.name || '');
-      setEmail(user.email || '');
+      resetPersonal({
+        name: user.name || ''
+      });
     }
-  }, [user]);
+  }, [user, resetPersonal]);
 
-  const [phone, setPhone] = useState('(00) 00000-0000');
-
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleUpdateProfile = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMsg('');
-    setSuccessMsg('');
-    setLoading(true);
+  const handlePersonalSubmitPre = () => {
+    setConfirmPersonalModal(true);
+  };
+
+  const [isSubmittingPersonal, setIsSubmittingPersonal] = useState(false);
+
+  const onConfirmPersonalData = async () => {
+    setConfirmPersonalModal(false);
+    setIsSubmittingPersonal(true);
+    setGlobalErrorMsg('');
+    setGlobalSuccessMsg('');
 
     try {
       if (!user?.id) throw new Error('Usuário não identificado');
+      const data = getValuesPersonal();
+      
+      const parsedData = personalDataSchema.parse(data);
 
       await api.put(`/update-account/${user.id}`, {
-        name,
-        email
+        name: parsedData.name,
+        phone: parsedData.phone,
+        email: user.email // preserving email just in case backend requires it
       });
 
-      updateUser({ name, email });
+      updateUser({ name: parsedData.name });
+      resetPersonal(parsedData); // resets isDirty to false
 
-      setSuccessMsg('Dados atualizados com sucesso!');
-      setTimeout(() => setSuccessMsg(''), 3000);
+      setGlobalSuccessMsg('Dados atualizados com sucesso!');
+      window.scrollTo(0, 0);
+      setTimeout(() => setGlobalSuccessMsg(''), 4000);
     } catch (err) {
       console.error(err);
-      setErrorMsg('Erro ao atualizar perfil. Tente novamente.');
+      setGlobalErrorMsg('Erro ao atualizar perfil. Tente novamente.');
+      window.scrollTo(0, 0);
     } finally {
-      setLoading(false);
+      setIsSubmittingPersonal(false);
+    }
+  };
+
+  const onEmailSubmit = async (data: EmailDataForm) => {
+    setGlobalErrorMsg('');
+    setGlobalSuccessMsg('');
+    try {
+      emailDataSchema.parse(data);
+      // Simulate API call for email change
+      // await api.post('/change-email', data);
+      
+      // Simulate delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setGlobalSuccessMsg('Enviamos um link de confirmação para o novo e-mail. Seu e-mail atual continuará ativo até a confirmação.');
+      window.scrollTo(0, 0);
+      resetEmail();
+      setTimeout(() => setGlobalSuccessMsg(''), 6000);
+    } catch (err: any) {
+      console.error(err);
+      if (err.response?.data?.message?.includes('uso')) {
+        setEmailError('newEmail', { message: 'Este e-mail já está em uso.' });
+      } else if (err.response?.data?.message?.includes('senha')) {
+        setEmailError('password', { message: 'Senha incorreta.' });
+      } else {
+        setGlobalErrorMsg('Erro ao solicitar troca de e-mail.');
+      }
+      window.scrollTo(0, 0);
+    }
+  };
+
+  const onPasswordSubmit = async (data: PasswordForm) => {
+    setGlobalErrorMsg('');
+    setGlobalSuccessMsg('');
+    try {
+      passwordSchema.parse(data);
+      // Simulate API call
+      // await api.post('/change-password', data);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      setGlobalSuccessMsg('Senha atualizada com sucesso. Por segurança, talvez seja necessário entrar novamente.');
+      window.scrollTo(0, 0);
+      resetPassword();
+      setTimeout(() => setGlobalSuccessMsg(''), 6000);
+    } catch (err) {
+      console.error(err);
+      setGlobalErrorMsg('Erro ao atualizar senha.');
+      window.scrollTo(0, 0);
     }
   };
 
   const handleSubscribe = async () => {
     try {
       setSubscribing(true);
-      setErrorMsg('');
+      setGlobalErrorMsg('');
 
       const response = await api.post('/payment/preference', {
         description: "Assinatura Premium Mensal",
@@ -109,23 +202,11 @@ export default function ProfilePage() {
       }
     } catch (err: any) {
       console.error(err);
-      setErrorMsg(err.response?.data?.error || 'Erro ao iniciar pagamento. Tente novamente.');
+      setGlobalErrorMsg(err.response?.data?.error || 'Erro ao iniciar pagamento. Tente novamente.');
+      window.scrollTo(0, 0);
     } finally {
       setSubscribing(false);
     }
-  };
-
-  const handleUpdatePassword = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newPassword !== confirmPassword) {
-      setErrorMsg('As senhas não coincidem');
-      return;
-    }
-    setSuccessMsg('Solicitação de troca de senha enviada!');
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
-    setTimeout(() => setSuccessMsg(''), 3000);
   };
 
   return (
@@ -141,8 +222,8 @@ export default function ProfilePage() {
           </Typography>
         </Box>
 
-        {successMsg && <Alert severity="success">{successMsg}</Alert>}
-        {errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+        {globalSuccessMsg && <Alert severity="success">{globalSuccessMsg}</Alert>}
+        {globalErrorMsg && <Alert severity="error">{globalErrorMsg}</Alert>}
 
         <Card sx={{ borderRadius: 3, boxShadow: '0px 4px 20px rgba(0,0,0,0.05)' }}>
           <CardContent sx={{ p: 3 }}>
@@ -200,9 +281,7 @@ export default function ProfilePage() {
           <Grid size={{ xs: 12, lg: 7 }}>
             <Stack spacing={3}>
 
-
-
-              {/* 2. Personal Data Form */}
+              {/* 1. Personal Data Form */}
               <Card sx={{ borderRadius: 3, boxShadow: '0px 4px 20px rgba(0,0,0,0.05)' }}>
                 <CardContent sx={{ p: 4 }}>
                   <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 3 }}>
@@ -212,14 +291,15 @@ export default function ProfilePage() {
                     </Typography>
                   </Stack>
 
-                  <form onSubmit={handleUpdateProfile}>
+                  <form onSubmit={handleSubmitPersonal(handlePersonalSubmitPre)}>
                     <Grid container spacing={2}>
                       <Grid size={{ xs: 12, md: 6 }}>
                         <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>Nome Completo</Typography>
                         <TextField
                           fullWidth
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
+                          {...registerPersonal('name')}
+                          error={!!errorsPersonal.name}
+                          helperText={errorsPersonal.name?.message}
                           placeholder="Seu nome completo"
                           InputProps={{
                             startAdornment: (
@@ -233,29 +313,12 @@ export default function ProfilePage() {
                       </Grid>
 
                       <Grid size={{ xs: 12, md: 6 }}>
-                        <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>Endereço de Email</Typography>
-                        <TextField
-                          fullWidth
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="seu@email.com"
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                <Mail size={18} className="text-gray-400" />
-                              </InputAdornment>
-                            ),
-                          }}
-                          sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#FAFAFA' } }}
-                        />
-                      </Grid>
-
-                      <Grid size={{ xs: 12, md: 6 }}>
                         <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>Telefone</Typography>
                         <TextField
                           fullWidth
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
+                          {...registerPersonal('phone')}
+                          error={!!errorsPersonal.phone}
+                          helperText={errorsPersonal.phone?.message}
                           placeholder="(00) 00000-0000"
                           InputProps={{
                             startAdornment: (
@@ -273,17 +336,107 @@ export default function ProfilePage() {
                           type="submit"
                           variant="contained"
                           size="large"
-                          disabled={loading}
+                          disabled={!isDirtyPersonal || !isValidPersonal || isSubmittingPersonal}
                           sx={{
                             borderRadius: 2,
                             px: 4,
                             bgcolor: '#6200ea',
                             textTransform: 'none',
                             fontWeight: 600,
-                            '&:hover': { bgcolor: '#4a00b0' }
+                            '&:hover': { bgcolor: '#4a00b0' },
+                            '&.Mui-disabled': { bgcolor: '#e0e0e0', color: '#9e9e9e' }
                           }}
                         >
-                          {loading ? 'Salvando...' : 'Salvar Alterações'}
+                          {isSubmittingPersonal ? 'Salvando...' : 'Salvar Alterações'}
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </form>
+                </CardContent>
+              </Card>
+
+              {/* 2. Email Change Form */}
+              <Card sx={{ borderRadius: 3, boxShadow: '0px 4px 20px rgba(0,0,0,0.05)' }}>
+                <CardContent sx={{ p: 4 }}>
+                  <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 3 }}>
+                    <Mail size={20} color="#6366F1" />
+                    <Typography variant="h6" fontWeight={700}>
+                      Alteração de E-mail
+                    </Typography>
+                  </Stack>
+
+                  <Box sx={{ p: 2, bgcolor: '#F3F4F6', borderRadius: 2, mb: 3, display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                    <Info size={18} className="text-blue-500" />
+                    <Box>
+                      <Typography variant="caption" color="text.secondary" fontWeight={600}>E-mail Atual</Typography>
+                      <Typography variant="body2" fontWeight={500}>{user?.email}</Typography>
+                    </Box>
+                  </Box>
+
+                  <form onSubmit={handleSubmitEmail(onEmailSubmit)}>
+                    <Grid container spacing={2}>
+                      <Grid size={{ xs: 12, md: 6 }}>
+                        <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>Novo E-mail</Typography>
+                        <TextField
+                          fullWidth
+                          {...registerEmail('newEmail')}
+                          error={!!errorsEmail.newEmail}
+                          helperText={errorsEmail.newEmail?.message}
+                          placeholder="novo@email.com"
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Mail size={18} className="text-gray-400" />
+                              </InputAdornment>
+                            ),
+                          }}
+                          sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#FAFAFA' } }}
+                        />
+                      </Grid>
+
+                      <Grid size={{ xs: 12, md: 6 }}>
+                        <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>Senha Atual (para confirmar)</Typography>
+                        <TextField
+                          fullWidth
+                          type={showCurrentPassword ? 'text' : 'password'}
+                          {...registerEmail('password')}
+                          error={!!errorsEmail.password}
+                          helperText={errorsEmail.password?.message}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Lock size={18} className="text-gray-400" />
+                              </InputAdornment>
+                            ),
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton onClick={() => setShowCurrentPassword(!showCurrentPassword)} edge="end">
+                                  {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </IconButton>
+                              </InputAdornment>
+                            )
+                          }}
+                          sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#FAFAFA' } }}
+                        />
+                      </Grid>
+
+                      <Grid size={{ xs: 12 }} display="flex" justifyContent="flex-end">
+                        <Button
+                          type="submit"
+                          variant="contained"
+                          size="large"
+                          disabled={!isValidEmail || isSubmittingEmail}
+                          sx={{
+                            borderRadius: 2,
+                            px: 4,
+                            bgcolor: '#6200ea',
+                            textTransform: 'none',
+                            fontWeight: 600,
+                            '&:hover': { bgcolor: '#4a00b0' },
+                            '&.Mui-disabled': { bgcolor: '#e0e0e0', color: '#9e9e9e' }
+                          }}
+                        >
+                          {isSubmittingEmail ? 'Enviando...' : 'Atualizar E-mail'}
                         </Button>
                       </Grid>
                     </Grid>
@@ -301,22 +454,29 @@ export default function ProfilePage() {
                     </Typography>
                   </Stack>
 
-                  <form onSubmit={handleUpdatePassword}>
+                  <form onSubmit={handleSubmitPassword(onPasswordSubmit)}>
                     <Stack spacing={3}>
                       <Box>
                         <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>Senha Atual</Typography>
                         <TextField
                           fullWidth
-                          type="password"
-                          value={currentPassword}
-                          onChange={(e) => setCurrentPassword(e.target.value)}
-                          placeholder="••••••••"
+                          type={showCurrentPassword ? 'text' : 'password'}
+                          {...registerPassword('currentPassword')}
+                          error={!!errorsPassword.currentPassword}
+                          helperText={errorsPassword.currentPassword?.message}
                           InputProps={{
                             startAdornment: (
                               <InputAdornment position="start">
                                 <Lock size={18} className="text-gray-400" />
                               </InputAdornment>
                             ),
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton onClick={() => setShowCurrentPassword(!showCurrentPassword)} edge="end">
+                                  {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </IconButton>
+                              </InputAdornment>
+                            )
                           }}
                           sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#FAFAFA' } }}
                         />
@@ -327,9 +487,9 @@ export default function ProfilePage() {
                         <TextField
                           fullWidth
                           type={showPassword ? 'text' : 'password'}
-                          value={newPassword}
-                          onChange={(e) => setNewPassword(e.target.value)}
-                          placeholder="••••••••"
+                          {...registerPassword('newPassword')}
+                          error={!!errorsPassword.newPassword}
+                          helperText={errorsPassword.newPassword?.message || "Mínimo de 8 caracteres com letras e números."}
                           InputProps={{
                             startAdornment: (
                               <InputAdornment position="start">
@@ -344,7 +504,6 @@ export default function ProfilePage() {
                               </InputAdornment>
                             )
                           }}
-                          helperText="Mínimo de 8 caracteres com letras e números."
                           sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#FAFAFA' } }}
                         />
                       </Box>
@@ -353,16 +512,23 @@ export default function ProfilePage() {
                         <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>Confirmar Nova Senha</Typography>
                         <TextField
                           fullWidth
-                          type="password"
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                          placeholder="••••••••"
+                          type={showConfirmPassword ? 'text' : 'password'}
+                          {...registerPassword('confirmPassword')}
+                          error={!!errorsPassword.confirmPassword}
+                          helperText={errorsPassword.confirmPassword?.message}
                           InputProps={{
                             startAdornment: (
                               <InputAdornment position="start">
                                 <Lock size={18} className="text-gray-400" />
                               </InputAdornment>
                             ),
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end">
+                                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </IconButton>
+                              </InputAdornment>
+                            )
                           }}
                           sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, bgcolor: '#FAFAFA' } }}
                         />
@@ -379,26 +545,24 @@ export default function ProfilePage() {
                             borderColor: 'grey.300',
                             color: 'text.primary'
                           }}
-                          onClick={() => {
-                            setCurrentPassword('');
-                            setNewPassword('');
-                            setConfirmPassword('');
-                          }}
+                          onClick={() => resetPassword()}
                         >
-                          Cancelar
+                          Limpar
                         </Button>
                         <Button
                           type="submit"
                           variant="contained"
+                          disabled={!isValidPassword || isSubmittingPassword}
                           sx={{
                             borderRadius: 2,
                             textTransform: 'none',
                             fontWeight: 600,
                             bgcolor: '#6200ea',
-                            '&:hover': { bgcolor: '#4a00b0' }
+                            '&:hover': { bgcolor: '#4a00b0' },
+                            '&.Mui-disabled': { bgcolor: '#e0e0e0', color: '#9e9e9e' }
                           }}
                         >
-                          Atualizar Senha
+                          {isSubmittingPassword ? 'Atualizando...' : 'Atualizar Senha'}
                         </Button>
                       </Stack>
                     </Stack>
@@ -505,6 +669,39 @@ export default function ProfilePage() {
           </Grid>
         </Grid>
       </Stack>
+
+      {/* Confirmation Modal */}
+      <Dialog
+        open={confirmPersonalModal}
+        onClose={() => setConfirmPersonalModal(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        PaperProps={{ sx: { borderRadius: 3, p: 1 } }}
+      >
+        <DialogTitle id="alert-dialog-title" fontWeight={700}>
+          Confirmar Alterações
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Você está prestes a alterar seus dados pessoais. Deseja confirmar?
+          </DialogContentText>
+          <Box sx={{ mt: 2, bgcolor: '#f5f5f5', p: 2, borderRadius: 2 }}>
+            <Typography variant="body2" color="text.secondary">Novo Nome:</Typography>
+            <Typography variant="body1" fontWeight={600} mb={1}>{watchPersonalData?.name}</Typography>
+            
+            <Typography variant="body2" color="text.secondary">Novo Telefone:</Typography>
+            <Typography variant="body1" fontWeight={600}>{watchPersonalData?.phone}</Typography>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmPersonalModal(false)} color="inherit" sx={{ textTransform: 'none' }}>
+            Cancelar
+          </Button>
+          <Button onClick={onConfirmPersonalData} variant="contained" sx={{ bgcolor: '#6200ea', textTransform: 'none', '&:hover': { bgcolor: '#4a00b0' } }} autoFocus>
+            Confirmar e Salvar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
-}
+}

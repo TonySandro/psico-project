@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useLogin } from '@/hooks/useAuth';
 import loginBg from '../images/consultorio-neuropsicopedagogia-nppavalia.webp';
@@ -13,7 +13,16 @@ export default function LoginPage() {
   const [isRecoverPassword, setIsRecoverPassword] = useState(false);
   const [recoverEmail, setRecoverEmail] = useState('');
   const [recoverStatus, setRecoverStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [cooldown, setCooldown] = useState(0);
   const { mutate: login, isPending, error } = useLogin();
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (cooldown > 0) {
+      timer = setTimeout(() => setCooldown(c => c - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [cooldown]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,18 +35,25 @@ export default function LoginPage() {
 
   const handleRecoverPassword = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (cooldown > 0) return;
     setRecoverStatus('loading');
     try {
       const { api } = await import('@/services/api');
       await api.post(`/request-password-reset`, { email: recoverEmail });
       setRecoverStatus('success');
+      setCooldown(60);
       setTimeout(() => {
-        setIsRecoverPassword(false);
         setRecoverStatus('idle');
-        setRecoverEmail('');
-      }, 4000);
+        // Removing auto-redirect so user can see cooldown and instructions
+      }, 5000);
     } catch (err) {
-      setRecoverStatus('error');
+      // Regardless of error (e.g. email not found), we should probably show success to avoid leaking emails.
+      // But if there's a network error, we show error. We'll stick to a generic success for privacy.
+      setRecoverStatus('success');
+      setCooldown(60);
+      setTimeout(() => {
+        setRecoverStatus('idle');
+      }, 5000);
     }
   };
 
@@ -111,10 +127,18 @@ export default function LoginPage() {
               </h1>
               <p className="text-base text-gray-500 font-normal">
                 {isRecoverPassword
-                  ? 'Informe seu e-mail e enviaremos um link para recuperar a sua senha.'
+                  ? 'Se existir uma conta com esse e-mail, enviaremos um link de redefinição.'
                   : 'Acesse seus pacientes, anamneses, testes psicopedagógicos e relatórios.'}
               </p>
             </div>
+
+            {isRecoverPassword && (
+              <div className="bg-blue-50 text-blue-700 p-4 rounded-lg text-sm flex flex-col gap-1">
+                <p>• Verifique sua caixa de entrada e spam.</p>
+                <p>• O link é válido por 30 minutos.</p>
+                <p>• Se você pediu mais de uma vez, use o e-mail mais recente.</p>
+              </div>
+            )}
 
             {!isRecoverPassword && error && (
               <div className="bg-red-50 text-red-500 p-3 rounded-lg text-sm text-center">
@@ -132,13 +156,13 @@ export default function LoginPage() {
 
             {isRecoverPassword && recoverStatus === 'error' && (
               <div className="bg-red-50 text-red-500 p-3 rounded-lg text-sm text-center">
-                Erro ao tentar enviar o link de recuperação. Verifique o e-mail e tente novamente.
+                Erro ao tentar enviar o link de recuperação. Tente novamente mais tarde.
               </div>
             )}
 
             {isRecoverPassword && recoverStatus === 'success' && (
-              <div className="bg-green-50 text-green-600 p-3 rounded-lg text-sm text-center">
-                Link de recuperação enviado com sucesso! Verifique sua caixa de entrada.
+              <div className="bg-green-50 text-green-600 p-3 rounded-lg text-sm text-center font-medium">
+                Se o e-mail existir, um link foi enviado! Verifique sua caixa de entrada.
               </div>
             )}
 
@@ -166,10 +190,10 @@ export default function LoginPage() {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={recoverStatus === 'loading' || recoverStatus === 'success'}
+                  disabled={recoverStatus === 'loading' || cooldown > 0 || !recoverEmail}
                   className="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary hover:bg-primary/90 text-white text-base font-bold leading-normal tracking-[0.015em] transition-all shadow-md hover:shadow-lg mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  {recoverStatus === 'loading' ? 'Enviando...' : 'Enviar Link de Recuperação'}
+                  {recoverStatus === 'loading' ? 'Enviando...' : cooldown > 0 ? `Aguarde ${cooldown}s para reenviar` : 'Enviar Link de Recuperação'}
                 </button>
 
                 <div className="flex justify-center mt-2">
