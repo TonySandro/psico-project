@@ -32,8 +32,11 @@ export default function ResetPasswordPage() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isValid }
   } = useForm<PasswordForm>({ mode: 'onChange' });
+
+  const watchedPassword = watch('password');
 
   useEffect(() => {
     // Validate token on mount
@@ -58,18 +61,32 @@ export default function ResetPasswordPage() {
     setStatus('loading');
     
     try {
-      passwordSchema.parse(data);
       await api.post('/reset-password', { token, password: data.password, passwordConfirmation: data.passwordConfirmation });
       setStatus('success');
       setTimeout(() => {
         navigate('/login');
       }, 4000);
     } catch (err: any) {
+      console.error('[ResetPasswordPage] Error:', err);
       setStatus('error');
+      
+      const status = err?.response?.status;
       const errData = err?.response?.data;
-      setErrorMessage(
-        typeof errData === 'string' ? errData : (errData?.message || errData?.error || 'Ocorreu um erro ao redefinir a senha. Tente novamente.')
-      );
+
+      if (status === 429) {
+        setErrorMessage('Muitas tentativas. Aguarde alguns minutos e tente novamente.');
+      } else if (status === 400) {
+        const msg = typeof errData === 'string' ? errData : (errData?.message || errData?.error || '');
+        if (msg.toLowerCase().includes('token') || msg.toLowerCase().includes('invalid') || msg.toLowerCase().includes('expired')) {
+          setErrorMessage('Este link de recuperação expirou ou já foi utilizado. Solicite um novo link.');
+        } else {
+          setErrorMessage(msg || 'Erro ao redefinir a senha. Verifique os dados e tente novamente.');
+        }
+      } else {
+        setErrorMessage(
+          typeof errData === 'string' ? errData : (errData?.message || errData?.error || 'Ocorreu um erro ao redefinir a senha. Tente novamente.')
+        );
+      }
     }
   };
 
@@ -171,7 +188,14 @@ export default function ResetPasswordPage() {
                       placeholder="Digite sua nova senha"
                       type={showPassword ? "text" : "password"}
                       disabled={status === 'loading' || status === 'success'}
-                      {...register('password')}
+                      {...register('password', {
+                        required: 'A nova senha é obrigatória',
+                        minLength: { value: 8, message: 'A nova senha deve ter no mínimo 8 caracteres' },
+                        pattern: {
+                          value: /^(?=.*[a-zA-Z])(?=.*[0-9])/,
+                          message: 'A senha deve conter letras e números'
+                        }
+                      })}
                     />
                     <button
                       className="absolute right-0 top-0 h-full px-4 flex items-center justify-center text-[#664c9a] hover:text-primary transition-colors focus:outline-none cursor-pointer"
@@ -194,7 +218,10 @@ export default function ResetPasswordPage() {
                       placeholder="Confirme sua nova senha"
                       type={showPasswordConfirmation ? "text" : "password"}
                       disabled={status === 'loading' || status === 'success'}
-                      {...register('passwordConfirmation')}
+                      {...register('passwordConfirmation', {
+                        required: 'A confirmação de senha é obrigatória',
+                        validate: (value) => value === watchedPassword || 'As senhas não coincidem'
+                      })}
                     />
                     <button
                       className="absolute right-0 top-0 h-full px-4 flex items-center justify-center text-[#664c9a] hover:text-primary transition-colors focus:outline-none cursor-pointer"
