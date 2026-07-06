@@ -44,9 +44,7 @@ export default function ResetPasswordPage() {
       }
       
       try {
-        // Simulating token validation API call
-        // await api.get(`/validate-reset-token?token=${token}`);
-        await new Promise(resolve => setTimeout(resolve, 800));
+        // Since there is no validate-token endpoint, we'll just allow the form to render and validate on submit
         setStatus('idle');
       } catch (err) {
         setStatus('invalid_token');
@@ -156,7 +154,7 @@ export default function ResetPasswordPage() {
 
             {status === 'success' && (
               <div className="bg-green-50 text-green-600 p-3 rounded-lg text-sm text-center">
-                Senha atualizada com sucesso! Redirecionando para o login...
+                Senha atualizada com sucesso! Um e-mail de aviso foi enviado. Redirecionando para o login...
               </div>
             )}
 

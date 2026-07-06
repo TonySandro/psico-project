@@ -39,7 +39,7 @@ export default function LoginPage() {
     setRecoverStatus('loading');
     try {
       const { api } = await import('@/services/api');
-      await api.post(`/request-password-reset`, { email: recoverEmail });
+      await api.post(`/forgot-password`, { email: recoverEmail });
       setRecoverStatus('success');
       setCooldown(60);
       setTimeout(() => {
