@@ -141,12 +141,13 @@ export default function ProfilePage() {
     setGlobalErrorMsg('');
     setGlobalSuccessMsg('');
     try {
+      if (!user?.id) throw new Error('Usuário não identificado');
       emailDataSchema.parse(data);
-      // Simulate API call for email change
-      // await api.post('/change-email', data);
       
-      // Simulate delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await api.post(`/request-email-change/${user.id}`, {
+        newEmail: data.newEmail,
+        password: data.password
+      });
       
       setGlobalSuccessMsg('Enviamos um link de confirmação para o novo e-mail. Seu e-mail atual continuará ativo até a confirmação.');
       window.scrollTo(0, 0);
@@ -154,9 +155,9 @@ export default function ProfilePage() {
       setTimeout(() => setGlobalSuccessMsg(''), 6000);
     } catch (err: any) {
       console.error(err);
-      if (err.response?.data?.message?.includes('uso')) {
+      if (err.response?.data?.message?.includes('uso') || err.response?.data?.error?.includes('uso')) {
         setEmailError('newEmail', { message: 'Este e-mail já está em uso.' });
-      } else if (err.response?.data?.message?.includes('senha')) {
+      } else if (err.response?.status === 401 || err.response?.data?.error?.includes('senha') || err.response?.data?.error?.includes('password')) {
         setEmailError('password', { message: 'Senha incorreta.' });
       } else {
         setGlobalErrorMsg('Erro ao solicitar troca de e-mail.');
@@ -169,18 +170,25 @@ export default function ProfilePage() {
     setGlobalErrorMsg('');
     setGlobalSuccessMsg('');
     try {
+      if (!user?.id) throw new Error('Usuário não identificado');
       passwordSchema.parse(data);
-      // Simulate API call
-      // await api.post('/change-password', data);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      await api.put(`/update-password/${user.id}`, {
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword,
+      });
 
       setGlobalSuccessMsg('Senha atualizada com sucesso. Por segurança, talvez seja necessário entrar novamente.');
       window.scrollTo(0, 0);
       resetPassword();
       setTimeout(() => setGlobalSuccessMsg(''), 6000);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setGlobalErrorMsg('Erro ao atualizar senha.');
+      if (err.response?.status === 400 || err.response?.status === 401 || err.response?.data?.error?.includes('incorrect')) {
+        setGlobalErrorMsg(err.response?.data?.error || 'Senha atual incorreta.');
+      } else {
+        setGlobalErrorMsg('Erro ao atualizar senha.');
+      }
       window.scrollTo(0, 0);
     }
   };

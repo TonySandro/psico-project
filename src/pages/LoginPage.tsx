@@ -144,6 +144,10 @@ export default function LoginPage() {
               <div className="bg-red-50 text-red-500 p-3 rounded-lg text-sm text-center">
                 {(() => {
                   const err = error as any;
+                  if (err?.response?.status === 429) {
+                    const data = err?.response?.data;
+                    return typeof data === 'string' ? data : (data?.message || 'Muitas tentativas. Tente novamente mais tarde.');
+                  }
                   const data = err?.response?.data;
                   const message = typeof data === 'string' ? data : (data?.message || data?.error);
                   if (message === 'Unauthorized') {
