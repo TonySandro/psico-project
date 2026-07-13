@@ -1,5 +1,5 @@
 import { api } from "@/services/api";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Protocol } from '@/types/schema';
 
 // Result interfaces based on the mock endpoints
@@ -94,6 +94,19 @@ export const useAddProtocol = () => {
         mutationFn: async ({ patientId, accountId, data }: { patientId: string; accountId: string; data: { name: string; type: string; data: any } }) => {
             const response = await api.post(`/patient/${patientId}/${accountId}/protocols`, data);
             return response.data;
+        }
+    });
+};
+
+export const useDeleteProtocol = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ patientId, accountId, protocolId }: { patientId: string; accountId: string; protocolId: string }) => {
+            await api.delete(`/patient/${patientId}/${accountId}/protocols/${protocolId}`);
+        },
+        onSuccess: (_data, variables) => {
+            queryClient.invalidateQueries({ queryKey: ['patient', variables.patientId] });
         }
     });
 };

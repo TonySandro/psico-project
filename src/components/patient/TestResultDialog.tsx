@@ -4,6 +4,7 @@ import { ClipboardCheck } from 'lucide-react';
 import type { Protocol } from '@/types/schema';
 import { formatDate } from '@/utils/formatters';
 import { translateTestKey, translateTestValue } from '@/utils/test-translations';
+import { getProtocolDisplayName } from './AssessmentListCard';
 
 interface TestResultDialogProps {
     open: boolean;
@@ -481,7 +482,7 @@ export default function TestResultDialog({ open, onClose, protocol }: TestResult
                         </Box>
                     </Stack>
                     <Chip
-                        label={protocol.name}
+                        label={getProtocolDisplayName(protocol)}
                         sx={{
                             background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
                             color: 'white',
