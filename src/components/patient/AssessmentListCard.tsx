@@ -5,7 +5,7 @@ import {
     DialogContentText, DialogActions, CircularProgress
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { ClipboardList, Plus, HelpCircle, Trash2 } from 'lucide-react';
+import { ClipboardList, Plus, Trash2 } from 'lucide-react';
 import { formatDate } from '@/utils/formatters';
 import type { Protocol } from '@/types/schema';
 import TestResultDialog from './TestResultDialog';
@@ -79,18 +79,18 @@ export default function AssessmentListCard({ protocols = [], patientId, accountI
                             variant="text"
                             disableElevation
                             startIcon={<Plus size={18} />}
-                            sx={{ 
-                                bgcolor: 'primary.50', 
-                                color: 'primary.main', 
+                            sx={{
+                                bgcolor: 'primary.50',
+                                color: 'primary.main',
                                 borderRadius: 2,
                                 textTransform: 'none',
                                 fontWeight: 600,
                                 px: 2,
                                 transition: 'all 0.2s ease',
-                                '&:hover': { 
+                                '&:hover': {
                                     bgcolor: 'primary.100',
                                     transform: 'translateY(-1px)'
-                                } 
+                                }
                             }}
                             onClick={() => navigate('/app/tests')}
                         >
@@ -124,13 +124,13 @@ export default function AssessmentListCard({ protocols = [], patientId, accountI
                                     }}
                                 >
                                     <ListItemIcon sx={{ minWidth: 48 }}>
-                                        <Box sx={{ 
-                                            p: 1, 
-                                            bgcolor: 'white', 
-                                            border: '1px solid', 
-                                            borderColor: 'divider', 
-                                            borderRadius: 1.5, 
-                                            display: 'flex', 
+                                        <Box sx={{
+                                            p: 1,
+                                            bgcolor: 'white',
+                                            border: '1px solid',
+                                            borderColor: 'divider',
+                                            borderRadius: 1.5,
+                                            display: 'flex',
                                             color: 'primary.main',
                                             boxShadow: '0 1px 2px rgba(0,0,0,0.02)'
                                         }}>
@@ -144,12 +144,12 @@ export default function AssessmentListCard({ protocols = [], patientId, accountI
                                             </Typography>
                                         }
                                     />
-                                    
+
                                     <Stack direction="row" alignItems="center" spacing={3}>
                                         <Typography variant="caption" color="text.secondary" fontWeight={500}>
                                             {protocol.createdAt ? formatDate(protocol.createdAt) : '-'}
                                         </Typography>
-                                        
+
                                         <IconButton
                                             aria-label="excluir teste"
                                             onClick={(e) => handleDeleteClick(e, protocol)}
