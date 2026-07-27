@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { lazy, Suspense, useEffect } from 'react';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
+import CookieConsentBanner from './components/CookieConsentBanner';
+import AnalyticsTracker from './components/AnalyticsTracker';
 import { useAuthStore } from './stores/authStore';
 import { api } from './services/api';
 import type { Account } from './types/schema';
@@ -82,6 +84,8 @@ function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <AnalyticsTracker />
+      <CookieConsentBanner />
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
           <Route path="/" element={<HomePage />} />

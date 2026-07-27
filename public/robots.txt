@@ -1,19 +1,24 @@
+# https://www.robotstxt.org/robotstxt.html
+
 User-agent: *
 Allow: /
-Allow: /quem-somos
-Allow: /plataforma
-Allow: /recursos/
-Allow: /politica-de-privacidade
-Allow: /termos-de-uso
-Allow: /politica-de-cookies
 
-# Bloquear indexação da aplicação protegida e fluxos sensíveis
+# Páginas e fluxos de autenticação e conta
 Disallow: /app/
 Disallow: /login
 Disallow: /signup
 Disallow: /confirm
-Disallow: /payment/
-Disallow: /anamnesis/responder/
+Disallow: /reset-password
 
-# Sitemap Link
+# Processamento de pagamentos
+Disallow: /payment/
+
+# Formulários e relatórios dinâmicos acessados via token privado
+Disallow: /anamnesis/responder/
+Disallow: /teacher-report/responder/
+
+# Endpoints de API internos
+Disallow: /api/
+
+# Sitemap
 Sitemap: https://nppavalia.com.br/sitemap.xml

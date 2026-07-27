@@ -1,7 +1,7 @@
 import PublicNavbar from '@/components/PublicNavbar';
 import PublicFooter from '@/components/PublicFooter';
 import AnimatedSection from '@/components/AnimatedSection';
-import { Typography, Box, Container, Stack, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Typography, Box, Container, Stack, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from '@mui/material';
 import { Cookie } from 'lucide-react';
 
 export default function CookiesPage() {
@@ -120,9 +120,21 @@ export default function CookiesPage() {
             <Typography variant="body1">
               Ao acessar o NPPAvalia pela primeira vez, você é notificado sobre o uso de cookies.
               Os cookies estritamente necessários são ativados automaticamente por serem indispensáveis para a
-              execução segura da plataforma de saúde. Caso você não concorde com a ativação de cookies de
-              sessão necessários, infelizmente não será possível utilizar a área logada do sistema.
+              execução segura da plataforma de saúde. Usuários logados têm seus cookies de sessão gerenciados automaticamente.
             </Typography>
+            <Box sx={{ mt: 2 }}>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => {
+                  localStorage.removeItem('lgpd_cookie_consent');
+                  window.dispatchEvent(new Event('lgpd_consent_reset'));
+                }}
+                sx={{ textTransform: 'none', borderRadius: 2 }}
+              >
+                Redefinir minhas preferências de cookies
+              </Button>
+            </Box>
           </Box>
 
           <Box>
