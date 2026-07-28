@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Account, SubscriptionStatus } from '@/types/schema';
+import { setFrontendUser } from '@/shared/observability/sentry';
 
 interface AuthState {
   user: Account | null;
@@ -23,6 +24,7 @@ export const useAuthStore = create<AuthState>()(
       subscription: null,
 
       setUser: (user, token) => {
+        setFrontendUser({ id: user.id, email: user.email });
         set({ user, token, isAuthenticated: true });
       },
 
@@ -31,9 +33,13 @@ export const useAuthStore = create<AuthState>()(
       },
 
       updateUser: (data: Partial<Account>) => {
-        set((state) => ({
-          user: state.user ? { ...state.user, ...data } : null
-        }));
+        set((state) => {
+          const updatedUser = state.user ? { ...state.user, ...data } : null;
+          if (updatedUser) {
+            setFrontendUser({ id: updatedUser.id, email: updatedUser.email });
+          }
+          return { user: updatedUser };
+        });
       },
 
       setSubscription: (subscription) => {
@@ -41,6 +47,7 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
+        setFrontendUser(null);
         set({ user: null, token: null, isAuthenticated: false, subscription: null });
         localStorage.removeItem('auth-storage');
       }

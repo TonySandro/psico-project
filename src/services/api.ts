@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { captureFrontendException } from '@/shared/observability/sentry';
 
 let API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
@@ -68,6 +69,22 @@ const handleResponseError = async (error: any) => {
       useAuthStore.getState().logout();
       return Promise.reject(refreshError);
     }
+  }
+
+  const status = error.response?.status;
+  const isNetworkOrTimeout = !error.response || error.code === 'ECONNABORTED' || error.message?.includes('Network Error');
+  const is5xx = status && status >= 500 && status <= 599;
+  const ignoredStatuses = [401, 403, 404, 422];
+  const isIgnored = status && ignoredStatuses.includes(status);
+
+  if ((is5xx || isNetworkOrTimeout) && !isIgnored) {
+    const requestId = error.response?.headers?.['x-request-id'] || error.config?.headers?.['x-request-id'];
+    captureFrontendException(error, {
+      url: error.config?.url,
+      method: error.config?.method,
+      status: status || 'NETWORK_FAILURE',
+      requestId
+    });
   }
 
   return Promise.reject(error);
