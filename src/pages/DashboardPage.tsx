@@ -58,7 +58,7 @@ export default function DashboardPage() {
       </Stack>
 
       {/* Stat Cards */}
-      <Grid container spacing={3}>
+      <Grid container spacing={3} id="tour-dashboard-stats">
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <StatCard
             title="Pacientes Ativos"

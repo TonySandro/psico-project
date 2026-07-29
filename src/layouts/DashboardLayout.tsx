@@ -1,11 +1,12 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Avatar, Menu, MenuItem, Divider, Box, Chip, Button } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Avatar, Menu, MenuItem, Divider, Box, Chip, Button, Tooltip } from '@mui/material';
 import { useSubscription } from '@/hooks/useSubscription';
-import { Menu as MenuIcon, LayoutDashboard, Users, ClipboardList, MessageSquare, UserCircle, LogOut, FileText } from 'lucide-react';
-import { useState } from 'react';
+import { Menu as MenuIcon, LayoutDashboard, Users, ClipboardList, MessageSquare, UserCircle, LogOut, FileText, HelpCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
 import { useLogout } from '@/hooks/useAuth';
+import { usePlatformTour } from '@/hooks/usePlatformTour';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
 const DRAWER_WIDTH = 240;
@@ -28,7 +29,13 @@ export default function DashboardLayout() {
   const { user } = useAuthStore();
   const { mutate: logout } = useLogout();
   const { isTrial, subscription, initiatePayment, subscribing } = useSubscription();
+  const { startTour, checkAutoStart } = usePlatformTour();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  useEffect(() => {
+    checkAutoStart();
+  }, [checkAutoStart]);
+
   const handleUserMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -66,12 +73,22 @@ export default function DashboardLayout() {
             <MenuIcon size={24} />
           </IconButton>
 
-          <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <Box id="tour-brand" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <img src="/favicon.svg" alt="NPPAvalia Logo" className="w-8 h-8 rounded-lg shadow-sm" />
             <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
               NPPAvalia
             </Typography>
           </Box>
+
+          <Tooltip title="Fazer Tour Guiado pela Plataforma">
+            <IconButton
+              id="tour-help-btn"
+              onClick={startTour}
+              sx={{ mr: 1, color: 'primary.main', bgcolor: 'primary.50', '&:hover': { bgcolor: 'primary.100' } }}
+            >
+              <HelpCircle size={22} />
+            </IconButton>
+          </Tooltip>
 
           <IconButton onClick={handleUserMenuOpen}>
             <Avatar
@@ -127,6 +144,12 @@ export default function DashboardLayout() {
               )}
             </Stack>
             <Divider />
+            <MenuItem onClick={() => { startTour(); handleUserMenuClose(); }}>
+              <ListItemIcon>
+                <HelpCircle size={20} />
+              </ListItemIcon>
+              Tour Guiado
+            </MenuItem>
             <MenuItem onClick={() => { navigate('/app/profile'); handleUserMenuClose(); }}>
               <ListItemIcon>
                 <UserCircle size={20} />
@@ -165,10 +188,12 @@ export default function DashboardLayout() {
             {menuItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
+              const tourId = `tour-nav-${item.label.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
 
               return (
                 <ListItem key={item.path} disablePadding className="mb-1">
                   <ListItemButton
+                    id={tourId}
                     onClick={() => navigate(item.path)}
                     selected={isActive}
                     sx={{

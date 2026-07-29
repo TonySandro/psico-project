@@ -162,4 +162,89 @@
 /* Scrollbar transitions and interactive elements */
 a, button {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
+}
+
+/* Driver.js Custom Theme */
+.driver-popover {
+  border-radius: 14px !important;
+  padding: 20px 22px !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 20px 35px -10px rgba(15, 23, 42, 0.25), 0 0 15px rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid #E2E8F0 !important;
+  font-family: 'Inter', sans-serif !important;
+  max-width: 360px !important;
+}
+
+.driver-popover-title {
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  color: #0F172A !important;
+  margin-bottom: 8px !important;
+}
+
+.driver-popover-description {
+  font-size: 0.875rem !important;
+  color: #475569 !important;
+  line-height: 1.55 !important;
+}
+
+.driver-popover-footer {
+  margin-top: 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.driver-popover-progress-text {
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  color: #64748B !important;
+}
+
+.driver-popover-navigation-btns {
+  display: flex !important;
+  gap: 8px !important;
+}
+
+.driver-popover-prev-btn,
+.driver-popover-next-btn {
+  border-radius: 8px !important;
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  padding: 7px 16px !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer !important;
+}
+
+.driver-popover-prev-btn {
+  background-color: #F1F5F9 !important;
+  color: #475569 !important;
+  border: 1px solid #E2E8F0 !important;
+  text-shadow: none !important;
+}
+
+.driver-popover-prev-btn:hover {
+  background-color: #E2E8F0 !important;
+  color: #1E293B !important;
+}
+
+.driver-popover-next-btn {
+  background: linear-gradient(135deg, #4F46E5, #6366F1) !important;
+  color: #ffffff !important;
+  border: none !important;
+  text-shadow: none !important;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35) !important;
+}
+
+.driver-popover-next-btn:hover {
+  background: linear-gradient(135deg, #4338CA, #4F46E5) !important;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.45) !important;
+}
+
+.driver-popover-close-btn {
+  color: #94A3B8 !important;
+}
+.driver-popover-close-btn:hover {
+  color: #0F172A !important;
+}
+
