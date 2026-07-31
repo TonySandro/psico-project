@@ -267,7 +267,22 @@ export default function ProfilePage() {
     }
   };
 
-  const renewalDateRaw = subscription?.endsAt || user?.subscriptionEndsAt;
+  const getRenewalDate = () => {
+    if (subscription?.endsAt) return subscription.endsAt;
+    if (user?.subscriptionEndsAt) return user.subscriptionEndsAt;
+    if (isPremiumActive) {
+      const baseDate = user?.createdAt ? new Date(user.createdAt) : new Date();
+      const today = new Date();
+      const nextRenewal = new Date(baseDate);
+      while (nextRenewal <= today) {
+        nextRenewal.setMonth(nextRenewal.getMonth() + 1);
+      }
+      return nextRenewal;
+    }
+    return null;
+  };
+
+  const renewalDateRaw = getRenewalDate();
   const formattedRenewalDate = formatDate(renewalDateRaw);
   const daysUntilRenewal = getDaysUntil(renewalDateRaw);
 
