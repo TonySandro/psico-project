@@ -76,7 +76,23 @@ const ErrorFallback: React.FC<FallbackProps> = ({ resetError }) => {
 export const GlobalErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <Sentry.ErrorBoundary
-      fallback={({ resetError }) => <ErrorFallback resetError={resetError} />}
+      fallback={({ error, resetError }) => {
+        const errObj = error as Error | undefined;
+        const errorMsg = errObj?.message || String(error || '');
+        if (
+          errorMsg.includes('Failed to fetch dynamically imported module') ||
+          errorMsg.includes('Importing a module script failed') ||
+          errObj?.name === 'ChunkLoadError'
+        ) {
+          const refreshed = sessionStorage.getItem('eb-chunk-refreshed');
+          if (!refreshed) {
+            sessionStorage.setItem('eb-chunk-refreshed', 'true');
+            window.location.reload();
+            return <React.Fragment />;
+          }
+        }
+        return <ErrorFallback error={errObj} resetError={resetError} />;
+      }}
       showDialog={false}
     >
       {children}

@@ -8,44 +8,68 @@ import { useAuthStore } from './stores/authStore';
 import { api } from './services/api';
 import type { Account } from './types/schema';
 
+// Helper to gracefully retry loading dynamic chunks when a new build/deployment replaces old JS bundle hashes
+function lazyWithRetry<T extends React.ComponentType<any>>(
+  componentImport: () => Promise<{ default: T }>
+) {
+  return lazy(async () => {
+    const pageHasAlreadyBeenRefreshed = JSON.parse(
+      sessionStorage.getItem('retry-lazy-refreshed') || 'false'
+    );
+
+    try {
+      const component = await componentImport();
+      sessionStorage.setItem('retry-lazy-refreshed', 'false');
+      return component;
+    } catch (error: any) {
+      if (!pageHasAlreadyBeenRefreshed) {
+        sessionStorage.setItem('retry-lazy-refreshed', 'true');
+        window.location.reload();
+        return new Promise<{ default: T }>(() => {});
+      }
+      throw error;
+    }
+  });
+}
+
 // Lazy load layout and page components
-const HomePage = lazy(() => import('./pages/HomePage'));
-const LoginPage = lazy(() => import('./pages/LoginPage'));
-const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
-const SignupPage = lazy(() => import('./pages/SignupPage'));
-const ConfirmEmailPage = lazy(() => import('./pages/ConfirmEmailPage'));
-const DashboardPage = lazy(() => import('./pages/DashboardPage'));
-const PatientsPage = lazy(() => import('./pages/PatientsPage'));
-const PatientDetailPage = lazy(() => import('./pages/PatientDetailPage'));
-const TestsPage = lazy(() => import('./pages/TestsPage'));
-const FeedbackPage = lazy(() => import('./pages/FeedbackPage'));
-const ProfilePage = lazy(() => import('./pages/ProfilePage'));
-const CreateAnamnesisPage = lazy(() => import('./pages/CreateAnamnesisPage'));
-const PublicAnamnesisPage = lazy(() => import('./pages/PublicAnamnesisPage'));
-const TemplatesPage = lazy(() => import('./pages/anamnesis/TemplatesPage'));
-const RespondPage = lazy(() => import('./pages/anamnesis/RespondPage'));
-const TemplateBuilderPage = lazy(() => import('./pages/anamnesis/TemplateBuilderPage'));
-const PublicTeacherReportPage = lazy(() => import('./pages/PublicTeacherReportPage'));
-const TeacherReportTemplatesPage = lazy(() => import('./pages/teacher-report/TemplatesPage'));
-const TeacherReportRespondPage = lazy(() => import('./pages/teacher-report/RespondPage'));
-const TeacherReportTemplateBuilderPage = lazy(() => import('./pages/teacher-report/TemplateBuilderPage'));
-const TestRunnerPage = lazy(() => import('./pages/TestRunnerPage'));
-const DashboardLayout = lazy(() => import('./layouts/DashboardLayout'));
-const ReportEditorPage = lazy(() => import('./pages/ReportEditorPage'));
-const PaymentSuccessPage = lazy(() => import('./pages/payment/SuccessPage'));
-const PaymentFailurePage = lazy(() => import('./pages/payment/FailurePage'));
-const PaymentPendingPage = lazy(() => import('./pages/payment/PendingPage'));
-const SubscribePage = lazy(() => import('./pages/payment/SubscribePage'));
-const AboutUsPage = lazy(() => import('./pages/AboutUsPage'));
-const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
-const TermsPage = lazy(() => import('./pages/TermsPage'));
-const CookiesPage = lazy(() => import('./pages/CookiesPage'));
-const PlataformaPage = lazy(() => import('./pages/PlataformaPage'));
-const RecursoTestesPage = lazy(() => import('./pages/recursos/RecursoTestesPage'));
-const RecursoProntuarioPage = lazy(() => import('./pages/recursos/RecursoProntuarioPage'));
-const RecursoAnamnesePage = lazy(() => import('./pages/recursos/RecursoAnamnesePage'));
-const RecursoRelatoriosPage = lazy(() => import('./pages/recursos/RecursoRelatoriosPage'));
-const RecursoPacientesPage = lazy(() => import('./pages/recursos/RecursoPacientesPage'));
+const HomePage = lazyWithRetry(() => import('./pages/HomePage'));
+const LoginPage = lazyWithRetry(() => import('./pages/LoginPage'));
+const ResetPasswordPage = lazyWithRetry(() => import('./pages/ResetPasswordPage'));
+const SignupPage = lazyWithRetry(() => import('./pages/SignupPage'));
+const ConfirmEmailPage = lazyWithRetry(() => import('./pages/ConfirmEmailPage'));
+const DashboardPage = lazyWithRetry(() => import('./pages/DashboardPage'));
+const PatientsPage = lazyWithRetry(() => import('./pages/PatientsPage'));
+const PatientDetailPage = lazyWithRetry(() => import('./pages/PatientDetailPage'));
+const TestsPage = lazyWithRetry(() => import('./pages/TestsPage'));
+const FeedbackPage = lazyWithRetry(() => import('./pages/FeedbackPage'));
+const ProfilePage = lazyWithRetry(() => import('./pages/ProfilePage'));
+const CreateAnamnesisPage = lazyWithRetry(() => import('./pages/CreateAnamnesisPage'));
+const PublicAnamnesisPage = lazyWithRetry(() => import('./pages/PublicAnamnesisPage'));
+const TemplatesPage = lazyWithRetry(() => import('./pages/anamnesis/TemplatesPage'));
+const RespondPage = lazyWithRetry(() => import('./pages/anamnesis/RespondPage'));
+const TemplateBuilderPage = lazyWithRetry(() => import('./pages/anamnesis/TemplateBuilderPage'));
+const PublicTeacherReportPage = lazyWithRetry(() => import('./pages/PublicTeacherReportPage'));
+const TeacherReportTemplatesPage = lazyWithRetry(() => import('./pages/teacher-report/TemplatesPage'));
+const TeacherReportRespondPage = lazyWithRetry(() => import('./pages/teacher-report/RespondPage'));
+const TeacherReportTemplateBuilderPage = lazyWithRetry(() => import('./pages/teacher-report/TemplateBuilderPage'));
+const TestRunnerPage = lazyWithRetry(() => import('./pages/TestRunnerPage'));
+const DashboardLayout = lazyWithRetry(() => import('./layouts/DashboardLayout'));
+const ReportEditorPage = lazyWithRetry(() => import('./pages/ReportEditorPage'));
+const PaymentSuccessPage = lazyWithRetry(() => import('./pages/payment/SuccessPage'));
+const PaymentFailurePage = lazyWithRetry(() => import('./pages/payment/FailurePage'));
+const PaymentPendingPage = lazyWithRetry(() => import('./pages/payment/PendingPage'));
+const SubscribePage = lazyWithRetry(() => import('./pages/payment/SubscribePage'));
+const AboutUsPage = lazyWithRetry(() => import('./pages/AboutUsPage'));
+const PrivacyPolicyPage = lazyWithRetry(() => import('./pages/PrivacyPolicyPage'));
+const TermsPage = lazyWithRetry(() => import('./pages/TermsPage'));
+const CookiesPage = lazyWithRetry(() => import('./pages/CookiesPage'));
+const PlataformaPage = lazyWithRetry(() => import('./pages/PlataformaPage'));
+const RecursoTestesPage = lazyWithRetry(() => import('./pages/recursos/RecursoTestesPage'));
+const RecursoProntuarioPage = lazyWithRetry(() => import('./pages/recursos/RecursoProntuarioPage'));
+const RecursoAnamnesePage = lazyWithRetry(() => import('./pages/recursos/RecursoAnamnesePage'));
+const RecursoRelatoriosPage = lazyWithRetry(() => import('./pages/recursos/RecursoRelatoriosPage'));
+const RecursoPacientesPage = lazyWithRetry(() => import('./pages/recursos/RecursoPacientesPage'));
 
 function LoadingSpinner() {
   return (
