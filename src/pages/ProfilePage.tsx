@@ -5,12 +5,12 @@ import {
   Typography, Stack, Card, CardContent, TextField, Button, Chip,
   Divider, Alert, Avatar, Box, Grid, Container, InputAdornment, IconButton,
   Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
-  LinearProgress, Paper, Tabs, Tab
+  LinearProgress, Paper
 } from '@mui/material';
 import {
   User, Mail, Phone, Lock, Eye, EyeOff, Check, Star, Shield,
   Calendar, Camera, CreditCard, Info, Clock, RefreshCw, AlertCircle,
-  Users, FileText, ClipboardList, ShieldCheck, CheckCircle2, Sparkles, XCircle
+  Users, FileText, ClipboardList, ShieldCheck, Sparkles, XCircle
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { api } from '@/services/api';
@@ -89,7 +89,6 @@ export default function ProfilePage() {
   const [globalSuccessMsg, setGlobalSuccessMsg] = useState('');
   const [globalErrorMsg, setGlobalErrorMsg] = useState('');
   const [subscribing, setSubscribing] = useState(false);
-  const [activeTab, setActiveTab] = useState(0);
 
   // Modals
   const [confirmPersonalModal, setConfirmPersonalModal] = useState(false);

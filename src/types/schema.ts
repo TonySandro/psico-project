@@ -5,6 +5,7 @@ export interface Account {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   accessToken?: string;
   subscriptionStatus?: 'active' | 'inactive' | 'pending';
   subscriptionEndsAt?: string;
