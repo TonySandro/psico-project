@@ -17,7 +17,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { ArrowLeft, CheckCircle, ClipboardCheck, Save } from 'lucide-react';
+import { ArrowLeft, CheckCircle, ClipboardCheck, Save, Printer } from 'lucide-react';
 import TeacherReportRenderer from '@/components/teacher-report/TeacherReportRenderer';
 import { useSaveTeacherReportResponse, useTeacherReportResponse } from '@/hooks/useTeacherReportV2';
 import { getTeacherReportSchema } from '@/utils/teacherReportSchema';
@@ -140,7 +140,15 @@ export default function TeacherReportRespondPage() {
             </Typography>
           </Box>
 
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ '@media print': { display: 'none' } }}>
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={<Printer size={14} />}
+              onClick={() => window.print()}
+            >
+              Imprimir
+            </Button>
             {isCompleted && (
               <Chip icon={<CheckCircle size={14} />} label="Concluído" color="success" size="small" />
             )}

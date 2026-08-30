@@ -16,7 +16,7 @@ import {
   DialogContentText,
   DialogActions,
 } from '@mui/material';
-import { CheckCircle2, ClipboardList } from 'lucide-react';
+import { CheckCircle2, ClipboardList, Printer } from 'lucide-react';
 import { useGetPublicTeacherReport, useSubmitPublicTeacherReport } from '@/hooks/useTeacherReport';
 import TeacherReportRenderer from '@/components/teacher-report/TeacherReportRenderer';
 import { DEFAULT_TEACHER_REPORT } from '@/constants/defaultTeacherReport';
@@ -97,9 +97,20 @@ export default function PublicTeacherReportPage() {
         <Typography variant="overline" color="primary" fontWeight={700}>
           FORMULÁRIO DE AVALIAÇÃO
         </Typography>
-        <Typography variant="h4" fontWeight={800} sx={{ mb: 1 }}>
-          {data.title || "Relatório do Professor"}
-        </Typography>
+        <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ mb: 1 }}>
+          <Typography variant="h4" fontWeight={800}>
+            {data.title || "Relatório do Professor"}
+          </Typography>
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<Printer size={16} />}
+            onClick={() => window.print()}
+            sx={{ '@media print': { display: 'none' } }}
+          >
+            Imprimir
+          </Button>
+        </Stack>
         {data.patientName && (
           <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 4 }}>
             Paciente: <strong>{data.patientName}</strong>

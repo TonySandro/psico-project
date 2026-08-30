@@ -17,7 +17,7 @@ import {
   DialogContentText,
   DialogActions,
 } from '@mui/material';
-import { Save, CheckCircle, ArrowLeft, ClipboardCheck } from 'lucide-react';
+import { Save, CheckCircle, ArrowLeft, ClipboardCheck, Printer } from 'lucide-react';
 import { useAnamnesisResponse, useSaveAnamnesisResponse } from '@/hooks/useAnamnesisV2';
 import AnamnesisRenderer from '@/components/anamnesis/AnamnesisRenderer';
 
@@ -140,7 +140,15 @@ export default function RespondPage() {
             </Typography>
           </Box>
 
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ '@media print': { display: 'none' } }}>
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={<Printer size={14} />}
+              onClick={() => window.print()}
+            >
+              Imprimir
+            </Button>
             {isCompleted && (
               <Chip
                 icon={<CheckCircle size={14} />}
