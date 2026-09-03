@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Container,
@@ -17,9 +17,11 @@ import {
   DialogActions,
 } from '@mui/material';
 import { CheckCircle2, ClipboardList, Printer } from 'lucide-react';
+import { useReactToPrint } from 'react-to-print';
 import { useGetPublicAnamnesis, useSubmitPublicAnamnesis } from '@/hooks/useAnamnesis';
 import AnamnesisRenderer from '@/components/anamnesis/AnamnesisRenderer';
 import { DEFAULT_ANAMNESIS } from '@/constants/defaultAnamnesis';
+import FormPrintView from '@/components/print/FormPrintView';
 
 export default function PublicAnamnesisPage() {
   const { token } = useParams<{ token: string }>();
@@ -30,6 +32,18 @@ export default function PublicAnamnesisPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingValues, setPendingValues] = useState<Record<string, unknown>>({});
+
+  // Tracks the live form values so we can print them at any point
+  const liveAnswersRef = useRef<Record<string, unknown>>({});
+  const [printAnswers, setPrintAnswers] = useState<Record<string, unknown>>({});
+
+  const printRef = useRef<HTMLDivElement>(null);
+  const reactToPrint = useReactToPrint({ contentRef: printRef, documentTitle: 'Anamnese' });
+  const handlePrint = () => {
+    setPrintAnswers({ ...liveAnswersRef.current });
+    // Allow state to flush before triggering print
+    setTimeout(() => reactToPrint(), 0);
+  };
 
   if (isLoading) {
     return (
@@ -105,7 +119,7 @@ export default function PublicAnamnesisPage() {
             variant="outlined"
             size="small"
             startIcon={<Printer size={16} />}
-            onClick={() => window.print()}
+            onClick={() => handlePrint()}
             sx={{ '@media print': { display: 'none' } }}
           >
             Imprimir
@@ -123,6 +137,7 @@ export default function PublicAnamnesisPage() {
               schema={schema} 
               readOnly={isSuccess}
               lockPreFilledFields={true}
+              onValuesChange={(values) => { liveAnswersRef.current = values; }}
               defaultValues={{
                 ident_nome: data.patient?.name || '',
                 ident_idade: data.patient?.age?.toString() || '',
@@ -203,6 +218,17 @@ export default function PublicAnamnesisPage() {
           </Button>
         </DialogActions>
       </Dialog>
+      {/* ── Hidden print view ─────────────────────────────────────────── */}
+      <Box sx={{ display: 'none' }}>
+        <FormPrintView
+          ref={printRef}
+          title={data.title || 'Anamnese'}
+          subtitle="Anamnese Psicopedagógica"
+          patientName={data.patientName}
+          schema={schema}
+          answers={printAnswers}
+        />
+      </Box>
     </Box>
   );
 }

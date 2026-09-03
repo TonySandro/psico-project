@@ -18,15 +18,20 @@ import {
   Typography,
 } from '@mui/material';
 import { ArrowLeft, CheckCircle, ClipboardCheck, Save, Printer } from 'lucide-react';
+import { useReactToPrint } from 'react-to-print';
 import TeacherReportRenderer from '@/components/teacher-report/TeacherReportRenderer';
 import { useSaveTeacherReportResponse, useTeacherReportResponse } from '@/hooks/useTeacherReportV2';
 import { getTeacherReportSchema } from '@/utils/teacherReportSchema';
+import FormPrintView from '@/components/print/FormPrintView';
 
 const AUTOSAVE_INTERVAL_MS = 30_000;
 
 export default function TeacherReportRespondPage() {
   const { responseId } = useParams<{ responseId: string }>();
   const navigate = useNavigate();
+
+  const printRef = useRef<HTMLDivElement>(null);
+  const handlePrint = useReactToPrint({ contentRef: printRef, documentTitle: 'Relatório do Professor' });
 
   const { data: response, isLoading, isError } = useTeacherReportResponse(responseId ?? '');
   const { mutateAsync: save, isPending: isSaving } = useSaveTeacherReportResponse();
@@ -145,7 +150,7 @@ export default function TeacherReportRespondPage() {
               variant="outlined"
               size="small"
               startIcon={<Printer size={14} />}
-              onClick={() => window.print()}
+              onClick={() => handlePrint()}
             >
               Imprimir
             </Button>
@@ -240,6 +245,16 @@ export default function TeacherReportRespondPage() {
           {snackbar.message}
         </Alert>
       </Snackbar>
+      {/* ── Hidden print view (rendered off-screen for react-to-print) ── */}
+      <Box sx={{ display: 'none' }}>
+        <FormPrintView
+          ref={printRef}
+          title={response.templateName ?? 'Relatório do Professor'}
+          subtitle="Relatório do Professor"
+          schema={schema}
+          answers={response.answers as Record<string, unknown>}
+        />
+      </Box>
     </Stack>
   );
 }

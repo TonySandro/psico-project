@@ -18,14 +18,19 @@ import {
   DialogActions,
 } from '@mui/material';
 import { Save, CheckCircle, ArrowLeft, ClipboardCheck, Printer } from 'lucide-react';
+import { useReactToPrint } from 'react-to-print';
 import { useAnamnesisResponse, useSaveAnamnesisResponse } from '@/hooks/useAnamnesisV2';
 import AnamnesisRenderer from '@/components/anamnesis/AnamnesisRenderer';
+import FormPrintView from '@/components/print/FormPrintView';
 
 const AUTOSAVE_INTERVAL_MS = 30_000; // 30 s
 
 export default function RespondPage() {
   const { responseId } = useParams<{ responseId: string }>();
   const navigate = useNavigate();
+
+  const printRef = useRef<HTMLDivElement>(null);
+  const handlePrint = useReactToPrint({ contentRef: printRef, documentTitle: 'Anamnese' });
 
   const { data: response, isLoading, isError } = useAnamnesisResponse(responseId ?? '');
   const { mutateAsync: save, isPending: isSaving } = useSaveAnamnesisResponse();
@@ -145,7 +150,7 @@ export default function RespondPage() {
               variant="outlined"
               size="small"
               startIcon={<Printer size={14} />}
-              onClick={() => window.print()}
+              onClick={() => handlePrint()}
             >
               Imprimir
             </Button>
@@ -260,6 +265,16 @@ export default function RespondPage() {
           {snackbar.message}
         </Alert>
       </Snackbar>
+      {/* ── Hidden print view (rendered off-screen for react-to-print) ── */}
+      <Box sx={{ display: 'none' }}>
+        <FormPrintView
+          ref={printRef}
+          title={response.templateName ?? 'Anamnese'}
+          subtitle="Anamnese Psicopedagógica"
+          schema={schema}
+          answers={response.answers as Record<string, unknown>}
+        />
+      </Box>
     </Stack>
   );
 }
