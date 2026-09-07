@@ -384,6 +384,99 @@ const CarsResultView = ({ data }: { data: any }) => {
     );
 };
 
+const Tde2ResultView = ({ data }: { data: any }) => {
+    return (
+        <Grid container spacing={2.5}>
+            <Grid size={{ xs: 12 }}>
+                <Typography variant="subtitle1" sx={{ color: '#334155', fontWeight: 700, mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box component="span" sx={{ width: 4, height: 16, bgcolor: '#3b82f6', borderRadius: 1 }} />
+                    Resultado da Avaliação TDE-II
+                </Typography>
+            </Grid>
+            
+            {/* Show regular fields (nomePaciente, anoEscolar, subteste, etc.) */}
+            {Object.entries(data).map(([key, value]) => {
+                if (typeof value === 'object' && value !== null) return null;
+                return (
+                    <Grid size={{ xs: 12, sm: 6 }} key={key}>
+                        <LabelValue
+                            label={translateTestKey(key)}
+                            value={translateTestValue(value)}
+                        />
+                    </Grid>
+                );
+            })}
+
+            {/* Show indicator array */}
+            {data.resultados && Array.isArray(data.resultados) && (
+                <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
+                    <Typography variant="subtitle1" sx={{ color: '#334155', fontWeight: 700, mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Box component="span" sx={{ width: 4, height: 16, bgcolor: '#10b981', borderRadius: 1 }} />
+                        Indicadores
+                    </Typography>
+                    <Grid container spacing={2}>
+                        {data.resultados.map((res: any, idx: number) => (
+                            <Grid size={{ xs: 12, sm: 6 }} key={idx}>
+                                <Box sx={{ 
+                                    p: 2, 
+                                    bgcolor: 'rgba(248, 250, 252, 0.6)', 
+                                    borderRadius: 2, 
+                                    border: '1px solid #e2e8f0',
+                                    height: '100%',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center'
+                                }}>
+                                    <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#0f172a', mb: 1, textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.5px' }}>
+                                        {res.nome}
+                                    </Typography>
+                                    
+                                    <Stack spacing={1}>
+                                        <Box display="flex" justifyContent="space-between" alignItems="center">
+                                            <Typography variant="body2" color="text.secondary" fontWeight={600}>Valor Calculado</Typography>
+                                            <Typography variant="body2" fontWeight={800} color="primary.main">
+                                                {typeof res.valor === 'number' && !Number.isInteger(res.valor) ? res.valor.toFixed(2) : res.valor}
+                                                {res.unidade && ` ${res.unidade}`}
+                                            </Typography>
+                                        </Box>
+                                        
+                                        {res.percentil !== undefined && res.percentil !== null && (
+                                            <Box display="flex" justifyContent="space-between" alignItems="center">
+                                                <Typography variant="body2" color="text.secondary" fontWeight={600}>Percentil</Typography>
+                                                <Typography variant="body2" fontWeight={800}>{res.percentil}</Typography>
+                                            </Box>
+                                        )}
+                                        
+                                        {res.interpretacao && (
+                                            <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mt: 0.5 }}>
+                                                <Typography variant="body2" color="text.secondary" fontWeight={600}>Classificação</Typography>
+                                                <Chip 
+                                                    label={res.interpretacao} 
+                                                    size="small" 
+                                                    sx={{ 
+                                                        fontWeight: 700, 
+                                                        fontSize: '0.7rem',
+                                                        height: 20
+                                                    }}
+                                                    color={
+                                                        res.interpretacao.toLowerCase().includes('grave') ? 'error' :
+                                                        res.interpretacao.toLowerCase().includes('leve') || res.interpretacao.toLowerCase().includes('alerta') ? 'warning' :
+                                                        res.interpretacao.toLowerCase().includes('superior') || res.interpretacao.toLowerCase().includes('acima') ? 'success' : 'info'
+                                                    }
+                                                />
+                                            </Box>
+                                        )}
+                                    </Stack>
+                                </Box>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Grid>
+            )}
+        </Grid>
+    );
+};
+
 const GenericResultView = ({ data }: { data: any }) => {
     return (
         <Grid container spacing={2.5}>
@@ -428,6 +521,9 @@ export default function TestResultDialog({ open, onClose, protocol }: TestResult
             case 'CARS':
             case 'Cars':
                 return <CarsResultView data={protocol.data} />;
+            case 'TDE-II':
+            case 'tde2':
+                return <Tde2ResultView data={protocol.data} />;
             default:
                 return <GenericResultView data={protocol.data} />;
         }
