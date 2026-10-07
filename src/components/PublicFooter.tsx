@@ -6,7 +6,7 @@ const institutionalLinks = [
   { label: 'Plataforma', path: '/plataforma' },
   { label: 'Quem Somos', path: '/quem-somos' },
   { label: 'Política de Privacidade', path: '/politica-de-privacidade' },
-  { label: 'Termos de Uso', path: '/termos-de-uso' },
+  { label: 'Termos e Condições', path: '/termos-de-uso' },
   { label: 'Política de Cookies', path: '/politica-de-cookies' },
 ];
 

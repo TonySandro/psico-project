@@ -120,6 +120,8 @@ function App() {
           <Route path="/quem-somos" element={<AboutUsPage />} />
           <Route path="/politica-de-privacidade" element={<PrivacyPolicyPage />} />
           <Route path="/termos-de-uso" element={<TermsPage />} />
+          <Route path="/termos" element={<Navigate to="/termos-de-uso" replace />} />
+          <Route path="/termos-e-condicoes" element={<Navigate to="/termos-de-uso" replace />} />
           <Route path="/politica-de-cookies" element={<CookiesPage />} />
           <Route path="/plataforma" element={<PlataformaPage />} />
           <Route path="/recursos/testes" element={<RecursoTestesPage />} />

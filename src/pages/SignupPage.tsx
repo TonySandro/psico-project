@@ -238,7 +238,14 @@ export default function SignupPage() {
                 <Check className="pointer-events-none absolute left-0.5 top-0.5 hidden text-white peer-checked:block" size={16} strokeWidth={3} />
               </div>
               <span className="text-sm text-slate-500 leading-tight group-hover:text-slate-700 transition-colors select-none">
-                Li e concordo com os <a href="#" className="text-primary font-bold hover:underline">Termos de Uso</a> e <a href="#" className="text-primary font-bold hover:underline">Política de Privacidade</a>.
+                Li e concordo com os{' '}
+                <Link to="/termos-de-uso" target="_blank" rel="noopener noreferrer" className="text-primary font-bold hover:underline">
+                  Termos e Condições
+                </Link>{' '}
+                e{' '}
+                <Link to="/politica-de-privacidade" target="_blank" rel="noopener noreferrer" className="text-primary font-bold hover:underline">
+                  Política de Privacidade
+                </Link>.
               </span>
             </label>
 
