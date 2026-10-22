@@ -4,9 +4,11 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
 import CookieConsentBanner from './components/CookieConsentBanner';
 import AnalyticsTracker from './components/AnalyticsTracker';
+import MaintenanceBanner from './components/MaintenanceBanner';
 import { useAuthStore } from './stores/authStore';
 import { api } from './services/api';
 import type { Account } from './types/schema';
+import { isMaintenanceActive } from './config/maintenance';
 
 // Helper to gracefully retry loading dynamic chunks when a new build/deployment replaces old JS bundle hashes
 function lazyWithRetry<T extends React.ComponentType<any>>(
@@ -84,6 +86,7 @@ function LoadingSpinner() {
 
 function App() {
   useEffect(() => {
+    if (isMaintenanceActive()) return;
     const token = useAuthStore.getState().token;
     if (!token) return;
 
@@ -110,6 +113,7 @@ function App() {
       <ScrollToTop />
       <AnalyticsTracker />
       <CookieConsentBanner />
+      <MaintenanceBanner />
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
           <Route path="/" element={<HomePage />} />

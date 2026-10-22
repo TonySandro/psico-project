@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useLogin } from '@/hooks/useAuth';
 import loginBg from '../images/consultorio-neuropsicopedagogia-nppavalia.webp';
-import { HeartPulse, ArrowLeft } from 'lucide-react';
-
+import { HeartPulse, ArrowLeft, AlertTriangle, LifeBuoy, Mail, Copy, Check } from 'lucide-react';
+import { isMaintenanceActive, MAINTENANCE_CONFIG, getEmergencyMailtoUrl } from '@/config/maintenance';
+import MaintenanceModal from '@/components/MaintenanceModal';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -14,6 +15,10 @@ export default function LoginPage() {
   const [recoverEmail, setRecoverEmail] = useState('');
   const [recoverStatus, setRecoverStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [cooldown, setCooldown] = useState(0);
+  const [showMaintenanceModal, setShowMaintenanceModal] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
+
+  const isMaintenance = isMaintenanceActive();
   const { mutate: login, isPending, error } = useLogin();
 
   useEffect(() => {
@@ -24,8 +29,27 @@ export default function LoginPage() {
     return () => clearTimeout(timer);
   }, [cooldown]);
 
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(MAINTENANCE_CONFIG.supportEmail);
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2500);
+    } catch {
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2500);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Em modo de manutenção, interceptamos o envio para evitar falhas no backend fora do ar
+    // e orientamos o usuário diretamente para o canal de emergência
+    if (isMaintenance && MAINTENANCE_CONFIG.blockLogin) {
+      setShowMaintenanceModal(true);
+      return;
+    }
+
     login({ email, password }, {
       onSuccess: () => {
         navigate('/app/dashboard');
@@ -35,6 +59,12 @@ export default function LoginPage() {
 
   const handleRecoverPassword = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isMaintenance) {
+      setShowMaintenanceModal(true);
+      return;
+    }
+
     if (cooldown > 0) return;
     setRecoverStatus('loading');
     try {
@@ -44,11 +74,9 @@ export default function LoginPage() {
       setCooldown(60);
       setTimeout(() => {
         setRecoverStatus('idle');
-        // Removing auto-redirect so user can see cooldown and instructions
       }, 5000);
-    } catch (err) {
-      // Regardless of error (e.g. email not found), we should probably show success to avoid leaking emails.
-      // But if there's a network error, we show error. We'll stick to a generic success for privacy.
+    } catch {
+      // Regardless of error, show generic success for privacy
       setRecoverStatus('success');
       setCooldown(60);
       setTimeout(() => {
@@ -85,16 +113,6 @@ export default function LoginPage() {
           <p className="text-lg text-white/90 font-medium leading-relaxed">
             Centralize anamneses, aplique testes clínicos padronizados e gere relatórios automatizados de forma prática.
           </p>
-
-          {/* <div className="mt-8 flex items-center gap-4">
-            <div className="flex -space-x-3">
-              <img alt="Avatar user 1" className="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzFjbAu8apEqmhsgjlz4fsINp0qCOdBuCk_P8QsIKs4nIjmZPMwZ8rQ3lmL-D7ss5p2AUyTO1AMsKhM-5Zj9IsEKbNF11PVn_qXIH7fJoJ4eNw5ddEfxpb53hU_m1brDFhAVvpX4c8Pl-DlDXySsqdZpeO2b6EoYwo-rmQ_ycJop51nIoVR8AimdyBq7ocwiWbSxWnzm8DdCY5bLd1A8y56N53YJT-weSrA7V9CZmOokeKIP1iRUOTW14rGU6EB_H3XL2ZLaDxHqKI" />
-              <img alt="Avatar user 2" className="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDc6zTRc5OUy8Z36vZySf9pxqm4SSjqWfEyYlFnz-Mdzky_HHGNCkh8r_aJFs_i-ZGbzPi4JExSPD6sAoeNAEDNQVNKuZyzyvjfasI8_1ryIcHaI8Yb71dbOKhV8aoJcv312-wROAgr7J39wjxAEw6OlyeO9LK9a7QIYExHF6ZkYwkxH8vOFHd8AWb6--j3LQQPtJccTkKmyFlzvv4PhMpdi3Guqa0d78EM9c8LOkouJerQNGVIfet1vmgIDbxOktNc4ut1Y8FJErtX" />
-              <img alt="Avatar user 3" className="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrUcD5DtLZrSWeBDDGc-09im5OVb-sYE8byI7r4PcUnUx2eEvYMRNjK8zK2OgCgS1iusI0Av2lmI2XeYnFjk0pLcSdaydRkbf6I5FsV6Yooo7YoCYOdJR1SfnF0Tpej3rnQDdG9l5zS_hv20XDEdfoL-eZYJFZstd4kYS5tGPa3qNwf65JAHLpAMH6r6pfscK5Ujt624pBCJCC_b-CXTGlMqRH7WvQramHrwQC4p0bQqnoyWclan_JAVZSiolETuOxR-SIC8fQu-tn" />
-            </div>
-            <p className="text-sm font-medium text-white/90">Mais de 2.000 profissionais confiam.</p>
-          
-          </div> */}
         </div>
       </div>
 
@@ -112,7 +130,7 @@ export default function LoginPage() {
         </div>
 
         <div className="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-24">
-          <div className="w-full max-w-[420px] flex flex-col gap-8">
+          <div className="w-full max-w-[420px] flex flex-col gap-6">
             {/* Header */}
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-3 text-primary mb-2">
@@ -132,6 +150,69 @@ export default function LoginPage() {
               </p>
             </div>
 
+            {/* AVISO DE MANUTENÇÃO EM DESTAQUE */}
+            {isMaintenance && (
+              <div
+                role="alert"
+                className="bg-gradient-to-br from-amber-50 to-orange-50/70 border-2 border-amber-300 rounded-2xl p-4 sm:p-5 text-amber-950 flex flex-col gap-3.5 shadow-sm"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="p-2 rounded-xl bg-amber-100 text-amber-800 shrink-0 mt-0.5">
+                    <AlertTriangle size={22} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-200 text-amber-900 text-xs font-bold uppercase tracking-wider mb-1">
+                      {MAINTENANCE_CONFIG.badge}
+                    </div>
+                    <h3 className="font-bold text-base text-amber-950 leading-tight">
+                      {MAINTENANCE_CONFIG.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-amber-900/85 mt-1 leading-relaxed">
+                      {MAINTENANCE_CONFIG.message}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Box de Urgência de Recuperação de Dados */}
+                <div className="bg-white rounded-xl p-3.5 border border-amber-200/90 shadow-xs flex flex-col gap-2">
+                  <div className="flex items-center gap-1.5 font-bold text-amber-950 text-xs sm:text-sm">
+                    <LifeBuoy size={16} className="text-amber-700 shrink-0" />
+                    <span>{MAINTENANCE_CONFIG.urgencyTitle}</span>
+                  </div>
+                  <p className="text-xs text-amber-900/80 leading-normal">
+                    {MAINTENANCE_CONFIG.urgencyMessage}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <a
+                      href={getEmergencyMailtoUrl()}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs transition-colors shadow-xs"
+                    >
+                      <Mail size={13} />
+                      <span>Enviar E-mail de Urgência</span>
+                    </a>
+                    <button
+                      type="button"
+                      onClick={handleCopyEmail}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-100/80 hover:bg-amber-200/90 text-amber-900 font-medium text-xs transition-colors"
+                      title="Copiar e-mail de suporte"
+                    >
+                      {copiedEmail ? (
+                        <>
+                          <Check size={13} className="text-green-600" />
+                          <span className="text-green-700 font-bold">Copiado!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy size={13} className="text-amber-700" />
+                          <span>Copiar ({MAINTENANCE_CONFIG.supportEmail})</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {isRecoverPassword && (
               <div className="bg-blue-50 text-blue-700 p-4 rounded-lg text-sm flex flex-col gap-1">
                 <p>• Verifique sua caixa de entrada e spam.</p>
@@ -140,7 +221,7 @@ export default function LoginPage() {
               </div>
             )}
 
-            {!isRecoverPassword && error && (
+            {!isRecoverPassword && error && !isMaintenance && (
               <div className="bg-red-50 text-red-500 p-3 rounded-lg text-sm text-center">
                 {(() => {
                   const err = error as any;
@@ -197,7 +278,13 @@ export default function LoginPage() {
                   disabled={recoverStatus === 'loading' || cooldown > 0 || !recoverEmail}
                   className="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary hover:bg-primary/90 text-white text-base font-bold leading-normal tracking-[0.015em] transition-all shadow-md hover:shadow-lg mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  {recoverStatus === 'loading' ? 'Enviando...' : cooldown > 0 ? `Aguarde ${cooldown}s para reenviar` : 'Enviar Link de Recuperação'}
+                  {isMaintenance
+                    ? 'Manutenção em Andamento (Suporte)'
+                    : recoverStatus === 'loading'
+                    ? 'Enviando...'
+                    : cooldown > 0
+                    ? `Aguarde ${cooldown}s para reenviar`
+                    : 'Enviar Link de Recuperação'}
                 </button>
 
                 <div className="flex justify-center mt-2">
@@ -268,9 +355,17 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary hover:bg-primary/90 text-white text-base font-bold leading-normal tracking-[0.015em] transition-all shadow-md hover:shadow-lg mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                  className={`flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 text-white text-base font-bold leading-normal tracking-[0.015em] transition-all shadow-md hover:shadow-lg mt-2 disabled:opacity-70 disabled:cursor-not-allowed ${
+                    isMaintenance
+                      ? 'bg-amber-600 hover:bg-amber-700'
+                      : 'bg-primary hover:bg-primary/90'
+                  }`}
                 >
-                  {isPending ? 'Entrando...' : 'Entrar'}
+                  {isMaintenance
+                    ? 'Sistema em Manutenção (Contatar Suporte)'
+                    : isPending
+                    ? 'Entrando...'
+                    : 'Entrar'}
                 </button>
               </form>
             )}
@@ -302,6 +397,13 @@ export default function LoginPage() {
           <p className="text-xs text-gray-400 dark:text-gray-600">© 2024 NPPAvalia. Todos os direitos reservados.</p>
         </div>
       </div>
+
+      {/* MODAL DE URGÊNCIA EM CASO DE TENTATIVA DE LOGIN */}
+      <MaintenanceModal
+        isOpen={showMaintenanceModal}
+        onClose={() => setShowMaintenanceModal(false)}
+        context="login"
+      />
     </div>
   );
 }

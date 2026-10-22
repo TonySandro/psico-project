@@ -10,8 +10,13 @@ import {
   Check,
   AlertCircle,
   HeartPulse,
-  ArrowLeft
+  ArrowLeft,
+  AlertTriangle,
+  LifeBuoy,
+  Copy
 } from 'lucide-react';
+import { isMaintenanceActive, MAINTENANCE_CONFIG, getEmergencyMailtoUrl } from '@/config/maintenance';
+import MaintenanceModal from '@/components/MaintenanceModal';
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -23,13 +28,34 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [showMaintenanceModal, setShowMaintenanceModal] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
+
+  const isMaintenance = isMaintenanceActive();
   const { mutate: signup, isPending: isSignupPending } = useSignup();
   const { mutate: login, isPending: isLoginPending } = useLogin();
 
   const isPending = isSignupPending || isLoginPending;
 
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(MAINTENANCE_CONFIG.supportEmail);
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2500);
+    } catch {
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2500);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isMaintenance && MAINTENANCE_CONFIG.blockLogin) {
+      setShowMaintenanceModal(true);
+      return;
+    }
+
     setErrorMessage('');
 
     if (password !== passwordConfirmation) {
@@ -63,43 +89,35 @@ export default function SignupPage() {
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased">
       {/* Left Side: Visual / Branding (Desktop Only) */}
-      <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-between bg-primary p-12 overflow-hidden group">
-        {/* Background Decoration */}
-        <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
-          <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-white blur-3xl mix-blend-overlay animate-pulse"></div>
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-[#8b5cf6] blur-3xl mix-blend-multiply opacity-70"></div>
+      <div className="hidden lg:flex w-1/2 relative bg-primary/5 items-center justify-center p-12 overflow-hidden border-r border-slate-200/50">
+        <div
+          className="absolute inset-0 z-0 h-full w-full bg-cover bg-center opacity-90 transition-all duration-700 hover:scale-105"
+          role="img"
+          aria-label="Profissional da saúde analisando dados neuropsicopedagógicos - NPPAvalia"
+          style={{ backgroundImage: `url(${signupImg})` }}
+        >
+          <div className="absolute inset-0 bg-primary/20 mix-blend-multiply"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
         </div>
 
-        {/* Header Logo */}
-        <div className="relative z-10 flex items-center gap-3 text-white">
-          <div className="size-11 rounded-xl shadow-sm border border-white/20 bg-white/10 backdrop-blur-md flex items-center justify-center text-white">
-            <HeartPulse size={24} />
+        <div className="relative z-10 max-w-md text-white">
+          <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl text-white">
+            <HeartPulse size={36} />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">NPPAvalia</h1>
-        </div>
-
-        {/* Central Content */}
-        <div className="relative z-10 my-auto max-w-lg">
-          <div className="mb-8 overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-1 shadow-2xl transform transition-transform duration-700 hover:scale-[1.02]">
-            <img
-              src={signupImg}
-              alt="Profissional analisando dados neuropsicopedagógicos - NPPAvalia"
-              className="h-64 w-full rounded-xl object-cover opacity-90"
-              loading="eager"
-              fetchPriority="high"
-            />
+          <div className="inline-block px-3 py-1 mb-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
+            <span className="text-xs font-bold text-white uppercase tracking-wider">NPPAvalia - Plataforma Clínica</span>
           </div>
-          <h2 className="text-4xl font-extrabold text-white leading-tight tracking-tight mb-4 drop-shadow-sm">
-            Simplifique seus atendimentos psicopedagógicos.
+          <h2 className="text-4xl font-bold leading-tight tracking-tight mb-4">
+            Padronize seus atendimentos e avaliações.
           </h2>
-          <p className="text-white/80 text-lg font-medium leading-relaxed">
-            Organize pacientes, aplique triagens e testes clínicos, envie anamneses online para responsáveis e elabore relatórios e laudos com rapidez e segurança jurídica.
+          <p className="text-lg text-white/90 font-medium leading-relaxed">
+            Economize horas preenchendo relatórios manuais. Tenha testes e protocolos organizados em um único lugar.
           </p>
         </div>
       </div>
 
-      {/* Right Side: Form */}
-      <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-6 overflow-y-auto bg-background-light scrollbar-hide relative">
+      {/* Right Side: Signup Form */}
+      <div className="w-full lg:w-1/2 h-full flex flex-col overflow-y-auto px-6 py-8 sm:px-12 md:px-16 justify-center items-center relative">
         {/* Back Button */}
         <div className="absolute top-6 left-6 z-20">
           <Link
@@ -111,20 +129,79 @@ export default function SignupPage() {
           </Link>
         </div>
 
-        <div className="w-full max-w-[480px] py-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
-          {/* Mobile Logo (Visible only on < lg) */}
-          <div className="lg:hidden flex items-center gap-2 mb-8 text-slate-900">
-            <div className="size-8 rounded-lg bg-primary flex items-center justify-center text-white">
-              <HeartPulse size={18} />
+        <div className="w-full max-w-[440px] my-auto pt-10 sm:pt-0">
+          {/* Logo / Brand Mobile */}
+          <div className="flex items-center gap-2 mb-6 text-primary">
+            <div className="p-2 bg-primary/10 rounded-xl text-primary">
+              <HeartPulse size={24} />
             </div>
             <span className="text-xl font-bold">NPPAvalia</span>
           </div>
 
           {/* Heading */}
-          <div className="mb-8">
+          <div className="mb-6">
             <h2 className="text-3xl font-black tracking-tight text-slate-900 mb-2">Cadastre-se na Plataforma</h2>
             <p className="text-slate-500 text-base">Experimente o NPPAvalia gratuitamente e revolucione sua rotina clínica.</p>
           </div>
+
+          {/* Aviso de Manutenção em Destaque */}
+          {isMaintenance && (
+            <div
+              role="alert"
+              className="mb-6 bg-gradient-to-br from-amber-50 to-orange-50/70 border-2 border-amber-300 rounded-2xl p-4 sm:p-5 text-amber-950 flex flex-col gap-3 shadow-sm"
+            >
+              <div className="flex items-start gap-3">
+                <div className="p-2 rounded-xl bg-amber-100 text-amber-800 shrink-0 mt-0.5">
+                  <AlertTriangle size={22} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-200 text-amber-900 text-xs font-bold uppercase tracking-wider mb-1">
+                    {MAINTENANCE_CONFIG.badge}
+                  </div>
+                  <h3 className="font-bold text-base text-amber-950 leading-tight">
+                    {MAINTENANCE_CONFIG.title}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-amber-900/85 mt-1 leading-relaxed">
+                    {MAINTENANCE_CONFIG.message} Novos cadastros estão temporariamente pausados.
+                  </p>
+                </div>
+              </div>
+
+              {/* Box de Urgência */}
+              <div className="bg-white rounded-xl p-3 border border-amber-200 shadow-xs flex flex-col gap-2">
+                <div className="flex items-center gap-1.5 font-bold text-amber-950 text-xs">
+                  <LifeBuoy size={15} className="text-amber-700 shrink-0" />
+                  <span>{MAINTENANCE_CONFIG.urgencyTitle}</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                  <a
+                    href={getEmergencyMailtoUrl()}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs transition-colors"
+                  >
+                    <Mail size={13} />
+                    <span>Falar com Suporte</span>
+                  </a>
+                  <button
+                    type="button"
+                    onClick={handleCopyEmail}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 font-medium text-xs transition-colors"
+                  >
+                    {copiedEmail ? (
+                      <>
+                        <Check size={13} className="text-green-600" />
+                        <span className="text-green-700 font-bold">Copiado!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={13} className="text-amber-700" />
+                        <span>Copiar e-mail</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Error Message */}
           {errorMessage && (
@@ -179,54 +256,51 @@ export default function SignupPage() {
               <label className="text-sm font-semibold text-slate-700" htmlFor="password">Senha</label>
               <div className="relative">
                 <input
-                  className="w-full h-12 px-4 rounded-xl bg-surface-light border border-slate-300 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-base pr-12"
+                  className="w-full h-12 px-4 pr-12 rounded-xl bg-surface-light border border-slate-300 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-base"
                   id="password"
                   name="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Mínimo 8 caracteres"
-                  type={showPassword ? "text" : "password"}
+                  placeholder="No mínimo 6 caracteres"
+                  type={showPassword ? 'text' : 'password'}
                   required
-                  autoComplete="new-password"
+                  minLength={6}
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-2 p-1 text-slate-400 hover:text-primary transition-colors cursor-pointer rounded-lg hover:bg-slate-100"
                   onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Ocultar senha" : "Me mostre a senha"}
+                  className="absolute right-4 top-3 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors"
                 >
-                  {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
             </div>
 
             {/* Confirm Password Field */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-semibold text-slate-700" htmlFor="confirm-password">Confirmar Senha</label>
+              <label className="text-sm font-semibold text-slate-700" htmlFor="confirmPassword">Confirmar Senha</label>
               <div className="relative">
                 <input
-                  className="w-full h-12 px-4 rounded-xl bg-surface-light border border-slate-300 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-base pr-12"
-                  id="confirm-password"
-                  name="confirm-password"
+                  className="w-full h-12 px-4 pr-12 rounded-xl bg-surface-light border border-slate-300 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-base"
+                  id="confirmPassword"
+                  name="confirmPassword"
                   value={passwordConfirmation}
                   onChange={(e) => setPasswordConfirmation(e.target.value)}
                   placeholder="Repita sua senha"
-                  type={showConfirmPassword ? "text" : "password"}
+                  type={showConfirmPassword ? 'text' : 'password'}
                   required
-                  autoComplete="new-password"
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-2 p-1 text-slate-400 hover:text-primary transition-colors cursor-pointer rounded-lg hover:bg-slate-100"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  aria-label={showConfirmPassword ? "Ocultar confirmação de senha" : "Mostrar confirmação de senha"}
+                  className="absolute right-4 top-3 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors"
                 >
-                  {showConfirmPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                  {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
             </div>
 
-            {/* Terms Checkbox */}
+            {/* Terms and conditions checkbox */}
             <label className="flex items-start gap-3 mt-2 cursor-pointer group">
               <div className="relative flex items-center h-5">
                 <input
@@ -253,9 +327,17 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={isPending || !termsAccepted}
-              className="mt-4 w-full h-12 rounded-xl bg-primary hover:bg-primary-hover text-white font-bold text-base shadow-lg shadow-primary/30 transition-all duration-200 transform active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed hover:-translate-y-0.5 disabled:hover:translate-y-0"
+              className={`mt-4 w-full h-12 rounded-xl text-white font-bold text-base shadow-lg transition-all duration-200 transform active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed hover:-translate-y-0.5 disabled:hover:translate-y-0 ${
+                isMaintenance
+                  ? 'bg-amber-600 hover:bg-amber-700 shadow-amber-600/30'
+                  : 'bg-primary hover:bg-primary-hover shadow-primary/30'
+              }`}
             >
-              {isPending ? 'Criando conta...' : 'Criar minha Conta Gratuita'}
+              {isMaintenance
+                ? 'Sistema em Manutenção (Contatar Suporte)'
+                : isPending
+                ? 'Criando conta...'
+                : 'Criar minha Conta Gratuita'}
             </button>
           </form>
 
@@ -268,6 +350,12 @@ export default function SignupPage() {
           </p>
         </div>
       </div>
+
+      <MaintenanceModal
+        isOpen={showMaintenanceModal}
+        onClose={() => setShowMaintenanceModal(false)}
+        context="signup"
+      />
     </div>
   );
 }
