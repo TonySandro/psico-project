@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import {
   Typography, Stack, Card, CardContent, TextField, Button, Chip,
@@ -10,7 +11,8 @@ import {
 import {
   User, Mail, Phone, Lock, Eye, EyeOff, Check, Star, Shield,
   Calendar, Camera, CreditCard, Info, Clock, RefreshCw, AlertCircle,
-  Users, FileText, ClipboardList, ShieldCheck, Sparkles, XCircle
+  Users, FileText, ClipboardList, ShieldCheck, Sparkles, XCircle,
+  Trash2, AlertTriangle
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { api } from '@/services/api';
@@ -68,8 +70,10 @@ const getDaysUntil = (dateInput?: string | Date | null) => {
 };
 
 export default function ProfilePage() {
+  const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   const updateUser = useAuthStore((state) => state.updateUser);
+  const logout = useAuthStore((state) => state.logout);
 
   const {
     subscription,
@@ -97,6 +101,10 @@ export default function ProfilePage() {
   // Modals
   const [confirmPersonalModal, setConfirmPersonalModal] = useState(false);
   const [confirmCancelSubModal, setConfirmCancelSubModal] = useState(false);
+  const [confirmDeleteAccountModal, setConfirmDeleteAccountModal] = useState(false);
+  const [deleteConfirmationInput, setDeleteConfirmationInput] = useState('');
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [deleteAccountError, setDeleteAccountError] = useState('');
 
   // Forms
   const {
@@ -269,6 +277,45 @@ export default function ProfilePage() {
       setConfirmCancelSubModal(false);
       setGlobalErrorMsg(err.response?.data?.error || 'Erro ao cancelar assinatura. Tente novamente ou entre em contato com o suporte.');
       window.scrollTo(0, 0);
+    }
+  };
+
+  const handleOpenDeleteModal = () => {
+    setDeleteConfirmationInput('');
+    setDeleteAccountError('');
+    setConfirmDeleteAccountModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    if (isDeletingAccount) return;
+    setConfirmDeleteAccountModal(false);
+    setDeleteConfirmationInput('');
+    setDeleteAccountError('');
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user?.id) {
+      setDeleteAccountError('Usuário não autenticado.');
+      return;
+    }
+
+    setIsDeletingAccount(true);
+    setDeleteAccountError('');
+
+    try {
+      await api.delete(`/delete-account/${user.id}`);
+      setConfirmDeleteAccountModal(false);
+      logout();
+      navigate('/login', { replace: true, state: { accountDeleted: true } });
+    } catch (err: any) {
+      console.error('Erro ao excluir conta:', err);
+      setDeleteAccountError(
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        'Não foi possível excluir sua conta. Tente novamente mais tarde ou contate o suporte.'
+      );
+    } finally {
+      setIsDeletingAccount(false);
     }
   };
 
@@ -735,6 +782,49 @@ export default function ProfilePage() {
                   </form>
                 </CardContent>
               </Card>
+              {/* 4. Danger Zone / Delete Account */}
+              <Card
+                sx={{
+                  borderRadius: 3,
+                  boxShadow: '0px 4px 20px rgba(0,0,0,0.05)',
+                  border: '1px solid #FEE2E2',
+                  bgcolor: '#FFFDFD'
+                }}
+              >
+                <CardContent sx={{ p: 3.5 }}>
+                  <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 2 }}>
+                    <AlertTriangle size={22} color="#DC2626" />
+                    <Typography variant="h6" fontWeight={700} color="#DC2626">
+                      Zona de Perigo
+                    </Typography>
+                  </Stack>
+
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 3, lineHeight: 1.6 }}>
+                    Ao excluir sua conta, todos os seus dados cadastrais, pacientes, prontuários, anamneses, avaliações e relatórios serão permanentemente removidos do sistema. Esta ação não poderá ser desfeita.
+                  </Typography>
+
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    size="medium"
+                    startIcon={<Trash2 size={18} />}
+                    onClick={handleOpenDeleteModal}
+                    sx={{
+                      borderRadius: 2,
+                      textTransform: 'none',
+                      fontWeight: 600,
+                      borderColor: '#EF4444',
+                      color: '#DC2626',
+                      '&:hover': {
+                        bgcolor: '#FEF2F2',
+                        borderColor: '#DC2626'
+                      }
+                    }}
+                  >
+                    Excluir minha conta
+                  </Button>
+                </CardContent>
+              </Card>
             </Stack>
           </Grid>
 
@@ -1098,6 +1188,97 @@ export default function ProfilePage() {
             sx={{ textTransform: 'none', fontWeight: 600 }}
           >
             {cancelling ? 'Cancelando...' : 'Confirmar Cancelamento'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Confirmation Delete Account Modal */}
+      <Dialog
+        open={confirmDeleteAccountModal}
+        onClose={handleCloseDeleteModal}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{ sx: { borderRadius: 3, p: 1 } }}
+      >
+        <DialogTitle fontWeight={700} sx={{ color: '#DC2626', display: 'flex', alignItems: 'center', gap: 1 }}>
+          <AlertTriangle size={24} color="#DC2626" />
+          Excluir Conta Definitivamente
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ mb: 2 }}>
+            Tem certeza de que deseja excluir sua conta? Esta ação é <strong>permanente e irreversível</strong>.
+          </DialogContentText>
+
+          <Box sx={{ bgcolor: '#FEF2F2', p: 2, borderRadius: 2, border: '1px solid #FCA5A5', mb: 2.5 }}>
+            <Typography variant="body2" color="#991B1B" fontWeight={700} mb={0.5}>
+              Importante saber:
+            </Typography>
+            <Typography variant="body2" color="#991B1B" component="ul" sx={{ pl: 2, m: 0 }}>
+              <li>Todos os pacientes cadastrados serão excluídos permanentemente.</li>
+              <li>Todas as anamneses e relatórios escolares serão removidos.</li>
+              <li>Todos os protocolos de testes e avaliações aplicadas serão perdidos.</li>
+              <li>O histórico de relatórios emitidos não poderá ser recuperado.</li>
+            </Typography>
+          </Box>
+
+          {deleteAccountError && (
+            <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>
+              {deleteAccountError}
+            </Alert>
+          )}
+
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            Para confirmar a exclusão, digite <strong>DELETAR</strong> no campo abaixo:
+          </Typography>
+          <TextField
+            fullWidth
+            size="small"
+            placeholder="DELETAR"
+            value={deleteConfirmationInput}
+            onChange={(e) => setDeleteConfirmationInput(e.target.value)}
+            disabled={isDeletingAccount}
+            onKeyDown={(e) => {
+              if (
+                e.key === 'Enter' &&
+                (deleteConfirmationInput.trim().toUpperCase() === 'DELETAR' ||
+                 deleteConfirmationInput.trim().toUpperCase() === 'EXCLUIR') &&
+                !isDeletingAccount
+              ) {
+                e.preventDefault();
+                handleDeleteAccount();
+              }
+            }}
+            sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+          />
+        </DialogContent>
+        <DialogActions sx={{ p: 2, pt: 0 }}>
+          <Button
+            onClick={handleCloseDeleteModal}
+            color="inherit"
+            disabled={isDeletingAccount}
+            sx={{ textTransform: 'none' }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleDeleteAccount}
+            variant="contained"
+            color="error"
+            disabled={
+              (deleteConfirmationInput.trim().toUpperCase() !== 'DELETAR' &&
+               deleteConfirmationInput.trim().toUpperCase() !== 'EXCLUIR') ||
+              isDeletingAccount
+            }
+            startIcon={<Trash2 size={18} />}
+            sx={{
+              textTransform: 'none',
+              fontWeight: 600,
+              bgcolor: '#DC2626',
+              '&:hover': { bgcolor: '#B91C1C' },
+              borderRadius: 2
+            }}
+          >
+            {isDeletingAccount ? 'Excluindo conta...' : 'Sim, excluir minha conta'}
           </Button>
         </DialogActions>
       </Dialog>

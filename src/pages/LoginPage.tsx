@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useLogin } from '@/hooks/useAuth';
 import loginBg from '../images/consultorio-neuropsicopedagogia-nppavalia.webp';
 import { HeartPulse, ArrowLeft, AlertTriangle, LifeBuoy, Mail, Copy, Check } from 'lucide-react';
@@ -8,6 +8,7 @@ import MaintenanceModal from '@/components/MaintenanceModal';
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -210,6 +211,13 @@ export default function LoginPage() {
                     </button>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* AVISO DE CONTA EXCLUÍDA */}
+            {location.state?.accountDeleted && (
+              <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-xl text-sm text-center font-medium shadow-xs">
+                Sua conta e todos os dados associados foram excluídos com sucesso.
               </div>
             )}
 
