@@ -126,6 +126,13 @@ export default function DashboardLayout() {
                       sx={{ bgcolor: 'rgba(16, 185, 129, 0.1)', color: '#10B981', fontWeight: 700, fontSize: '0.75rem', height: 22 }}
                     />
                   )}
+                  {subscription.status === 'cancelled' && (
+                    <Chip
+                      label="Cancelada (Acesso Ativo)"
+                      size="small"
+                      sx={{ bgcolor: 'rgba(239, 68, 68, 0.1)', color: '#EF4444', fontWeight: 700, fontSize: '0.75rem', height: 22 }}
+                    />
+                  )}
                   {subscription.status === 'trial' && (
                     <Chip
                       label={`Trial: ${subscription.daysLeft}d restantes`}

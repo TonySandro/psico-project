@@ -83,8 +83,12 @@ export default function ProfilePage() {
   useAccount(user?.id);
   const { data: stats } = useStatistics(user?.id || '');
 
-  const isPremiumActive = user?.subscriptionStatus === 'active' || subscription?.status === 'active' || isActive;
-  const isCancelledButActive = subscription?.status === 'cancelled' && subscription?.endsAt && new Date() <= new Date(subscription.endsAt);
+  const endsAtRaw = subscription?.endsAt || user?.subscriptionEndsAt;
+  const isCancelledButActive = (subscription?.status === 'cancelled' || user?.subscriptionStatus === 'cancelled') &&
+    !!endsAtRaw &&
+    new Date() <= new Date(endsAtRaw);
+
+  const isPremiumActive = !isCancelledButActive && (user?.subscriptionStatus === 'active' || subscription?.status === 'active' || isActive);
 
   const [globalSuccessMsg, setGlobalSuccessMsg] = useState('');
   const [globalErrorMsg, setGlobalErrorMsg] = useState('');
@@ -253,15 +257,16 @@ export default function ProfilePage() {
   };
 
   const handleCancelSubscription = async () => {
-    setConfirmCancelSubModal(false);
     setGlobalErrorMsg('');
     setGlobalSuccessMsg('');
     try {
       await cancelSubscription();
+      setConfirmCancelSubModal(false);
       setGlobalSuccessMsg('Sua solicitação de cancelamento foi processada. Seu acesso continuará ativo até o final do período pago.');
       window.scrollTo(0, 0);
     } catch (err: any) {
       console.error(err);
+      setConfirmCancelSubModal(false);
       setGlobalErrorMsg(err.response?.data?.error || 'Erro ao cancelar assinatura. Tente novamente ou entre em contato com o suporte.');
       window.scrollTo(0, 0);
     }
@@ -270,7 +275,7 @@ export default function ProfilePage() {
   const getRenewalDate = () => {
     if (subscription?.endsAt) return subscription.endsAt;
     if (user?.subscriptionEndsAt) return user.subscriptionEndsAt;
-    if (isPremiumActive) {
+    if (isPremiumActive || isCancelledButActive) {
       const baseDate = user?.createdAt ? new Date(user.createdAt) : new Date();
       const today = new Date();
       const nextRenewal = new Date(baseDate);
@@ -349,10 +354,10 @@ export default function ProfilePage() {
                     </Typography>
                     <Chip
                       icon={<ShieldCheck size={14} color="white" />}
-                      label={isPremiumActive ? "PREMIUM" : isTrial ? "TESTE GRATUITO" : "CONTA GRÁTIS"}
+                      label={isPremiumActive ? "PREMIUM" : isCancelledButActive ? "PREMIUM (CANCELADA)" : isTrial ? "TESTE GRATUITO" : "CONTA GRÁTIS"}
                       size="small"
                       sx={{
-                        bgcolor: isPremiumActive ? '#10B981' : isTrial ? '#F59E0B' : '#6B7280',
+                        bgcolor: isPremiumActive ? '#10B981' : isCancelledButActive ? '#EF4444' : isTrial ? '#F59E0B' : '#6B7280',
                         color: 'white',
                         fontWeight: 700,
                         fontSize: '0.72rem',
@@ -757,15 +762,15 @@ export default function ProfilePage() {
                         SUA ASSINATURA
                       </Typography>
                       <Typography variant="h5" fontWeight={800} sx={{ color: 'white', mt: 0.5 }}>
-                        {isPremiumActive ? 'Plano Premium' : isTrial ? 'Teste Gratuito' : 'Plano Grátis'}
+                        {isPremiumActive ? 'Plano Premium' : isCancelledButActive ? 'Plano Premium (Cancelado)' : isTrial ? 'Teste Gratuito' : 'Plano Grátis'}
                       </Typography>
                     </Box>
 
                     <Chip
-                      label={isPremiumActive ? 'PREMIUM ATIVO' : isTrial ? 'EM TESTE' : 'EXPIRADO'}
+                      label={isPremiumActive ? 'PREMIUM ATIVO' : isCancelledButActive ? 'CANCELADA (ACESSO ATIVO)' : isTrial ? 'EM TESTE' : 'EXPIRADO'}
                       size="small"
                       sx={{
-                        bgcolor: isPremiumActive ? '#10B981' : isTrial ? '#F59E0B' : '#EF4444',
+                        bgcolor: isPremiumActive ? '#10B981' : isCancelledButActive ? '#EF4444' : isTrial ? '#F59E0B' : '#EF4444',
                         color: 'white',
                         fontWeight: 800,
                         fontSize: '0.72rem',
@@ -950,7 +955,7 @@ export default function ProfilePage() {
                   </Stack>
 
                   {/* ACTION BUTTONS */}
-                  {!isPremiumActive && (
+                  {!isPremiumActive && !isCancelledButActive && (
                     <Button
                       variant="contained"
                       fullWidth

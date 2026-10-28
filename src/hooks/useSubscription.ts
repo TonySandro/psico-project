@@ -41,10 +41,28 @@ export const useSubscription = () => {
 
   const cancelSubscriptionMutation = useMutation({
     mutationFn: async () => {
-      const response = await api.post('/payment/cancel');
+      const response = await api.post<{ message: string; endsAt?: string; status?: string }>('/payment/cancel');
       return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      const endsAtStr = data?.endsAt
+        ? (typeof data.endsAt === 'string' ? data.endsAt : new Date(data.endsAt).toISOString())
+        : undefined;
+
+      useAuthStore.getState().updateUser({
+        subscriptionStatus: 'cancelled',
+        ...(endsAtStr ? { subscriptionEndsAt: endsAtStr } : {}),
+      });
+
+      const currentSub = useAuthStore.getState().subscription;
+      if (currentSub) {
+        useAuthStore.getState().setSubscription({
+          ...currentSub,
+          status: 'cancelled',
+          endsAt: endsAtStr || currentSub.endsAt,
+        });
+      }
+
       // Refetch subscription status after cancellation
       query.refetch();
     },
@@ -66,6 +84,10 @@ export const useSubscription = () => {
 
   const activeSubscription = query.data || subscription;
 
+  const isCancelled = activeSubscription?.status === 'cancelled';
+  const isCancelledActive = isCancelled && !!activeSubscription?.endsAt && new Date() <= new Date(activeSubscription.endsAt);
+  const isExpired = activeSubscription?.status === 'expired' || (isCancelled && !!activeSubscription?.endsAt && new Date() > new Date(activeSubscription.endsAt));
+
   return {
     subscription: activeSubscription,
     loading: query.isLoading,
@@ -73,11 +95,12 @@ export const useSubscription = () => {
     checkStatus,
     initiatePayment: () => initiatePaymentMutation.mutate(),
     subscribing: initiatePaymentMutation.isPending,
-    cancelSubscription: () => cancelSubscriptionMutation.mutate(),
+    cancelSubscription: () => cancelSubscriptionMutation.mutateAsync(),
     cancelling: cancelSubscriptionMutation.isPending,
-    isExpired: activeSubscription?.status === 'expired',
+    isExpired,
     isTrial: activeSubscription?.status === 'trial',
-    isActive: activeSubscription?.status === 'active',
+    isActive: activeSubscription?.status === 'active' || isCancelledActive,
+    isCancelled: isCancelledActive,
     isPaused: activeSubscription?.status === 'paused',
   };
 };

@@ -7,7 +7,7 @@ export interface Account {
   email: string;
   phone?: string;
   accessToken?: string;
-  subscriptionStatus?: 'active' | 'inactive' | 'pending';
+  subscriptionStatus?: 'active' | 'inactive' | 'pending' | 'cancelled' | 'paused';
   subscriptionEndsAt?: string;
   createdAt?: string;
 }
