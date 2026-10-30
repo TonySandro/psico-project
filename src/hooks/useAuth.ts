@@ -11,6 +11,7 @@ interface LoginCredentials {
 interface SignupData {
   name: string;
   email: string;
+  phone: string;
   password: string;
   passwordConfirmation: string;
 }
