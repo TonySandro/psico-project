@@ -2,7 +2,7 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Avatar, Menu, MenuItem, Divider, Box, Chip, Button, Tooltip } from '@mui/material';
 import { useSubscription } from '@/hooks/useSubscription';
 import { Menu as MenuIcon, LayoutDashboard, Users, ClipboardList, MessageSquare, UserCircle, LogOut, FileText, HelpCircle } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
 import { useLogout } from '@/hooks/useAuth';
@@ -29,12 +29,8 @@ export default function DashboardLayout() {
   const { user } = useAuthStore();
   const { mutate: logout } = useLogout();
   const { isTrial, subscription, initiatePayment, subscribing } = useSubscription();
-  const { startTour, checkAutoStart } = usePlatformTour();
+  const { startTour } = usePlatformTour();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  useEffect(() => {
-    checkAutoStart();
-  }, [checkAutoStart]);
 
   const handleUserMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

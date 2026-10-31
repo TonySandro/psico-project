@@ -5,6 +5,7 @@ import {
 } from 'recharts';
 import { Users, UserX, UserPlus } from 'lucide-react';
 import StatCard from '@/components/StatCard';
+import OnboardingChecklist from '@/components/OnboardingChecklist';
 import { useStatistics } from '@/hooks/useStatistics';
 import { useAuthStore } from '@/stores/authStore';
 
@@ -56,6 +57,9 @@ export default function DashboardPage() {
           </Typography>
         </Box>
       </Stack>
+
+      {/* Onboarding Guiado e Faseado */}
+      <OnboardingChecklist stats={stats} />
 
       {/* Stat Cards */}
       <Grid container spacing={3} id="tour-dashboard-stats">
